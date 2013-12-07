@@ -31,6 +31,7 @@ namespace space{
 				virtual bool Hit(Ray ,float&, Shader&) = 0;
 			};
 
+			typedef shared_ptr<Primitive> Primitive_ptr;
 			class Sphere : public Primitive{
 			private:
 				float r;
@@ -102,7 +103,7 @@ namespace space{
 
 			class RenderSystemRayTrace::RayTracer{
 			private:
-				vector<Primitive*> prims;
+				vector<Primitive_ptr> prims;
 				PerspectiveCamera* camera;
 				
 				Matrix matWorld;
@@ -114,7 +115,7 @@ namespace space{
 					StreamSource() :ptr(nullptr), stride(0), size(0){}
 				}vertices, normals,texcoords;
 
-				Color Trace(const vector<Primitive*> &prims, Ray ray, uint depth){
+				Color Trace(const vector<Primitive_ptr> &prims, Ray ray, uint depth){
 					float t,tmin = INFINITY;
 					Shader sd;
 					/*for (uint i = 0; i < prims.size(); i++){
@@ -169,9 +170,7 @@ namespace space{
 							image.push_back(T(color));
 						}
 					}
-					for (uint i = 0; i < prims.size(); i++){
-						delete prims[i];
-					}
+
 					prims.clear();
 				}
 				void SetView(const PerspectiveCamera&camera){
@@ -230,7 +229,7 @@ namespace space{
 									tri.t1 = Vector3(((float*)texcoords.ptr)[(i + 2) * texcoords.stride], ((float*)texcoords.ptr)[(i + 1) * texcoords.stride + 1], 0 );
 									tri.t2 = Vector3(((float*)texcoords.ptr)[(i + 2) * texcoords.stride], ((float*)texcoords.ptr)[(i + 2) * texcoords.stride + 1], 0 );								}
 							}
-							Triangle* prim = new Triangle(tri);
+							Primitive_ptr prim(new Triangle(tri));
 							prims.push_back(prim);
 						}
 					}

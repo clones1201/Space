@@ -22,7 +22,7 @@ namespace space{
 		HWND					hWnd;
 		HINSTANCE				hInstance;
 		CallbackFunc			Callback[Total_CallbackFunc_Count];
-		RenderSystem*			renderSystem;
+		RenderSystem_ptr			renderSystem;
 
 		class _MouseController{
 			DEFINE_IS_SET(LeftButtonDown);
@@ -66,7 +66,7 @@ namespace space{
 		}
 
 		RenderSystem* GetRenderSystem(){
-			return renderSystem;
+			return renderSystem.get();
 		}
 
 		bool HandleWndMessage(HWND _hWnd, UINT msg, WPARAM wParam, LPARAM lParam, LRESULT& result);

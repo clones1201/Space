@@ -62,7 +62,7 @@ void Init(){
 
 	cube.LoadFromFile("../../resourse/cube.obj");
 	cube.Rescale(0.5);
-	cube.CompileModel(PT_LINES);
+	cube.CompileModel(SP_LINES);
 
 	PerspectiveCamera view(Vector3(0, 2, 7), Vector3(0, -2, -7));
 	view.SetPerspective(60, 1, 1, 1000);

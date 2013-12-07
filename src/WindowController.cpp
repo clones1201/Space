@@ -48,13 +48,13 @@ namespace space{
 
 		switch (type){
 		case RS_D3D:
-			renderSystem = dynamic_cast<RenderSystem*>(new RenderSystemDirect3D(hWnd));
+			renderSystem = RenderSystem_ptr(new RenderSystemDirect3D(hWnd));
 			break;
 		case RS_OGL:
-			renderSystem = dynamic_cast<RenderSystem*>(new RenderSystemOpenGL(hWnd));
+			renderSystem = RenderSystem_ptr(new RenderSystemOpenGL(hWnd));
 			break;
 		case RS_RT:
-			renderSystem = dynamic_cast<RenderSystem*>(new RenderSystemRayTrace(hWnd));
+			renderSystem = RenderSystem_ptr(new RenderSystemRayTrace(hWnd));
 			break;
 		}
 	}

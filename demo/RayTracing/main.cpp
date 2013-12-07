@@ -14,6 +14,7 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT){
 }
 
 Mesh cube;
+ 
 
 void Init(){
 	vector<uint> image;

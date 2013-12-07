@@ -1,8 +1,8 @@
 #ifndef __RENDERSYSTEM_H__
 #define __RENDERSYSTEM_H__
 
-#include "basic.h"
 #include "global.h"
+#include "basic.h"
 #include "Entity.h"
 
 namespace space{
@@ -46,13 +46,14 @@ namespace space{
 
 		class RenderSystem : public Object, public IRenderSystem{
 		protected:
-			PerspectiveCamera* camera;
+			PerspectiveCamera_ptr camera;
 		public:
 			RenderSystem(){
 			}
 			~RenderSystem(){
 			}
 		};
+		typedef shared_ptr<RenderSystem> RenderSystem_ptr;
 
 		class RenderSystemOpenGL : public RenderSystem {
 		private:

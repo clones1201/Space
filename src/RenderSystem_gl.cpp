@@ -99,13 +99,11 @@ namespace space{
 			glewInit();
 
 			Init(hWnd);
-			camera = new PerspectiveCamera;
+			camera = PerspectiveCamera_ptr(new PerspectiveCamera);
 		
 		}
 		RenderSystemOpenGL::~RenderSystemOpenGL(){
-			if (camera != NULL){
-				delete camera;
-			}
+			 
 			wglMakeCurrent(NULL, NULL);
 			wglDeleteContext(hGLRC);
 			
@@ -135,9 +133,7 @@ namespace space{
 			camera->RotateL(x, y);
 		}
 		void RenderSystemOpenGL::SetView(const PerspectiveCamera & c){
-			IPerspectiveCamera* pd = camera;
-			camera = new PerspectiveCamera(c);
-			delete pd; 
+			camera = PerspectiveCamera_ptr(new PerspectiveCamera(c)); 
 		}
 
 		void RenderSystemOpenGL::SetTransform( TransformType type ,const Matrix& mat){

@@ -41,7 +41,7 @@ namespace space{
 
 		RenderSystemDirect3D::RenderSystemDirect3D(HWND hWnd){
 			Init(hWnd);
-			camera = new PerspectiveCamera;
+			camera = PerspectiveCamera_ptr( new PerspectiveCamera);
 		}
 		RenderSystemDirect3D::~RenderSystemDirect3D(){
 			if (pd3dDevice != NULL)

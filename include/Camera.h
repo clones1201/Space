@@ -115,6 +115,7 @@ namespace space{
 		void RotateL(float degX, float degY);
 		void RotateE(float degX, float degY);
 	};
+	typedef shared_ptr<PerspectiveCamera> PerspectiveCamera_ptr;
 
 	class BirdEyeCamera : public PerspectiveCamera{
 	private:

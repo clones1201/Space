@@ -1,7 +1,7 @@
 #ifndef __BASIC_H__
 #define __BASIC_H__
 
-#include <cmath>
+#include "global.h"
 
 namespace space{
 
@@ -52,16 +52,20 @@ namespace space{
 			float x, y;
 		}float2, Vector2;
 
+		typedef shared_ptr< _float2 > float2_ptr, Vector2_ptr;
+		
 		typedef struct _float3{
 			float x, y, z;
 			explicit _float3(float x = 0, float y = 0, float z = 0) :x(x), y(y), z(z){}
 		}float3, Vector3;
+		typedef shared_ptr< _float3 > float3_ptr,Vector3_ptr;
 
 		typedef struct _float4{
 			float x, y, z, w;
 			explicit _float4(float x = 0, float y = 0, float z = 0, float w = 0) :x(x), y(y), z(z), w(w){}
 			explicit _float4(const Vector3& vec) :x(vec.x), y(vec.y), z(vec.z), w(1.0f){}
 		}float4, Vector4;
+		typedef shared_ptr<_float4> float4_ptr, Vector4_ptr;
 
 		typedef struct _Matrix4{
 			float m[16];
@@ -99,6 +103,7 @@ namespace space{
 				return m[idx];
 			}
 		}Matrix, Matrix4;
+		typedef shared_ptr<_Matrix4> Matrix_ptr, Matrix_ptr;
 
 		inline float ToRadian(float p){
 			return p * (Pi / 180);
@@ -410,8 +415,10 @@ namespace space{
 		typedef class _Color{
 		public:
 			float r, g, b, a;
-			explicit _Color(float _r = 0, float _g = 0, float _b = 0, float _a = 0) :r(_r), g(_g), b(_b), a(_a){}
+			_Color() :r(0), g(0), b(0), a(1){}
+			explicit _Color(float _r, float _g, float _b, float _a) :r(_r), g(_g), b(_b), a(_a){}
 		}Color;
+		typedef shared_ptr<_Color> Color_ptr;
 
 		const Color black = Color(0, 0, 0, 1);
 		const Color red = Color(1, 0, 0, 1);
@@ -421,36 +428,38 @@ namespace space{
 		const Color Magenta = Color(1, 0, 1, 1);
 		const Color cyan = Color(0, 1, 1, 1);
 		const Color orange = Color(1, 0.5f, 0, 1);
-		const Color brown = Color(150.0f / 255, 75.0f / 255, 0);
+		const Color brown = Color(150.0f / 255, 75.0f / 255, 0.0f ,1);
 		const Color navyblue = Color(0, 0, 0.5f, 1);
-		const Color gold = Color(1, 215 / 255.0f, 0);
+		const Color gold = Color(1.0f, 215 / 255.0f, 0.0f, 1);
 
 		class RGBColor{
 		public:
 			uchar r, g, b;
 			explicit RGBColor(Color &c) :r(255 * c.r), g(255 * c.g), b(255 * c.b){}
 		};
+		typedef shared_ptr<RGBColor> RGBColor_ptr;
 		class RGBAColor{
 		public:
 			uchar r, g, b, a;
 			explicit RGBAColor(Color &c) :r(255 * c.r), g(255 * c.g), b(255 * c.b), a(255 * c.a){}
 		};
-
+		typedef shared_ptr<RGBAColor> RGBAColor_ptr;
 		class ARGBColor{
 		public:
 			uchar a, r, g, b;
 			explicit ARGBColor(Color &c) :r(255 * c.r), g(255 * c.g), b(255 * c.b), a(255 * c.a){}
 		};
-
+		typedef shared_ptr<ARGBColor> ARGBColor_ptr;
 		class ABGRColor{
 		public:
 			uchar a, b, g, r;
 			explicit ABGRColor(Color &c) :r(255 * c.r), g(255 * c.g), b(255 * c.b), a(255 * c.a){}
 		};
-
+		typedef shared_ptr<ABGRColor> ABGRColor_ptr;
 		struct Ray{
 			Vector3 ori, dir;
 		};
+		typedef shared_ptr<Ray> Ray_ptr;
 
 		struct Triangle{
 			Vector3 v0, v1, v2;
@@ -498,13 +507,14 @@ namespace space{
 				return true;
 			}
 		};
-
+		typedef shared_ptr<Triangle> Triangle_ptr;
 
 		class Material{
 			Color ambient;
 			Color diffuse;
 			Color specular;
 		};
+		typedef shared_ptr<Material> Material_ptr;
 	}
 }
 
