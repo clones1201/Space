@@ -94,6 +94,9 @@ namespace space{
 		void RenderSystemOpenGL::SwapBuffer(){
 			SwapBuffers(hDC);
 		}
+		void RenderSystemOpenGL::Flush(){
+			glFlush();
+		}
 
 		RenderSystemOpenGL::RenderSystemOpenGL(HWND hWnd){
 			glewInit();
@@ -145,6 +148,14 @@ namespace space{
 					glLoadMatrixf( MatrixTranspose( matView ).m);
 					break;
 			}
+		}
+
+		void RenderSystemOpenGL::SetColor(const Color& color){
+			glColor4fv((GLfloat*)&color);
+		}
+
+		void RenderSystemOpenGL::SetMaterial(const Material& material){
+
 		}
 		 
 		void RenderSystemOpenGL::DrawMesh(const Mesh& mesh){

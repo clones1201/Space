@@ -131,16 +131,16 @@ namespace space{
 		Matrix result;
 		result = MatrixMultiply(result, MatrixMultiply(
 			Matrix(
-			0, 0, 1, 0,
-			0, 1, 0, 0,
-			-1, 0, 0, 0,
+			f.x, up.x, s.x, 0,
+			f.y, up.y, s.y, 0,
+			f.z, up.z, s.z, 0,
 			0, 0, 0, 1),
 			Matrix(
-			f.x, f.y, f.z, 0,
-			up.x, up.y, up.z, 0,
-			s.x, s.y, s.z, 0,
+			0, 0, -1, 0,
+			0, 1, 0, 0,
+			1, 0, 0, 0,
 			0, 0, 0, 1))); 
-		result = MatrixMultiply(result, MatrixTranslation(-vEye.x, -vEye.y, -vEye.z));
+		result = MatrixMultiply(result, MatrixTranslation(vEye.x, vEye.y, vEye.z));
 		return result;
 	}
 

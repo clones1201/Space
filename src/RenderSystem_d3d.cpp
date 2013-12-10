@@ -56,37 +56,26 @@ namespace space{
 			float upx, float upy, float upz){
 
 		}
-		void RenderSystemDirect3D::Perspective(float fovy, float aspect, float zNear, float zFar){
+		void RenderSystemDirect3D::Perspective(float fovy, float aspect, float zNear, float zFar){}
 
-		}
-		void RenderSystemDirect3D::RotateEye(float x, float y){
+		void RenderSystemDirect3D::RotateEye(float x, float y){}
 
-		}
-		void RenderSystemDirect3D::RotateLook(float x, float y){
+		void RenderSystemDirect3D::RotateLook(float x, float y){}
 
-		}
-		void RenderSystemDirect3D::SetView(const PerspectiveCamera &camera){
-
-		}
+		void RenderSystemDirect3D::SetView(const PerspectiveCamera &camera){}
 		 
-		void RenderSystemDirect3D::SetTransform(TransformType type, const Matrix &matWorld){
+		void RenderSystemDirect3D::SetTransform(TransformType type, const Matrix &matWorld){}
+		
+		void RenderSystemDirect3D::SetColor(const Color &c){}
 
-		}
+		void RenderSystemDirect3D::SetMaterial(const Material &m){}
 
-		//first, we try some inmidiate command
-		//late, we will add handler and vbo management
-		void RenderSystemDirect3D::DrawMesh(const Mesh& mesh){
-			
-		}
+		void RenderSystemDirect3D::DrawMesh(const Mesh& mesh){}
 
-		void RenderSystemDirect3D::DrawSolidMesh(const Mesh& mesh){
+		void RenderSystemDirect3D::DrawSolidMesh(const Mesh& mesh){}
 
-		}
-		void RenderSystemDirect3D::DrawWiredMesh(const Mesh& mesh){
+		void RenderSystemDirect3D::DrawWiredMesh(const Mesh& mesh){}
 
-		}
-
-		void RenderSystemDirect3D::DrawScene(Scene& scene){
-		}
+		void RenderSystemDirect3D::DrawScene(Scene& scene){}
 	}
 }

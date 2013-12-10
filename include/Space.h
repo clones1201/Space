@@ -15,7 +15,6 @@ namespace space{
 	public:
 		virtual void Run() = 0;
 		virtual RenderSystem* GetRenderDevice() = 0;
-	
 	};
 	
 	IGame* GetGame();

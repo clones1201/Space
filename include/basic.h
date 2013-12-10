@@ -48,17 +48,24 @@ namespace space{
 			int x, y;
 		};
 
+		inline float pow(float p, uint n){
+			if (n == 0) return 1;
+			else {
+				return p * pow(p, n - 1);
+			}
+		}
+
 		typedef struct _float2{
 			float x, y;
 		}float2, Vector2;
 
 		typedef shared_ptr< _float2 > float2_ptr, Vector2_ptr;
-		
+
 		typedef struct _float3{
 			float x, y, z;
 			explicit _float3(float x = 0, float y = 0, float z = 0) :x(x), y(y), z(z){}
 		}float3, Vector3;
-		typedef shared_ptr< _float3 > float3_ptr,Vector3_ptr;
+		typedef shared_ptr< _float3 > float3_ptr, Vector3_ptr;
 
 		typedef struct _float4{
 			float x, y, z, w;
@@ -421,6 +428,8 @@ namespace space{
 		typedef shared_ptr<_Color> Color_ptr;
 
 		const Color black = Color(0, 0, 0, 1);
+		const Color gray = Color(0.5, 0.5, 0.5, 1);
+		const Color white = Color(1, 1, 1, 1);
 		const Color red = Color(1, 0, 0, 1);
 		const Color blue = Color(0, 0, 1, 1);
 		const Color green = Color(0, 1, 0, 1);
@@ -428,9 +437,28 @@ namespace space{
 		const Color Magenta = Color(1, 0, 1, 1);
 		const Color cyan = Color(0, 1, 1, 1);
 		const Color orange = Color(1, 0.5f, 0, 1);
-		const Color brown = Color(150.0f / 255, 75.0f / 255, 0.0f ,1);
+		const Color brown = Color(150.0f / 255, 75.0f / 255, 0.0f, 1);
 		const Color navyblue = Color(0, 0, 0.5f, 1);
 		const Color gold = Color(1.0f, 215 / 255.0f, 0.0f, 1);
+
+		inline Color operator+(const Color &c1, const Color &c2){
+			return Color(c1.r + c2.r, c1.g + c2.g, c1.b + c2.b, c1.a + c2.a);
+		}
+		inline Color operator-(const Color &c1, const Color &c2){
+			return Color(c1.r - c2.r, c1.g - c2.g, c1.b - c2.b, c1.a - c2.a);
+		}
+		inline Color operator*(const Color &c1, const Color &c2){
+			return Color(c1.r * c2.r, c1.g * c2.g, c1.b * c2.b, c1.a * c2.a);
+		}
+		inline Color operator/(const Color &c1, float f){
+			return Color(c1.r / f, c1.g / f, c1.b / f , c1.a / f);
+		}
+		inline Color operator*(const Color &c1, float f){
+			return Color(c1.r * f, c1.g * f, c1.b * f, c1.a * f);
+		}
+		inline Color operator*(float f,const Color &c1){
+			return c1 * f;
+		}
 
 		class RGBColor{
 		public:
@@ -510,11 +538,16 @@ namespace space{
 		typedef shared_ptr<Triangle> Triangle_ptr;
 
 		class Material{
+		public:
 			Color ambient;
 			Color diffuse;
-			Color specular;
+			Color Specular;
+			float ka, kd, ks;
+			uint n;
+			Material() :ka(0), kd(0), ks(0), n(1){}
 		};
 		typedef shared_ptr<Material> Material_ptr;
+
 	}
 }
 

@@ -19,24 +19,31 @@ Mesh cube;
 void Init(){
 	vector<uint> image;
 
-	Vector3 eye(0, 1, 10), lookat(0, 0, 0);
+	Vector3 eye(0,0,5), lookat(0, 0.5, 0);
 	PerspectiveCamera camera(eye, lookat - eye);
 	GetGame()->GetRenderDevice()->SetView(camera);
-	cube.LoadFromFile("../../resourse/cube.obj");
-	cube.Rescale(1);
+	cube.LoadFromFile("../../resourse/cubeuv.obj");
+	cube.Rescale(0.5);
 	cube.CompileModel(SP_TRIANGLES);
 }
 
 float dt = 1;
 void display(){	
 	clock_t t1 = clock();
-	
-	//GetGame()->GetRenderDevice()->RotateEye(5, 0);
-	GetGame()->GetRenderDevice()->DrawSolidMesh(cube);
-	
-	RenderSystemRayTrace* tracer = (RenderSystemRayTrace*)(GetGame()->GetRenderDevice());
 
-	tracer->Flush();
+	GetGame()->GetRenderDevice()->SetColor(white);
+	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixRotationY(45) * MatrixTranslation(-1, 0, -0.5));
+	GetGame()->GetRenderDevice()->DrawSolidMesh(cube);
+
+	GetGame()->GetRenderDevice()->SetColor(yellow);
+	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixRotationY(20) * MatrixTranslation(0,1, 0));
+	GetGame()->GetRenderDevice()->DrawSolidMesh(cube); 
+
+	GetGame()->GetRenderDevice()->SetColor(red);
+	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixRotationY(75) * MatrixTranslation(-1, 0, 1));
+	GetGame()->GetRenderDevice()->DrawSolidMesh(cube);
+
+	GetGame()->GetRenderDevice()->Flush();
 
 	clock_t t2 = clock();
 	dt = (t2 - t1) / 1000.0;

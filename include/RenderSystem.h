@@ -31,11 +31,16 @@ namespace space{
 			//template <TransformType t>
 			virtual void SetTransform(TransformType type, const Matrix&) = 0;
 			virtual void SwapBuffer() = 0;
+			virtual void Flush() = 0;
+
+			virtual void SetColor(const Color&) = 0;
+			virtual void SetMaterial(const Material&) = 0;
 
 			virtual void DrawMesh(const Mesh&) = 0;
 
 			virtual void DrawSolidMesh(const Mesh&) = 0;
 			virtual void DrawWiredMesh(const Mesh&) = 0;
+			
 			virtual void DrawScene( Scene&) = 0;
 		};
 
@@ -79,7 +84,10 @@ namespace space{
 			//template <TransformType t>
 			void SetTransform(TransformType type, const Matrix &matWorld);
 			void SwapBuffer();
+			virtual void Flush();
 
+			virtual void SetColor(const Color&);
+			virtual void SetMaterial(const Material&);
 			//first, we try some inmidiate command
 			//late, we may add handler and vbo management
 			virtual void DrawMesh(const Mesh& mesh);
@@ -112,6 +120,10 @@ namespace space{
 			void SetTransform(TransformType type, const Matrix &matWorld);
 
 			void SwapBuffer(){}
+			void Flush(){}
+
+			virtual void SetColor(const Color&);
+			virtual void SetMaterial(const Material&);
 
 			//first, we try some inmidiate command
 			//late, we will add handler and vbo management

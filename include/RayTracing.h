@@ -21,9 +21,11 @@ namespace space{
 				//template <TransformType t>
 				void SetTransform(TransformType type, const Matrix &matWorld);
 				void Flush();
+				 
+				void SetColor(const Color& color);
 
-				//first, we try some inmidiate command
-				//late, we may add handler and vbo management
+				void SetMaterial(const Material &m);
+
 				virtual void DrawMesh(const Mesh& mesh);
 				virtual void DrawSolidMesh(const Mesh& mesh);
 				virtual void DrawWiredMesh(const Mesh& mesh);
@@ -32,8 +34,7 @@ namespace space{
 				class RayTracer;
 
 				RayTracer *tracer;
-				Matrix mat[1];
-
+				//Matrix mat[1];
 			};
 		}
 	}

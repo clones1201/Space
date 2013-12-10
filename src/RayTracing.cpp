@@ -14,20 +14,20 @@ namespace space{
 				Ray ray;
 				bool hitAnObject;
 				
-				//Material material;
-
-				Color color;
+				Material material;
+				//Color color;
 
 				float u, v;
 				uint texId;
-				Shader():hitAnObject(false),color(blue){}
+				Shader():hitAnObject(false),material(){}
 			};
 
 			class Primitive : public Object{
 			protected:
-				Color color;
+				//Color color;
+				Material_ptr material;
 			public:
-				Primitive(Color color) :color(color){};
+				Primitive(Material_ptr ptr) :material(ptr){};
 				virtual bool Hit(Ray ,float&, Shader&) = 0;
 			};
 
@@ -37,10 +37,11 @@ namespace space{
 				float r;
 				Vector3 centre;
 			public:
-				Sphere(float r = 1, Vector3 centre = Vector3(0, 0, 0),Color color = Color(1,0,0,1)):
-					Primitive(color),r(r),centre(centre){}
+				Sphere( Material_ptr m, float r = 1, Vector3 centre = Vector3(0, 0, 0)) :
+					Primitive(m),r(r),centre(centre){}
 				bool Hit(Ray ray,float&tmin, Shader& sd){
 					float t;
+					sd.hitAnObject = false;
 					Vector3 temp = ray.ori - centre;
 					float a = Vec3Dot( ray.dir , ray.dir);
 					float b = 2.0 * Vec3Dot(temp , ray.dir);
@@ -58,6 +59,7 @@ namespace space{
 							tmin = t;
 							sd.normal = Vec3Normalize((temp + t * ray.dir) / r);
 							sd.hitPos = ray.ori + t * ray.dir;
+							sd.hitAnObject = true;
 							return true;
 						}
 
@@ -67,6 +69,7 @@ namespace space{
 							tmin = t;
 							sd.normal = Vec3Normalize((temp + t * ray.dir) / r);
 							sd.hitPos = ray.ori + t * ray.dir;
+							sd.hitAnObject = true;
 							return true;
 						}
 					}
@@ -79,8 +82,8 @@ namespace space{
 				Vector3 normal;
 				Vector3 pos;
 			public:
-				Plane(Vector3 normal = Vector3(0, 1, 0), Vector3 pos = Vector3(0, 0, 0), Color color = Color(1, 0, 0, 1)) :
-					Primitive(color),normal(normal), pos(pos){}
+				Plane(Material_ptr m, Vector3 normal = Vector3(0, 1, 0), Vector3 pos = Vector3(0, 0, 0)) :
+					Primitive(m),normal(normal), pos(pos){}
 				bool Hit(Ray, float &t, Shader&);
 			};
 
@@ -88,23 +91,27 @@ namespace space{
 			private:
 				graphic::Triangle tri;
 			public:
-				Triangle(const graphic::Triangle &_tri,Color color = Color(1, 0, 0, 1)):
-				Primitive(color),tri(_tri){}
+				Triangle(Material_ptr m, const graphic::Triangle &_tri) :
+				Primitive(m),tri(_tri){}
 				bool Hit(Ray ray, float&t, Shader& sd){
 					if (tri.Intersect(ray, t)){
 						sd.hitAnObject = true;
 						sd.hitPos = ray.ori + t * ray.dir;
 						sd.normal = (tri.n0 + tri.n1 + tri.n2) / 3;
-						sd.color = color;
+						sd.material = *material;
+						sd.ray = ray;
+						return true;
 					}
 					return false;
 				}
 			};
 
-			class RenderSystemRayTrace::RayTracer{
+			class RenderSystemRayTrace::RayTracer : private Interface{
 			private:
 				vector<Primitive_ptr> prims;
-				PerspectiveCamera* camera;
+				vector<Material_ptr> materials;
+				Material_ptr currentMaterial;
+				PerspectiveCamera_ptr camera;
 				
 				Matrix matWorld;
 
@@ -115,10 +122,26 @@ namespace space{
 					StreamSource() :ptr(nullptr), stride(0), size(0){}
 				}vertices, normals,texcoords;
 
+				Color Shade(const Shader& sd,const Vector3&wi,/*out*/ Vector3& wo){
+					wo = - sd.ray.dir;
+					Material m = sd.material;
+					float ndotwi = - Vec3Dot(sd.normal, wi);
+					/* Ambien */
+					Color ambient = m.ambient * m.ka;
+					Color lambertian, Glossy;
+					if (ndotwi > 0.01){
+						/* Lambertian */
+						lambertian = m.diffuse * m.kd * ndotwi;
+						/* Glossy */
+						Glossy = m.Specular * m.ks * ndotwi;
+					}
+					return ambient + lambertian + Glossy; 
+				}
+
 				Color Trace(const vector<Primitive_ptr> &prims, Ray ray, uint depth){
 					float t,tmin = INFINITY;
 					Shader sd;
-					/*for (uint i = 0; i < prims.size(); i++){
+					for (uint i = 0; i < prims.size(); i++){
 						Shader sdt;
 						if (prims[i]->Hit(ray, t, sdt)){
 							if (t < tmin){
@@ -126,21 +149,22 @@ namespace space{
 								tmin = t;
 							}
 						}
-					}*/
-					graphic::Triangle tri;
-					tri.v0 = Vector3(1, 0, 0);
-					tri.v1 = Vector3(-1, 0, 0);
-					tri.v2 = Vector3(0, 1, 0);
-					Triangle(tri).Hit(ray, t, sd);
-					if ( sd.hitAnObject )
-						return sd.color;
+					}
+					if (sd.hitAnObject){
+						if (t > 5000) return blue;
+						Vector3 wi(-1,-1,-1), wo;
+						//wi come from light
+						return Shade(sd, wi, wo);
+					}
 					else return blue;
 				}
 			public:
-				RayTracer(){}
-				~RayTracer(){
-					if (camera != nullptr) delete camera;
+				RayTracer() :currentMaterial(new Material){ 
+					currentMaterial->diffuse = gray;
+					currentMaterial->ka = 1.0f;
+					currentMaterial->kd = 0.6f;
 				}
+				~RayTracer(){}
 
 				template< typename T > 
 				void Render(vector<T>& image, uint w, uint h){
@@ -159,11 +183,11 @@ namespace space{
 						for (uint x = 0; x < w; x++){
 							Ray ray;
 							ray.ori = Vector3(-1 + 2 * x / float(w), -1 + 2 * y / float(h), -1 * zNear);
-							Vector3 dist = Vector3(b + (t - b) * x / float(w),
-								l + (r - l) * y / float(h),
+							Vector3 dist = Vector3(l + ( r - l) * x / float(w),
+								b + (t - b) * y / float(h),
 								-1 * zNear - 1);
-							ray.ori = Vec3Transform(MatrixInverse(viewMat), Vector4(ray.ori));
-							dist = Vec3Transform(MatrixInverse(viewMat), Vector4(dist));
+							ray.ori = Vec3Transform(viewMat, Vector4(ray.ori));
+							dist = Vec3Transform(viewMat, Vector4(dist));
 							ray.dir = dist - ray.ori;
 
 							Color color = Trace(prims, ray, 6);
@@ -172,15 +196,31 @@ namespace space{
 					}
 
 					prims.clear();
+					materials.clear();
 				}
 				void SetView(const PerspectiveCamera&camera){
-					PerspectiveCamera *temp = new PerspectiveCamera(camera);
-					if (temp != nullptr){
-						delete RayTracer::camera;
-						RayTracer::camera = temp;
-					}
+					RayTracer::camera = PerspectiveCamera_ptr(new PerspectiveCamera(camera));
 				}
 
+				void SetMatrix(const Matrix& mat){
+					matWorld = mat;
+				}
+
+				void SetColor(const Color& color){
+					Material_ptr m = Material_ptr(new Material(*currentMaterial.get()));
+					m->diffuse = color;
+					if (materials.end() == find(materials.begin(), materials.end(), m)){
+						materials.push_back(m);
+					}
+					currentMaterial = m;
+				}
+
+				void SetMaterial(const Material& m){
+					currentMaterial = Material_ptr(new Material(m));
+					if ( materials.end() != find(materials.begin(), materials.end(), currentMaterial)){
+						materials.push_back(currentMaterial);
+					}
+				}
 				/* couldn't decide the interface... 
 				/* seems that Direct3D style have more flexibility,
 				/* but OpenGl style may be easier to implement ...*/
@@ -208,28 +248,55 @@ namespace space{
 
 						for (uint i = 0; i < count; i += 3){
 							graphic::Triangle tri;
+							uint idx0 = indices[i];
+							uint idx1 = indices[i + 1];
+							uint idx2 = indices[i + 2];
 
-							tri.v0 = Vec3Transform(matWorld, Vector4(((float*)vertices.ptr)[i * vertices.stride], ((float*)vertices.ptr)[i * vertices.stride + 1], ((float*)vertices.ptr)[i * vertices.stride + 2], 1));
-							tri.v1 = Vec3Transform(matWorld, Vector4(((float*)vertices.ptr)[(i + 2) * vertices.stride], ((float*)vertices.ptr)[(i + 1) * vertices.stride + 1], ((float*)vertices.ptr)[(i + 1) * vertices.stride + 2], 1));
-							tri.v2 = Vec3Transform(matWorld, Vector4(((float*)vertices.ptr)[(i + 2) * vertices.stride], ((float*)vertices.ptr)[(i + 2) * vertices.stride + 1], ((float*)vertices.ptr)[(i + 2) * vertices.stride + 2], 1));
-							
+							tri.v0 = Vec3Transform(matWorld, 
+								Vector4(((float*)vertices.ptr)[ idx0 * vertices.stride],
+								((float*)vertices.ptr)[ idx0 * vertices.stride + 1],
+								((float*)vertices.ptr)[ idx0 * vertices.stride + 2], 1));
+							tri.v1 = Vec3Transform(matWorld, 
+								Vector4(((float*)vertices.ptr)[idx1 * vertices.stride],
+								((float*)vertices.ptr)[idx1 * vertices.stride + 1],
+								((float*)vertices.ptr)[idx1 * vertices.stride + 2], 1));
+							tri.v2 = Vec3Transform(matWorld, 
+								Vector4(((float*)vertices.ptr)[idx2 * vertices.stride],
+								((float*)vertices.ptr)[idx2 * vertices.stride + 1],
+								((float*)vertices.ptr)[idx2 * vertices.stride + 2], 1));
+
 							if (normals.ptr != nullptr){
-								tri.n0 = Vector3(((float*)normals.ptr)[i * normals.stride], ((float*)normals.ptr)[i * normals.stride + 1], ((float*)normals.ptr)[i * normals.stride + 2]);
-								tri.n1 = Vector3(((float*)normals.ptr)[(i + 2) * normals.stride], ((float*)normals.ptr)[(i + 1) * normals.stride + 1], ((float*)normals.ptr)[(i + 1) * normals.stride + 2]);
-								tri.n2 = Vector3(((float*)normals.ptr)[(i + 2) * normals.stride], ((float*)normals.ptr)[(i + 2) * normals.stride + 1], ((float*)normals.ptr)[(i + 2) * normals.stride + 2]);
+								tri.n0 = Vector3(((float*)normals.ptr)[idx0 * normals.stride],
+									((float*)normals.ptr)[idx0 * normals.stride + 1],
+									((float*)normals.ptr)[i * normals.stride + 2]);
+								tri.n1 = Vector3(((float*)normals.ptr)[idx1 * normals.stride],
+									((float*)normals.ptr)[idx1 * normals.stride + 1], 
+									((float*)normals.ptr)[idx1 * normals.stride + 2]);
+								tri.n2 = Vector3(((float*)normals.ptr)[idx2 * normals.stride], 
+									((float*)normals.ptr)[idx2 * normals.stride + 1],
+									((float*)normals.ptr)[idx2 * normals.stride + 2]);
 							}
 							if (texcoords.ptr != nullptr){
 								if (texcoords.size == 3){
-									tri.t0 = Vector3(((float*)texcoords.ptr)[i * texcoords.stride], ((float*)texcoords.ptr)[i * texcoords.stride + 1], ((float*)texcoords.ptr)[i * texcoords.stride + 2]);
-									tri.t1 = Vector3(((float*)texcoords.ptr)[(i + 2) * texcoords.stride], ((float*)texcoords.ptr)[(i + 1) * texcoords.stride + 1], ((float*)texcoords.ptr)[(i + 1) * texcoords.stride + 2]);
-									tri.t2 = Vector3(((float*)texcoords.ptr)[(i + 2) * texcoords.stride], ((float*)texcoords.ptr)[(i + 2) * texcoords.stride + 1], ((float*)texcoords.ptr)[(i + 2) * texcoords.stride + 2]);
+									tri.t0 = Vector3(((float*)texcoords.ptr)[idx0 * texcoords.stride],
+										((float*)texcoords.ptr)[idx0 * texcoords.stride + 1],
+										((float*)texcoords.ptr)[idx0 * texcoords.stride + 2]);
+									tri.t1 = Vector3(((float*)texcoords.ptr)[idx1 * texcoords.stride],
+										((float*)texcoords.ptr)[idx1 * texcoords.stride + 1],
+										((float*)texcoords.ptr)[idx1 * texcoords.stride + 2]);
+									tri.t2 = Vector3(((float*)texcoords.ptr)[idx2 * texcoords.stride], 
+										((float*)texcoords.ptr)[idx2 * texcoords.stride + 1], 
+										((float*)texcoords.ptr)[idx2 * texcoords.stride + 2]);
 								}
 								else if (texcoords.size == 2){
-									tri.t0 = Vector3(((float*)texcoords.ptr)[i * texcoords.stride], ((float*)texcoords.ptr)[i * texcoords.stride + 1], 0 );
-									tri.t1 = Vector3(((float*)texcoords.ptr)[(i + 2) * texcoords.stride], ((float*)texcoords.ptr)[(i + 1) * texcoords.stride + 1], 0 );
-									tri.t2 = Vector3(((float*)texcoords.ptr)[(i + 2) * texcoords.stride], ((float*)texcoords.ptr)[(i + 2) * texcoords.stride + 1], 0 );								}
+									tri.t0 = Vector3(((float*)texcoords.ptr)[idx0 * texcoords.stride], 
+										((float*)texcoords.ptr)[idx0 * texcoords.stride + 1], 0 );
+									tri.t1 = Vector3(((float*)texcoords.ptr)[idx1 * texcoords.stride], 
+										((float*)texcoords.ptr)[idx1 * texcoords.stride + 1], 0 );
+									tri.t2 = Vector3(((float*)texcoords.ptr)[idx2 * texcoords.stride], 
+										((float*)texcoords.ptr)[idx2 * texcoords.stride + 1], 0 );								}
 							}
-							Primitive_ptr prim(new Triangle(tri));
+							Primitive_ptr prim(new Triangle(currentMaterial,tri));
 							prims.push_back(prim);
 						}
 					}
@@ -238,8 +305,10 @@ namespace space{
 			
 			RenderSystemRayTrace::RenderSystemRayTrace(HWND hWnd): RenderSystemOpenGL(hWnd){
 				tracer = new RayTracer;
-
 				glClearColor(0, 0, 0, 1);
+				Material m;
+				m.diffuse = gray; m.kd = 0.6;
+				
 			}
 
 			RenderSystemRayTrace::~RenderSystemRayTrace(){
@@ -249,10 +318,19 @@ namespace space{
 			
 			}
 			
+			void RenderSystemRayTrace::SetColor(const Color& c){
+				tracer->SetColor(c);
+			}
+
+			void RenderSystemRayTrace::SetMaterial(const Material& m){
+				tracer->SetMaterial(m);
+			}
+
 			void RenderSystemRayTrace::SetTransform(TransformType type, const Matrix &matWorld){
 				switch (type){
 				case SP_VIEW:
-					mat[SP_VIEW] = matWorld;
+					//mat[SP_VIEW] = matWorld;
+					tracer->SetMatrix(matWorld);
 					break;
 				}
 			}
