@@ -101,5 +101,8 @@
     <ClCompile Include="..\src\RayTracing.cpp">
       <Filter>RayTrace</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Sampler.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

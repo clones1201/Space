@@ -94,6 +94,7 @@ namespace space{
 		}
 
 		Matrix GetMatrix() const final;
+		/*only for ray trace, because camera will move*/
 		Matrix GetModelViewMatrix() const final;
 		void GetPerspective(float &fovy, float &aspect, float &zNear, float &zFar)const;
 

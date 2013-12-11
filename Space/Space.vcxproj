@@ -116,6 +116,7 @@
     <ClCompile Include="..\src\RenderSystem.cpp" />
     <ClCompile Include="..\src\RenderSystem_d3d.cpp" />
     <ClCompile Include="..\src\RenderSystem_gl.cpp" />
+    <ClCompile Include="..\src\Sampler.cpp" />
     <ClCompile Include="..\src\Space.cpp" />
     <ClCompile Include="..\src\utility.cpp" />
     <ClCompile Include="..\src\WindowController.cpp" />

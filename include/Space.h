@@ -21,6 +21,8 @@ namespace space{
 
 	template< RenderSystemType >
 	int SetupRenderDevice();
+
+	void DrawAxis();
 }
 
 #endif

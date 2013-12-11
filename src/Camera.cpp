@@ -129,18 +129,19 @@ namespace space{
 		Vector3 s = Vec3Normalize(Vec3Cross(f, vUp));
 		Vector3 up = Vec3Normalize(Vec3Cross(s, f));
 		Matrix result;
-		result = MatrixMultiply(result, MatrixMultiply(
+		result = MatrixMultiply(result, MatrixInverse( MatrixMultiply(
 			Matrix(
 			f.x, up.x, s.x, 0,
 			f.y, up.y, s.y, 0,
 			f.z, up.z, s.z, 0,
-			0, 0, 0, 1),
+			1, 1, 1, 1),
 			Matrix(
 			0, 0, -1, 0,
 			0, 1, 0, 0,
 			1, 0, 0, 0,
-			0, 0, 0, 1))); 
-		result = MatrixMultiply(result, MatrixTranslation(vEye.x, vEye.y, vEye.z));
+			1, 1, 1, 1)
+			))); 
+		result = MatrixMultiply(result, MatrixTranslation(-vEye.x, -vEye.y, -vEye.z));
 		return result;
 	}
 

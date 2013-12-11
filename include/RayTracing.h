@@ -23,7 +23,7 @@ namespace space{
 				void Flush();
 				 
 				void SetColor(const Color& color);
-
+				
 				void SetMaterial(const Material &m);
 
 				virtual void DrawMesh(const Mesh& mesh);

@@ -126,6 +126,8 @@ namespace space{
 					wo = - sd.ray.dir;
 					Material m = sd.material;
 					float ndotwi = - Vec3Dot(sd.normal, wi);
+					Vector3 r =  - wi + sd.normal * 2.0 * ndotwi;
+					float rdotwo = Vec3Dot(r,wo);
 					/* Ambien */
 					Color ambient = m.ambient * m.ka;
 					Color lambertian, Glossy;
@@ -133,7 +135,7 @@ namespace space{
 						/* Lambertian */
 						lambertian = m.diffuse * m.kd * ndotwi;
 						/* Glossy */
-						Glossy = m.Specular * m.ks * ndotwi;
+						Glossy = m.Specular * m.ks * powf(rdotwo,sd.material.n);
 					}
 					return ambient + lambertian + Glossy; 
 				}
@@ -186,8 +188,6 @@ namespace space{
 							Vector3 dist = Vector3(l + ( r - l) * x / float(w),
 								b + (t - b) * y / float(h),
 								-1 * zNear - 1);
-							ray.ori = Vec3Transform(viewMat, Vector4(ray.ori));
-							dist = Vec3Transform(viewMat, Vector4(dist));
 							ray.dir = dist - ray.ori;
 
 							Color color = Trace(prims, ray, 6);
@@ -252,15 +252,15 @@ namespace space{
 							uint idx1 = indices[i + 1];
 							uint idx2 = indices[i + 2];
 
-							tri.v0 = Vec3Transform(matWorld, 
+							tri.v0 = Vec3Transform(matWorld,
 								Vector4(((float*)vertices.ptr)[ idx0 * vertices.stride],
 								((float*)vertices.ptr)[ idx0 * vertices.stride + 1],
 								((float*)vertices.ptr)[ idx0 * vertices.stride + 2], 1));
-							tri.v1 = Vec3Transform(matWorld, 
+							tri.v1 = Vec3Transform(matWorld,
 								Vector4(((float*)vertices.ptr)[idx1 * vertices.stride],
 								((float*)vertices.ptr)[idx1 * vertices.stride + 1],
 								((float*)vertices.ptr)[idx1 * vertices.stride + 2], 1));
-							tri.v2 = Vec3Transform(matWorld, 
+							tri.v2 = Vec3Transform(matWorld,
 								Vector4(((float*)vertices.ptr)[idx2 * vertices.stride],
 								((float*)vertices.ptr)[idx2 * vertices.stride + 1],
 								((float*)vertices.ptr)[idx2 * vertices.stride + 2], 1));
@@ -268,7 +268,7 @@ namespace space{
 							if (normals.ptr != nullptr){
 								tri.n0 = Vector3(((float*)normals.ptr)[idx0 * normals.stride],
 									((float*)normals.ptr)[idx0 * normals.stride + 1],
-									((float*)normals.ptr)[i * normals.stride + 2]);
+									((float*)normals.ptr)[idx0 * normals.stride + 2]);
 								tri.n1 = Vector3(((float*)normals.ptr)[idx1 * normals.stride],
 									((float*)normals.ptr)[idx1 * normals.stride + 1], 
 									((float*)normals.ptr)[idx1 * normals.stride + 2]);
@@ -327,10 +327,13 @@ namespace space{
 			}
 
 			void RenderSystemRayTrace::SetTransform(TransformType type, const Matrix &matWorld){
+
+				Matrix matView = camera->GetModelViewMatrix();
+				
 				switch (type){
 				case SP_VIEW:
-					//mat[SP_VIEW] = matWorld;
-					tracer->SetMatrix(matWorld);
+
+					tracer->SetMatrix(matView * matWorld);
 					break;
 				}
 			}
