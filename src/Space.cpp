@@ -11,7 +11,7 @@ namespace space{
 	class Game :public IGame {
 	private:
 	public:
-		Game();
+		Game(uint width, uint height);
 
 		~Game(){
 		}
@@ -26,20 +26,20 @@ namespace space{
 	};
 
 	template <>
-	Game<RS_OGL>::Game(){
-		SetWindowController(new WindowController(RS_OGL));
+	Game<RS_OGL>::Game(uint width, uint height){
+		SetWindowController(new WindowController(RS_OGL,width, height));
 		GetWindowController()->SetDisplayFunc(&display);
 	} 
 
 	template <>
-	Game<RS_RT>::Game(){
-		SetWindowController(new WindowController(RS_RT));
+	Game<RS_RT>::Game(uint width, uint height){
+		SetWindowController(new WindowController(RS_RT, width, height));
 		GetWindowController()->SetDisplayFunc(&display);
 	}
 
 	template <>
-	Game<RS_D3D>::Game(){
-		SetWindowController(new WindowController(RS_D3D));
+	Game<RS_D3D>::Game(uint width, uint height){
+		SetWindowController(new WindowController(RS_D3D, width, height));
 		GetWindowController()->SetDisplayFunc(&display);
 	}
 
@@ -50,8 +50,8 @@ namespace space{
 	}
 
 	template <>
-	int SetupRenderDevice<RS_OGL>(){
-		game = new Game<RS_OGL>();
+	int SetupRenderDevice<RS_OGL>(uint width, uint height){
+		game = new Game<RS_OGL>(width, height);
 		Init();
 		game->Run();
 		delete game;
@@ -59,8 +59,8 @@ namespace space{
 	}
 
 	template <>
-	int SetupRenderDevice<RS_RT>(){
-		game = new Game<RS_RT>();
+	int SetupRenderDevice<RS_RT>(uint width, uint height){
+		game = new Game<RS_RT>(width, height);
 		Init();
 		game->Run();
 		delete game;
@@ -68,8 +68,8 @@ namespace space{
 	}
 
 	template <>
-	int SetupRenderDevice<RS_D3D>(){
-		game = new Game<RS_D3D>();
+	int SetupRenderDevice<RS_D3D>(uint width, uint height){
+		game = new Game<RS_D3D>(width, height);
 		Init();
 		game->Run();
 		delete game;

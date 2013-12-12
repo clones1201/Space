@@ -38,7 +38,7 @@ namespace space{
 		}
 
 
-		void RenderSystemOpenGL::Init(HWND hWnd){
+		void RenderSystemOpenGL::Init(HWND hWnd, uint width, uint height){
 			hDC = GetDC(hWnd);
 			PIXELFORMATDESCRIPTOR pfd;
 			memset(&pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
@@ -87,7 +87,7 @@ namespace space{
 				exit(1);
 			}
 			
-			glViewport(0, 0, 650, 650);
+			glViewport(0, 0, width, height);
 			glClearColor(0, 0, 1, 1);
 		}
 		
@@ -98,10 +98,10 @@ namespace space{
 			glFlush();
 		}
 
-		RenderSystemOpenGL::RenderSystemOpenGL(HWND hWnd){
+		RenderSystemOpenGL::RenderSystemOpenGL(HWND hWnd, uint width, uint height) :RenderSystem(width, height){
 			glewInit();
 
-			Init(hWnd);
+			Init(hWnd, width, height);
 			camera = PerspectiveCamera_ptr(new PerspectiveCamera);
 		
 		}
@@ -113,11 +113,13 @@ namespace space{
 			ReleaseDC(GetWindowController()->GetWndHandler(), hDC);
 		}
 
-		void RenderSystemOpenGL::Resize(int width, int height){
-			glViewport(0, 0, width, height);
+		void RenderSystemOpenGL::Resize(int _width, int _height){
+			RenderSystem::width = _width;
+			RenderSystem::height = _height;
+			glViewport(0, 0, _width, _height);
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
-			camera->SetAspect(width / float(height));
+			camera->SetAspect(_width / float(_height));
 		}
 
 		void RenderSystemOpenGL::LookAt(float eyex, float eyey, float eyez,
@@ -249,5 +251,9 @@ namespace space{
 
 			}
 		}
+
+		void RenderSystemOpenGL::DrawSphere(float r){}
+		void RenderSystemOpenGL::DrawCube(float a, float b, float c){}
+		void RenderSystemOpenGL::DrawPlane(Vector3 normal){}
 	}
 }

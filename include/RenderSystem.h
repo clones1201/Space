@@ -18,7 +18,7 @@ namespace space{
 
 		class IRenderSystem : public  Interface{
 		protected:
-			virtual void Init(HWND hWnd) = 0;
+			virtual void Init(HWND hWnd, uint width, uint height) = 0;
 		public:
 			virtual void Resize(int width, int height) = 0;
 			virtual void Perspective(float fovy, float aspect, float zNear, float zFar) = 0;
@@ -42,6 +42,10 @@ namespace space{
 			virtual void DrawWiredMesh(const Mesh&) = 0;
 			
 			virtual void DrawScene( Scene&) = 0;
+
+			virtual void DrawSphere(float r) = 0;
+			virtual void DrawCube(float a, float b, float c) = 0;
+			virtual void DrawPlane(Vector3 normal) = 0;
 		};
 
 		//============================
@@ -52,8 +56,9 @@ namespace space{
 		class RenderSystem : public Object, public IRenderSystem{
 		protected:
 			PerspectiveCamera_ptr camera;
+			uint width, height;
 		public:
-			RenderSystem(){
+			RenderSystem(uint _width, uint _height) :width(_width), height(_height){
 			}
 			~RenderSystem(){
 			}
@@ -65,9 +70,9 @@ namespace space{
 			HDC						hDC;
 			HGLRC					hGLRC;
 			HPALETTE				hPalette;
-			void Init(HWND hWnd);
+			void Init(HWND hWnd, uint width, uint height);
 		public:
-			RenderSystemOpenGL(HWND hWnd);
+			RenderSystemOpenGL(HWND hWnd,uint width,uint height);
 			~RenderSystemOpenGL();
 
 			void Resize(int width, int height);
@@ -93,7 +98,10 @@ namespace space{
 			virtual void DrawMesh(const Mesh& mesh);
 			virtual void DrawSolidMesh(const Mesh& mesh);
 			virtual void DrawWiredMesh(const Mesh& mesh);
-			virtual void DrawScene(  Scene&);
+			virtual void DrawScene(Scene&); 
+			virtual void DrawSphere(float r);
+			virtual void DrawCube(float a, float b, float c); 
+			virtual void DrawPlane(Vector3 normal);
 		};
 
 
@@ -102,9 +110,9 @@ namespace space{
 			LPDIRECT3D9				pD3D;
 			LPDIRECT3DDEVICE9		pd3dDevice;
 
-			void Init(HWND hWnd);
+			void Init(HWND hWnd, uint width, uint height);
 		public:
-			RenderSystemDirect3D(HWND hWnd);
+			RenderSystemDirect3D(HWND hWnd, uint width, uint height);
 			~RenderSystemDirect3D();
 
 			void Resize( int width, int height);
@@ -131,6 +139,9 @@ namespace space{
 			virtual void DrawSolidMesh(const Mesh& mesh);
 			virtual void DrawWiredMesh(const Mesh& mesh);
 			virtual void DrawScene(  Scene&);
+			virtual void DrawSphere(float r);
+			virtual void DrawCube(float a, float b, float c);
+			virtual void DrawPlane(Vector3 normal);
 		};
 	}
 }

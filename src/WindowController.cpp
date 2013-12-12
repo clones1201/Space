@@ -27,7 +27,7 @@ namespace space{
 		return DefWindowProc(hWnd, msg, wParam, lParam);
 	}
 
-	WindowController::WindowController(RenderSystemType type){
+	WindowController::WindowController(RenderSystemType type,uint width,uint height){
 		hInstance = (HINSTANCE)GetModuleHandle(NULL);
 		windowClass.cbSize = sizeof(WNDCLASSEX);
 		windowClass.style = type == RS_D3D ? CS_CLASSDC : CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
@@ -44,19 +44,23 @@ namespace space{
 		RegisterClassEx(&windowClass);
 		hWnd = CreateWindowW(windowClass.lpszClassName, L"Space",
 			WS_OVERLAPPEDWINDOW,
-			0, 0, 650, 650, 0, 0, hInstance, 0);
+			0, 0, width, height, 0, 0, hInstance, 0);
 
 		switch (type){
 		case RS_D3D:
-			renderSystem = RenderSystem_ptr(new RenderSystemDirect3D(hWnd));
+			renderSystem = RenderSystem_ptr(new RenderSystemDirect3D(hWnd,width,height));
 			break;
 		case RS_OGL:
-			renderSystem = RenderSystem_ptr(new RenderSystemOpenGL(hWnd));
+			renderSystem = RenderSystem_ptr(new RenderSystemOpenGL(hWnd, width, height));
 			break;
 		case RS_RT:
-			renderSystem = RenderSystem_ptr(new RenderSystemRayTrace(hWnd));
+			renderSystem = RenderSystem_ptr(new RenderSystemRayTrace(hWnd, width, height));
 			break;
 		}
+	}
+	void WindowController::SetWindowsTitle(const wstring& title){
+		
+		SetWindowText(hWnd, title.c_str());
 	}
 
 	bool WindowController::HandleWndMessage(HWND _hWnd, UINT msg, WPARAM wParam, LPARAM lParam, LRESULT& result){

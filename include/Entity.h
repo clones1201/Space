@@ -9,14 +9,14 @@ namespace space{
 	using namespace graphic;
 	using namespace math;
 
-	typedef struct _Material{
+	/*typedef struct _Material{
 		Color diffuse;
 		Color specular;
 		float shininess;
 
 		_Material(Color _diffuse, Color _specular, float _shininess) :
 			diffuse(_diffuse), specular(_specular), shininess(_shininess){}
-	}Material;
+	}Material;*/
 
 	typedef struct _Texture{
 		uint TexID;

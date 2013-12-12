@@ -10,7 +10,7 @@ namespace space{
 	namespace graphic{
 		 
 		
-		void RenderSystemDirect3D::Init(HWND hWnd){
+		void RenderSystemDirect3D::Init(HWND hWnd, uint width,uint height){
 			// Create the D3D object.
 			if (NULL == (pD3D = Direct3DCreate9(D3D_SDK_VERSION)))
 				return ;
@@ -39,8 +39,8 @@ namespace space{
 			return ;
 		}
 
-		RenderSystemDirect3D::RenderSystemDirect3D(HWND hWnd){
-			Init(hWnd);
+		RenderSystemDirect3D::RenderSystemDirect3D(HWND hWnd, uint width, uint height):RenderSystem(width,height){
+			Init(hWnd, width, height);
 			camera = PerspectiveCamera_ptr( new PerspectiveCamera);
 		}
 		RenderSystemDirect3D::~RenderSystemDirect3D(){
@@ -77,5 +77,9 @@ namespace space{
 		void RenderSystemDirect3D::DrawWiredMesh(const Mesh& mesh){}
 
 		void RenderSystemDirect3D::DrawScene(Scene& scene){}
+
+		void RenderSystemDirect3D::DrawSphere(float r){}
+		void RenderSystemDirect3D::DrawCube(float a, float b, float c){}
+		void RenderSystemDirect3D::DrawPlane(Vector3 normal){}
 	}
 }

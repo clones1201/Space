@@ -10,7 +10,7 @@ using namespace space::graphic::raytrace;
 
 int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT){
 	UNREFERENCED_PARAMETER(hInst);
-	return SetupRenderDevice<RS_RT>();
+	return SetupRenderDevice<RS_RT>(512,512);
 }
 
 Mesh cube;
@@ -19,7 +19,7 @@ Mesh cube;
 void Init(){
 	vector<uint> image;
 
-	Vector3 eye(-3,1,-5), lookat(0, 0, 0);
+	Vector3 eye(-3,1,0), lookat(0, 0, 0);
 	PerspectiveCamera camera(eye, lookat - eye);
 	GetGame()->GetRenderDevice()->SetView(camera);
 
@@ -32,24 +32,55 @@ float dt = 1;
 void display(){	
 	clock_t t1 = clock();
 
-	GetGame()->GetRenderDevice()->SetColor(white);
-	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(-1, 0, -0.5));
-	GetGame()->GetRenderDevice()->DrawSolidMesh(cube);
+	GetGame()->GetRenderDevice()->RotateEye(10,0);
 
-	GetGame()->GetRenderDevice()->SetColor(yellow);
-	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(0,0.5, 0));
-	GetGame()->GetRenderDevice()->DrawSolidMesh(cube); 
+	Material material;
+	material.specular = white;
+	material.ks = 0.4;
+	material.n = 20;
+
+	material.diffuse = white;
+	material.kd = 0.6;
+
+	material.ambient = white;
+	material.ka = 0.1;
+
+	material.reflect = 0.2f;
+	GetGame()->GetRenderDevice()->SetMaterial(material);
+
+	GetGame()->GetRenderDevice()->SetColor(black);
+	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(0, -0.5, 0));
+	GetGame()->GetRenderDevice()->DrawPlane(Vector3(0,1,0));
+
+	material.reflect = 0.6f;
+	GetGame()->GetRenderDevice()->SetMaterial(material);
+
+	GetGame()->GetRenderDevice()->SetColor(white);
+	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(0, 0, 1.3));
+	GetGame()->GetRenderDevice()->DrawSolidMesh(cube);
+	
+	material.reflect = 0.2f;
+	GetGame()->GetRenderDevice()->SetMaterial(material);
 
 	GetGame()->GetRenderDevice()->SetColor(red);
-	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(-1, 0, 1));
+	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(-0.7, 0, 0.7));
 	GetGame()->GetRenderDevice()->DrawSolidMesh(cube);
+
+	material.reflect = 0.9f;
+	GetGame()->GetRenderDevice()->SetMaterial(material);
+	GetGame()->GetRenderDevice()->SetColor(yellow);
+	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(1.0, 0, 0));
+	GetGame()->GetRenderDevice()->DrawSphere(0.5);
 
 	GetGame()->GetRenderDevice()->Flush();
 
 	clock_t t2 = clock();
 	dt = (t2 - t1) / 1000.0;
 
-	ostringstream strfps;
-	strfps << "Space:Ray Trace " << "fps " << 1 / dt << "time " << dt<<"s";
+	wostringstream strfps; 
+	static uint fcount = 0;
+	strfps << "Space:Ray Trace " << "fc:" << fcount << "fps " << 1 / dt << "time " << dt << "s";
 	
+	GetWindowController()->SetWindowsTitle(strfps.str());
+	fcount++;
 }

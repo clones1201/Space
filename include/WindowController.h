@@ -39,7 +39,7 @@ namespace space{
 			renderSystem->SwapBuffer();
 		}
 	public:
-		WindowController(RenderSystemType type);
+		WindowController(RenderSystemType type, uint width, uint height);
 
 		void SetDisplayFunc(void(*callback)(void)){
 			Callback[DisplayFunc] = callback;
@@ -72,6 +72,7 @@ namespace space{
 		bool HandleWndMessage(HWND _hWnd, UINT msg, WPARAM wParam, LPARAM lParam, LRESULT& result);
 		
 		HWND GetWndHandler(){	return hWnd;	}
+		void SetWindowsTitle(const wstring& title);
 	};
 	WindowController* GetWindowController();
 

@@ -19,7 +19,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RayTracing", "demo\RayTraci
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "demo\test\test.vcxproj", "{E01423A1-5A84-493A-9AA9-8BF3511E998E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sampler", "Sampler\Sampler.vcxproj", "{C9E9CF02-3AEC-4111-934A-CF3F0E8BC014}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sampler", "demo\Sampler\Sampler.vcxproj", "{C9E9CF02-3AEC-4111-934A-CF3F0E8BC014}"
 	ProjectSection(ProjectDependencies) = postProject
 		{22E0066C-9838-44CE-8BF2-3B0E93E34A08} = {22E0066C-9838-44CE-8BF2-3B0E93E34A08}
 	EndProjectSection

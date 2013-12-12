@@ -13,7 +13,7 @@ namespace space{
 
 			class RenderSystemRayTrace : public RenderSystemOpenGL{
 			public:
-				RenderSystemRayTrace(HWND hWnd);
+				RenderSystemRayTrace(HWND hWnd,uint width,uint height);
 				~RenderSystemRayTrace();
 
 				void Resize(int width, int height);
@@ -29,7 +29,10 @@ namespace space{
 				virtual void DrawMesh(const Mesh& mesh);
 				virtual void DrawSolidMesh(const Mesh& mesh);
 				virtual void DrawWiredMesh(const Mesh& mesh);
-				virtual void DrawScene(Scene&);
+				virtual void DrawScene(Scene&); 
+				virtual void DrawSphere(float r);
+				virtual void DrawCube(float a, float b, float c);
+				virtual void DrawPlane(Vector3 normal);
 			private:
 				class RayTracer;
 

@@ -20,7 +20,7 @@ namespace space{
 	IGame* GetGame();
 
 	template< RenderSystemType >
-	int SetupRenderDevice();
+	int SetupRenderDevice(uint width,uint height);
 
 	void DrawAxis();
 }

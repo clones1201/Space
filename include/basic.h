@@ -420,15 +420,16 @@ namespace space{
 					if (ori.m[i * 4] != 0) break;
 				}
 				Vector4 temp(ori.m[0], ori.m[1], ori.m[2], ori.m[3]);
-				ori.m[0] = ori.m[i * 4];
-				ori.m[1] = ori.m[i * 4 + 1];
-				ori.m[2] = ori.m[i * 4 + 2];
-				ori.m[3] = ori.m[i * 4 + 3];
+				Vector4 tempInv(inv.m[0], inv.m[1], inv.m[2], inv.m[3]);
+				ori.m[0] = ori.m[i * 4]; inv.m[0] = inv.m[i * 4];
+				ori.m[1] = ori.m[i * 4 + 1]; inv.m[1] = inv.m[i * 4 + 1];
+				ori.m[2] = ori.m[i * 4 + 2]; inv.m[2] = inv.m[i * 4 + 2];
+				ori.m[3] = ori.m[i * 4 + 3]; inv.m[3] = inv.m[i * 4 + 3];
 
-				ori.m[i * 4 + 0] = temp.x;
-				ori.m[i * 4 + 1] = temp.y;
-				ori.m[i * 4 + 2] = temp.z;
-				ori.m[i * 4 + 3] = temp.w;
+				ori.m[i * 4 + 0] = temp.x; inv.m[i * 4 + 0] = tempInv.x;
+				ori.m[i * 4 + 1] = temp.y; inv.m[i * 4 + 1] = tempInv.y;
+				ori.m[i * 4 + 2] = temp.z; inv.m[i * 4 + 2] = tempInv.z;
+				ori.m[i * 4 + 3] = temp.w; inv.m[i * 4 + 3] = tempInv.w;
 			}
 			// upper right triangle
 			float d = ori.m[4] / ori.m[0];
@@ -453,15 +454,16 @@ namespace space{
 					if (ori.m[i * 4] != 0) break;
 				}
 				Vector4 temp(ori.m[4], ori.m[5], ori.m[6], ori.m[7]);
-				ori.m[4] = ori.m[i * 4];
-				ori.m[5] = ori.m[i * 4 + 1];
-				ori.m[6] = ori.m[i * 4 + 2];
-				ori.m[7] = ori.m[i * 4 + 3];
+				Vector4 tempInv(inv.m[4], inv.m[5], inv.m[6], inv.m[7]);
+				ori.m[4] = ori.m[i * 4]; inv.m[4] = inv.m[i * 4];
+				ori.m[5] = ori.m[i * 4 + 1]; inv.m[5] = inv.m[i * 4 + 1];
+				ori.m[6] = ori.m[i * 4 + 2]; inv.m[6] = inv.m[i * 4 + 2];
+				ori.m[7] = ori.m[i * 4 + 3]; inv.m[7] = inv.m[i * 4 + 3];
 
-				ori.m[i * 4 + 0] = temp.x;
-				ori.m[i * 4 + 1] = temp.y;
-				ori.m[i * 4 + 2] = temp.z;
-				ori.m[i * 4 + 3] = temp.w;
+				ori.m[i * 4 + 0] = temp.x; inv.m[i * 4 + 0] = tempInv.x;
+				ori.m[i * 4 + 1] = temp.y; inv.m[i * 4 + 1] = tempInv.y;
+				ori.m[i * 4 + 2] = temp.z; inv.m[i * 4 + 2] = tempInv.z;
+				ori.m[i * 4 + 3] = temp.w; inv.m[i * 4 + 3] = tempInv.w;
 			}
 			d = ori.m[9] / ori.m[5];
 			ori.m[8] = 0; inv.m[8] -= inv.m[4] * d;
@@ -476,19 +478,20 @@ namespace space{
 
 			if (ori.m[10] == 0){
 				uint i;
-				if (ori.m[14] != 0){
-					i = 2;
-					Vector4 temp(ori.m[8], ori.m[9], ori.m[10], ori.m[11]);
-					ori.m[8] = ori.m[i * 4];
-					ori.m[9] = ori.m[i * 4 + 1];
-					ori.m[10] = ori.m[i * 4 + 2];
-					ori.m[11] = ori.m[i * 4 + 3];
-
-					ori.m[i * 4 + 0] = temp.x;
-					ori.m[i * 4 + 1] = temp.y;
-					ori.m[i * 4 + 2] = temp.z;
-					ori.m[i * 4 + 3] = temp.w;
+				for (i = 1; i < 3; i++){
+					if (ori.m[i * 4] != 0) break;
 				}
+				Vector4 temp(ori.m[8], ori.m[9], ori.m[10], ori.m[11]);
+				Vector4 tempInv(inv.m[8], inv.m[9], inv.m[10], inv.m[11]);
+				ori.m[8] = ori.m[i * 4]; inv.m[8] = inv.m[i * 4];
+				ori.m[9] = ori.m[i * 4 + 1]; inv.m[9] = inv.m[i * 4 + 1];
+				ori.m[10] = ori.m[i * 4 + 2]; inv.m[10] = inv.m[i * 4 + 2];
+				ori.m[11] = ori.m[i * 4 + 3]; inv.m[11] = inv.m[i * 4 + 3];
+
+				ori.m[i * 4 + 0] = temp.x; inv.m[i * 4 + 0] = tempInv.x;
+				ori.m[i * 4 + 1] = temp.y; inv.m[i * 4 + 1] = tempInv.y;
+				ori.m[i * 4 + 2] = temp.z; inv.m[i * 4 + 2] = tempInv.z;
+				ori.m[i * 4 + 3] = temp.w; inv.m[i * 4 + 3] = tempInv.w;
 			}
 			d = ori.m[14] / ori.m[10];
 			ori.m[12] = 0; inv.m[12] -= inv.m[8] * d;
@@ -602,25 +605,44 @@ namespace space{
 		class RGBColor{
 		public:
 			uchar r, g, b;
-			explicit RGBColor(Color &c) :r(255 * c.r), g(255 * c.g), b(255 * c.b){}
+			explicit RGBColor(Color &c){ 
+				r = c.r > 1.0f ? 255 : c.r * 255;
+				g = c.g > 1.0f ? 255 : c.g * 255;
+				b = c.b > 1.0f ? 255 : c.b * 255;
+			}
 		};
 		typedef shared_ptr<RGBColor> RGBColor_ptr;
 		class RGBAColor{
 		public:
 			uchar r, g, b, a;
-			explicit RGBAColor(Color &c) :r(255 * c.r), g(255 * c.g), b(255 * c.b), a(255 * c.a){}
+			explicit RGBAColor(Color &c){
+				r = c.r > 1.0f ? 255 : c.r * 255;
+				g = c.g > 1.0f ? 255 : c.g * 255;
+				b = c.b > 1.0f ? 255 : c.b * 255;
+				a = c.a > 1.0f ? 255 : c.a * 255;
+			}
 		};
 		typedef shared_ptr<RGBAColor> RGBAColor_ptr;
 		class ARGBColor{
 		public:
 			uchar a, r, g, b;
-			explicit ARGBColor(Color &c) :r(255 * c.r), g(255 * c.g), b(255 * c.b), a(255 * c.a){}
+			explicit ARGBColor(Color &c){
+				r = c.r > 1.0f ? 255 : c.r * 255;
+				g = c.g > 1.0f ? 255 : c.g * 255;
+				b = c.b > 1.0f ? 255 : c.b * 255;
+				a = c.a > 1.0f ? 255 : c.a * 255;
+			}
 		};
 		typedef shared_ptr<ARGBColor> ARGBColor_ptr;
 		class ABGRColor{
 		public:
 			uchar a, b, g, r;
-			explicit ABGRColor(Color &c) :r(255 * c.r), g(255 * c.g), b(255 * c.b), a(255 * c.a){}
+			explicit ABGRColor(Color &c){
+				r = c.r > 1.0f ? 255 : c.r * 255;
+				g = c.g > 1.0f ? 255 : c.g * 255;
+				b = c.b > 1.0f ? 255 : c.b * 255;
+				a = c.a > 1.0f ? 255 : c.a * 255;
+			}
 		};
 		typedef shared_ptr<ABGRColor> ABGRColor_ptr;
 		struct Ray{
@@ -680,10 +702,11 @@ namespace space{
 		public:
 			Color ambient;
 			Color diffuse;
-			Color Specular;
+			Color specular;
 			float ka, kd, ks;
 			uint n;
-			Material() :ka(0), kd(0), ks(0), n(1){}
+			float reflect;
+			Material() :ka(0), kd(0), ks(0), n(1), reflect(0){}
 		};
 		typedef shared_ptr<Material> Material_ptr;
 
