@@ -28,7 +28,7 @@ ostream& operator<<(ostream &out, const Vector4 &vec){
 }
 
 int main(){
-	return SetupRenderDevice<RS_OGL>();
+	return SetupRenderDevice<RS_OGL>(550,550);
 }
 
 shared_ptr<float> vtx;

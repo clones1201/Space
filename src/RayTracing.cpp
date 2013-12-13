@@ -4,7 +4,7 @@ namespace space{
 	namespace graphic{
 		namespace raytrace{
 			const float kEpsilon = 0.001;
-			
+
 			class Shader{
 			public:
 				Vector3 normal;
@@ -13,13 +13,13 @@ namespace space{
 
 				Ray ray;
 				bool hitAnObject;
-				
+
 				Material material;
 				//Color color;
 
 				float u, v;
 				uint texId;
-				Shader():hitAnObject(false),material(){}
+				Shader() :hitAnObject(false), material(){}
 			};
 
 			class Primitive : public Object{
@@ -28,7 +28,7 @@ namespace space{
 				Material_ptr material;
 			public:
 				Primitive(Material_ptr ptr) :material(ptr){};
-				virtual bool Hit(Ray ,float&, Shader&) = 0;
+				virtual bool Hit(Ray, float&, Shader&) = 0;
 			};
 
 			typedef shared_ptr<Primitive> Primitive_ptr;
@@ -37,14 +37,14 @@ namespace space{
 				float r;
 				Vector3 centre;
 			public:
-				Sphere( Material_ptr m, float r = 1, Vector3 centre = Vector3(0, 0, 0)) :
-					Primitive(m),r(r),centre(centre){}
-				bool Hit(Ray ray,float&tmin, Shader& sd){
+				Sphere(Material_ptr m, float r = 1, Vector3 centre = Vector3(0, 0, 0)) :
+					Primitive(m), r(r), centre(centre){}
+				bool Hit(Ray ray, float&tmin, Shader& sd){
 					float t;
 					sd.hitAnObject = false;
 					Vector3 temp = ray.ori - centre;
-					float a = Vec3Dot( ray.dir , ray.dir);
-					float b = 2.0 * Vec3Dot(temp , ray.dir);
+					float a = Vec3Dot(ray.dir, ray.dir);
+					float b = 2.0 * Vec3Dot(temp, ray.dir);
 					float c = Vec3Dot(temp, temp) - r * r;
 					float disc = b * b - 4 * a * c;
 
@@ -87,7 +87,7 @@ namespace space{
 				Vector3 pos;
 			public:
 				Plane(Material_ptr m, Vector3 normal = Vector3(0, 1, 0), Vector3 pos = Vector3(0, 0, 0)) :
-					Primitive(m),normal(normal), pos(pos){}
+					Primitive(m), normal(normal), pos(pos){}
 				bool Hit(Ray ray, float &t, Shader& sd){
 					sd.hitAnObject = false;
 					float fm;
@@ -114,7 +114,7 @@ namespace space{
 				graphic::Triangle tri;
 			public:
 				Triangle(Material_ptr m, const graphic::Triangle &_tri) :
-				Primitive(m),tri(_tri){}
+					Primitive(m), tri(_tri){}
 				bool Hit(Ray ray, float&t, Shader& sd){
 					if (tri.Intersect(ray, t)){
 						sd.hitAnObject = true;
@@ -134,7 +134,7 @@ namespace space{
 				vector<Material_ptr> materials;
 				Material_ptr currentMaterial;
 				PerspectiveCamera_ptr camera;
-				
+
 				Matrix matWorld;
 
 				struct StreamSource{
@@ -142,31 +142,39 @@ namespace space{
 					uint stride;
 					uint size;
 					StreamSource() :ptr(nullptr), stride(0), size(0){}
-				}vertices, normals,texcoords;
-
-				Color Shade(const Shader& sd,const Vector3&wi,/*out*/ Vector3& wo){
-					wo = - sd.ray.dir;
+				}vertices, normals, texcoords;
+								
+				Color Shade(const Shader& sd, const Vector3&wi,/*out*/ Vector3& wo,bool isInshadow){
+					wo = -sd.ray.dir;
 					Material m = sd.material;
 					float ndotwi = Vec3Dot(sd.normal, wi);
-					Vector3 r =  - wi + sd.normal * 2.0 * ndotwi;
-					float rdotwo = Vec3Dot(r,wo);
+					Vector3 r = -wi + sd.normal * 2.0 * ndotwi;
+					float rdotwo = Vec3Dot(r, wo); 
+					Color ls;
+					if (isInshadow){
+						ls = Color(0.3f, 0.3f, 0.3f, 0.3f);
+					}
+					else{
+						ls = Color(1.0f, 1.0f, 1.0f, 1.0f);
+					}
 					/* Ambien */
-					Color ambient = m.ambient * m.ka;
+					Color ambient = ls * (m.ambient + m.diffuse) * m.ka;
 					Color lambertian, Glossy, Reflect;
+
 					if (ndotwi > 0.01){
 						/* Lambertian */
-						lambertian = m.diffuse * m.kd * ndotwi;
+						lambertian = ls * m.diffuse * m.kd * ndotwi;
 						/* Glossy */
-						Glossy = m.specular * m.ks * powf(rdotwo,sd.material.n);						
+						Glossy = ls * m.specular * m.ks * powf(rdotwo, sd.material.n);
 					}
-					return ambient + lambertian + Glossy; 
+					return ambient + lambertian + Glossy;
 				}
 
 				Color Trace(const vector<Primitive_ptr> &prims, Ray ray, uint depth){
 					if (depth == 0)
 						return black;
 
-					float t,tmin = INFINITY;
+					float t, tmin = INFINITY;
 					Shader sd;
 					for (uint i = 0; i < prims.size(); i++){
 						Shader sdt;
@@ -179,30 +187,44 @@ namespace space{
 					}
 					if (sd.hitAnObject){
 						if (t > 5000) return black;
-						
+
 						Matrix matView = camera->GetModelViewMatrix();
-						Vector3 lightpos = Vec3Transform( matView ,Vector4(0, 2, 2));
+						Vector3 lightpos = Vec3Transform(matView, Vector4(0, 2, 2,1));
 						Vector3 wi, wo;
-						wi = Vec3Normalize( lightpos - sd.hitPos );
-						Color color = Shade(sd, wi, wo); 
-						
+						wi = Vec3Normalize(lightpos - sd.hitPos);
+
+						/* Shadow */
+						Ray shadowRay; shadowRay.ori = sd.hitPos;
+						shadowRay.dir = wi;
+
+						bool isInShadow = false;
+						for (uint i = 0; i < prims.size(); i++){
+							if (prims[i]->Hit(shadowRay, t, Shader())){
+								isInShadow = true;
+								break;
+							}
+						}
+						Color color = Shade(sd,wi,wo,isInShadow);
+
+						/* Reflection */
 						float ndotwo = Vec3Dot(sd.normal, wo);
 						Vector3 r = -wo + sd.normal * 2.0 * ndotwo;
 						Ray rRay;
 						rRay.ori = sd.hitPos; rRay.dir = Vec3Normalize(r);
+
 						return color + sd.material.reflect * Trace(prims, rRay, depth - 1);
 					}
 					else return black;
 				}
 			public:
-				RayTracer() :currentMaterial(new Material){ 
+				RayTracer() :currentMaterial(new Material){
 					currentMaterial->diffuse = gray;
 					currentMaterial->ka = 1.0f;
 					currentMaterial->kd = 0.6f;
 				}
 				~RayTracer(){}
 
-				template< typename T > 
+				template< typename T >
 				void Render(vector<T>& image, uint w, uint h){
 					/* construct accelerate structure */
 
@@ -212,14 +234,14 @@ namespace space{
 					float t, b, l, r;
 					t = 1 * tanf(ToRadian(0.5f * fovy)) + 0.5f;
 					b = -t;
-					l = - (t - b) * aspect * 0.5f;
+					l = -(t - b) * aspect * 0.5f;
 					r = -l;
 					Matrix viewMat = camera->GetModelViewMatrix();
 					for (uint y = 0; y < h; y++){
 						for (uint x = 0; x < w; x++){
 							Ray ray;
 							ray.ori = Vector3((-1 + 2 * x / float(w)) * aspect, -1 + 2 * y / float(h), -1 * zNear);
-							Vector3 dist = Vector3(l + ( r - l) * x / float(w),
+							Vector3 dist = Vector3(l + (r - l) * x / float(w),
 								b + (t - b) * y / float(h),
 								-1 * zNear - 1);
 							ray.dir = dist - ray.ori;
@@ -243,6 +265,8 @@ namespace space{
 				void SetColor(const Color& color){
 					Material_ptr m = Material_ptr(new Material(*currentMaterial.get()));
 					m->diffuse = color;
+					m->ambient = color;
+					m->specular = color;
 					if (materials.end() == find(materials.begin(), materials.end(), m)){
 						materials.push_back(m);
 					}
@@ -251,31 +275,31 @@ namespace space{
 
 				void SetMaterial(const Material& m){
 					currentMaterial = Material_ptr(new Material(m));
-					if ( materials.end() != find(materials.begin(), materials.end(), currentMaterial)){
+					if (materials.end() != find(materials.begin(), materials.end(), currentMaterial)){
 						materials.push_back(currentMaterial);
 					}
 				}
-				/* couldn't decide the interface... 
+				/* couldn't decide the interface...
 				/* seems that Direct3D style have more flexibility,
 				/* but OpenGl style may be easier to implement ...*/
 
-				void SetVertexPointer(uint size, uint stride,const float* vertices){
+				void SetVertexPointer(uint size, uint stride, const float* vertices){
 					RayTracer::vertices.ptr = (float*)vertices;
 					RayTracer::vertices.size = size;
 					RayTracer::vertices.stride = stride;
 				}
-				void SetNormalPointer(uint stride,const float* normals){
-					RayTracer::normals.ptr = (float*) normals;
+				void SetNormalPointer(uint stride, const float* normals){
+					RayTracer::normals.ptr = (float*)normals;
 					RayTracer::normals.size = 3;
 					RayTracer::normals.stride = stride;
 				}
-				void SetTexCoordPointer(uint size, uint stride,const float* texcoords){
+				void SetTexCoordPointer(uint size, uint stride, const float* texcoords){
 					RayTracer::texcoords.ptr = (float*)texcoords;
 					RayTracer::texcoords.size = size;
 					RayTracer::texcoords.stride = stride;
 				}
 				void DrawSphere(float r){
-					Vector3 centre = Vec3Transform(matWorld,Vector4(0, 0, 0, 1));
+					Vector3 centre = Vec3Transform(matWorld, Vector4(0, 0, 0, 1));
 					Primitive_ptr prim = Primitive_ptr(new Sphere(currentMaterial, r, centre));
 					prims.push_back(prim);
 				}
@@ -285,9 +309,9 @@ namespace space{
 					Primitive_ptr prim = Primitive_ptr(new Plane(currentMaterial, normal, position));
 					prims.push_back(prim);
 				}
-				void DrawElements(PrimitiveType type, uint count, uint size,const uint* indices){
+				void DrawElements(PrimitiveType type, uint count, uint size, const uint* indices){
 					// do vertex process here
-					Vector3 o = Vec3Transform( matWorld , Vector4(0, 0, 0, 1));
+					Vector3 o = Vec3Transform(matWorld, Vector4(0, 0, 0, 1));
 					switch (type){
 					case SP_TRIANGLES:
 
@@ -298,9 +322,9 @@ namespace space{
 							uint idx2 = indices[i + 2];
 
 							tri.v0 = Vec3Transform(matWorld,
-								Vector4(((float*)vertices.ptr)[ idx0 * vertices.stride],
-								((float*)vertices.ptr)[ idx0 * vertices.stride + 1],
-								((float*)vertices.ptr)[ idx0 * vertices.stride + 2], 1));
+								Vector4(((float*)vertices.ptr)[idx0 * vertices.stride],
+								((float*)vertices.ptr)[idx0 * vertices.stride + 1],
+								((float*)vertices.ptr)[idx0 * vertices.stride + 2], 1));
 							tri.v1 = Vec3Transform(matWorld,
 								Vector4(((float*)vertices.ptr)[idx1 * vertices.stride],
 								((float*)vertices.ptr)[idx1 * vertices.stride + 1],
@@ -311,15 +335,15 @@ namespace space{
 								((float*)vertices.ptr)[idx2 * vertices.stride + 2], 1));
 
 							if (normals.ptr != nullptr){
-								tri.n0 = Vec3Transform(matWorld, 
+								tri.n0 = Vec3Transform(matWorld,
 									Vector4(((float*)normals.ptr)[idx0 * normals.stride],
 									((float*)normals.ptr)[idx0 * normals.stride + 1],
-									((float*)normals.ptr)[idx0 * normals.stride + 2], 1)) - o ;
-								tri.n1 = Vec3Transform(matWorld, 
+									((float*)normals.ptr)[idx0 * normals.stride + 2], 1)) - o;
+								tri.n1 = Vec3Transform(matWorld,
 									Vector4(((float*)normals.ptr)[idx1 * normals.stride],
-									((float*)normals.ptr)[idx1 * normals.stride + 1], 
+									((float*)normals.ptr)[idx1 * normals.stride + 1],
 									((float*)normals.ptr)[idx1 * normals.stride + 2], 1)) - o;
-								tri.n2 = Vec3Transform(matWorld, 
+								tri.n2 = Vec3Transform(matWorld,
 									Vector4(((float*)normals.ptr)[idx2 * normals.stride],
 									((float*)normals.ptr)[idx2 * normals.stride + 1],
 									((float*)normals.ptr)[idx2 * normals.stride + 2], 1)) - o;
@@ -332,31 +356,32 @@ namespace space{
 									tri.t1 = Vector3(((float*)texcoords.ptr)[idx1 * texcoords.stride],
 										((float*)texcoords.ptr)[idx1 * texcoords.stride + 1],
 										((float*)texcoords.ptr)[idx1 * texcoords.stride + 2]);
-									tri.t2 = Vector3(((float*)texcoords.ptr)[idx2 * texcoords.stride], 
-										((float*)texcoords.ptr)[idx2 * texcoords.stride + 1], 
+									tri.t2 = Vector3(((float*)texcoords.ptr)[idx2 * texcoords.stride],
+										((float*)texcoords.ptr)[idx2 * texcoords.stride + 1],
 										((float*)texcoords.ptr)[idx2 * texcoords.stride + 2]);
 								}
 								else if (texcoords.size == 2){
-									tri.t0 = Vector3(((float*)texcoords.ptr)[idx0 * texcoords.stride], 
-										((float*)texcoords.ptr)[idx0 * texcoords.stride + 1], 0 );
-									tri.t1 = Vector3(((float*)texcoords.ptr)[idx1 * texcoords.stride], 
-										((float*)texcoords.ptr)[idx1 * texcoords.stride + 1], 0 );
-									tri.t2 = Vector3(((float*)texcoords.ptr)[idx2 * texcoords.stride], 
-										((float*)texcoords.ptr)[idx2 * texcoords.stride + 1], 0 );								}
+									tri.t0 = Vector3(((float*)texcoords.ptr)[idx0 * texcoords.stride],
+										((float*)texcoords.ptr)[idx0 * texcoords.stride + 1], 0);
+									tri.t1 = Vector3(((float*)texcoords.ptr)[idx1 * texcoords.stride],
+										((float*)texcoords.ptr)[idx1 * texcoords.stride + 1], 0);
+									tri.t2 = Vector3(((float*)texcoords.ptr)[idx2 * texcoords.stride],
+										((float*)texcoords.ptr)[idx2 * texcoords.stride + 1], 0);
+								}
 							}
-							Primitive_ptr prim(new Triangle(currentMaterial,tri));
+							Primitive_ptr prim(new Triangle(currentMaterial, tri));
 							prims.push_back(prim);
 						}
 					}
 				}
 			};
-			
-			RenderSystemRayTrace::RenderSystemRayTrace(HWND hWnd, uint width, uint height) : RenderSystemOpenGL(hWnd,width,height){
+
+			RenderSystemRayTrace::RenderSystemRayTrace(HWND hWnd, uint width, uint height) : RenderSystemOpenGL(hWnd, width, height){
 				tracer = new RayTracer;
 				glClearColor(0, 0, 0, 1);
 				Material m;
 				m.diffuse = gray; m.kd = 0.6;
-				
+
 			}
 
 			RenderSystemRayTrace::~RenderSystemRayTrace(){
@@ -367,7 +392,7 @@ namespace space{
 				RenderSystem::height = _height;
 				camera->SetAspect(_width / float(_height));
 			}
-			
+
 			void RenderSystemRayTrace::SetColor(const Color& c){
 				tracer->SetColor(c);
 			}
@@ -379,7 +404,7 @@ namespace space{
 			void RenderSystemRayTrace::SetTransform(TransformType type, const Matrix &matWorld){
 
 				Matrix matView = camera->GetModelViewMatrix();
-				
+
 				switch (type){
 				case SP_VIEW:
 
@@ -389,10 +414,10 @@ namespace space{
 			}
 			void RenderSystemRayTrace::Flush(){
 				vector<ABGRColor> image; // low-endian byte order, see http://stackoverflow.com/questions/7786187/opengl-texture-upload-unsigned-byte-vs-unsigned-int-8-8-8-8
-				
+
 				tracer->SetView(*camera);
 				tracer->Render<ABGRColor>(image, RenderSystem::width, RenderSystem::height);
-				
+
 				glClear(GL_COLOR_BUFFER_BIT);
 				glDrawPixels(RenderSystem::width, RenderSystem::height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, image.data());
 				glFlush();
@@ -405,7 +430,7 @@ namespace space{
 				tracer->SetNormalPointer(mesh.GetCompiledVertexSize(), mesh.GetCompiledVertices() + mesh.GetCompiledNormalOffset());
 				tracer->SetTexCoordPointer(mesh.GetTexCoordSize(), mesh.GetCompiledVertexSize(), mesh.GetCompiledVertices() + mesh.GetCompiledTexCoordOffset());
 
-				tracer->DrawElements(SP_TRIANGLES, mesh.GetCompiledIndexCount(),4 ,mesh.GetCompiledIndices());
+				tracer->DrawElements(SP_TRIANGLES, mesh.GetCompiledIndexCount(), 4, mesh.GetCompiledIndices());
 
 			}
 			void RenderSystemRayTrace::DrawWiredMesh(const Mesh& mesh){}

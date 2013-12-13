@@ -14,7 +14,6 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT){
 }
 
 Mesh cube;
- 
 
 void Init(){
 	vector<uint> image;
@@ -45,10 +44,10 @@ void display(){
 	material.ambient = white;
 	material.ka = 0.1;
 
-	material.reflect = 0.2f;
+	material.reflect = 0.3f;
 	GetGame()->GetRenderDevice()->SetMaterial(material);
 
-	GetGame()->GetRenderDevice()->SetColor(black);
+	GetGame()->GetRenderDevice()->SetColor(gray);
 	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(0, -0.5, 0));
 	GetGame()->GetRenderDevice()->DrawPlane(Vector3(0,1,0));
 
@@ -56,7 +55,7 @@ void display(){
 	GetGame()->GetRenderDevice()->SetMaterial(material);
 
 	GetGame()->GetRenderDevice()->SetColor(white);
-	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(0, 0, 1.3));
+	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(0.5, 0, 1.3));
 	GetGame()->GetRenderDevice()->DrawSolidMesh(cube);
 	
 	material.reflect = 0.2f;
@@ -66,7 +65,7 @@ void display(){
 	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(-0.7, 0, 0.7));
 	GetGame()->GetRenderDevice()->DrawSolidMesh(cube);
 
-	material.reflect = 0.9f;
+	material.reflect = 0.3f;
 	GetGame()->GetRenderDevice()->SetMaterial(material);
 	GetGame()->GetRenderDevice()->SetColor(yellow);
 	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(1.0, 0, 0));

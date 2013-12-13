@@ -9,7 +9,7 @@ using namespace space::math;
 
 int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT){
 	UNREFERENCED_PARAMETER(hInst);
-	return SetupRenderDevice<RS_OGL>();
+	return SetupRenderDevice<RS_OGL>(550,550);
 }
 
 vector<Vector3> samples;
