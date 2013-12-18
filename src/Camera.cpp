@@ -101,10 +101,6 @@ namespace space{
 		vRight = Vec3Normalize(Vec3Cross(vl, vUp));
 		vUp = Vec3Normalize(Vec3Cross(vRight, vl));
 
-		ofstream fs("camera.txt", ios_base::app);
-		fs << "eye: (" << vEye.x << "," << vEye.y << "," << vEye.z << ")" << endl;
-		fs << "lookat:(" << lookat.x << ","<< lookat.y << "," << lookat.z << ")" << endl;
-		fs << endl;
 	}
 
 	Matrix PerspectiveCamera::GetMatrix() const {

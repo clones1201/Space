@@ -109,7 +109,7 @@ namespace space{
 				float rdotwo = Vec3Dot(r, wo);
 				Color ls;
 				if (isInshadow){
-					ls = Color(0.1f, 0.1f, 0.1f, 0.1f);
+					ls = Color(0.1f, 0.1f, 0.1f, 1.0f);
 				}
 				else{
 					ls = Color(1.0f, 1.0f, 1.0f, 1.0f);
@@ -171,22 +171,22 @@ namespace space{
 					reflectRay.ori = sd.hitPos; reflectRay.dir = Vec3Normalize(reflect);
 
 					/*Refraction*/
-					Vector3 refract = -wo + -sd.normal * ndotwo * 1.3;
-					Ray refractRay;
-					refractRay.ori = sd.hitPos - 2 * kEpsilon * sd.normal; /* below the surface */
-					refractRay.dir = Vec3Normalize(refract);
-					Shader rsd;
-					/* inside the object, find the way out */
-					for (uint i = 0; i < prims.size(); i++){
-						if (prims[i]->Hit(refractRay, t, rsd)){
-							wo = -refractRay.dir;
-							ndotwo = Vec3Dot(sd.normal, wo);
-							refract = -wo + rsd.normal * ndotwo * 1/1.3;
-							refractRay.ori = rsd.hitPos; 
-							refractRay.dir = Vec3Normalize(refract);
-							break;
-						}
-					}
+					//Vector3 refract = -wo + -sd.normal * ndotwo * 1.3;
+					//Ray refractRay;
+					//refractRay.ori = sd.hitPos - 2 * kEpsilon * sd.normal; /* below the surface */
+					//refractRay.dir = Vec3Normalize(refract);
+					//Shader rsd;
+					///* inside the object, find the way out */
+					//for (uint i = 0; i < prims.size(); i++){
+					//	if (prims[i]->Hit(refractRay, t, rsd)){
+					//		wo = -refractRay.dir;
+					//		ndotwo = Vec3Dot(sd.normal, wo);
+					//		refract = -wo + rsd.normal * ndotwo * 1/1.3;
+					//		refractRay.ori = rsd.hitPos; 
+					//		refractRay.dir = Vec3Normalize(refract);
+					//		break;
+					//	}
+					//}
 					/*Glossy Reflection*/
 
 					/* Indirect illumination */
@@ -258,13 +258,13 @@ namespace space{
 			}
 			void RenderSystemRayTrace::RayTracer::DrawSphere(float r){
 				Vector3 centre = Vec3Transform(matWorld, Vector4(0, 0, 0, 1));
-				//Primitive_ptr prim = Primitive_ptr(new Sphere(currentMaterial, r, centre));
+
 				prims.push_back(Primitive_ptr(new Sphere(currentMaterial, r, centre)));
 			}
 			void RenderSystemRayTrace::RayTracer::DrawPlane(Vector3 normal){
 				Vector3 position = Vec3Transform(matWorld, Vector4(0, 0, 0, 1));
 				normal = Vec3Transform(matWorld, Vector4(normal)) - position;
-				//Primitive_ptr prim = Primitive_ptr(new Plane(currentMaterial, normal, position));
+
 				prims.push_back(Primitive_ptr(new Plane(currentMaterial, normal, position)));
 			}
 			void RenderSystemRayTrace::RayTracer::DrawElements(PrimitiveType type, uint count, uint size, const uint* indices){

@@ -109,11 +109,11 @@ namespace space{
 					b = -t;
 					l = -(t - b) * aspect * 0.5f;
 					r = -l;
-					//Matrix viewMat = camera->GetModelViewMatrix();
+					Matrix viewMat = camera->GetModelViewMatrix();
 					for (uint y = 0; y < height; y++){
 						for (uint x = 0; x < width; x++){
 							Ray ray;
-							ray.ori = Vector3(-1 + 2 * x / float(width) * aspect, -1 + 2 * y / float(height), -1 * zNear);
+							ray.ori = Vector3((-1 + 2 * x / float(width)) * aspect, -1 + 2 * y / float(height), -1 * zNear);
 							Vector3 dist = Vector3(l + (r - l) * x / float(width),
 								b + (t - b) * y / float(height),
 								-1 * zNear - 1);
@@ -123,6 +123,9 @@ namespace space{
 							image.push_back(T(color));
 						}
 					}
+
+					prims.clear();
+					materials.clear();
 
 					/* make every pixel become the average of 8 pixels round it
 					/* not a good way to anti-artifact, make the picture blur 
@@ -155,8 +158,6 @@ namespace space{
 							image[x + y *width] = T(aver);
 						}
 					}*/
-					prims.clear();
-					materials.clear();
 				}
 				void SetView(const PerspectiveCamera&camera);
 

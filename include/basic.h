@@ -83,11 +83,11 @@ namespace space{
 		}
 
 		/*inline float2 Vec2Cross(const float2& p1, const float2& p2){
-			return float2(
-			(p1.y * p2.z - p1.z * p2.y),
-			(p1.z * p2.x - p1.x * p2.z),
-			p1.x * p2.y - p1.y * p2.x);
-			}*/
+		return float2(
+		(p1.y * p2.z - p1.z * p2.y),
+		(p1.z * p2.x - p1.x * p2.z),
+		p1.x * p2.y - p1.y * p2.x);
+		}*/
 
 		inline float Vec2Dot(const float2& p1, const float2& p2){
 			return (p1.x * p2.x + p1.y * p2.y);
@@ -605,9 +605,7 @@ namespace space{
 		class RGBColor{
 		public:
 			uchar r, g, b;
-			RGBColor() :r(0), g(0), b(0){}
-			RGBColor(uchar r, uchar g, uchar b) :r(r), g(g), b(b){}
-			explicit RGBColor(Color &c){ 
+			explicit RGBColor(Color &c){
 				r = c.r > 1.0f ? 255 : c.r * 255;
 				g = c.g > 1.0f ? 255 : c.g * 255;
 				b = c.b > 1.0f ? 255 : c.b * 255;
@@ -616,9 +614,7 @@ namespace space{
 		typedef shared_ptr<RGBColor> RGBColor_ptr;
 		class RGBAColor{
 		public:
-			uchar r, g, b, a; 
-			RGBAColor() :r(0), g(0), b(0), a(1){}
-			RGBAColor(uchar r, uchar g, uchar b,uchar a) :r(r), g(g), b(b),a(a){}
+			uchar r, g, b, a;
 			explicit RGBAColor(Color &c){
 				r = c.r > 1.0f ? 255 : c.r * 255;
 				g = c.g > 1.0f ? 255 : c.g * 255;
@@ -629,9 +625,7 @@ namespace space{
 		typedef shared_ptr<RGBAColor> RGBAColor_ptr;
 		class ARGBColor{
 		public:
-			uchar a, r, g, b; 
-			ARGBColor() :r(0), g(0), b(0), a(1){}
-			ARGBColor(uchar r, uchar g, uchar b, uchar a) :r(r), g(g), b(b), a(a){}
+			uchar a, r, g, b;
 			explicit ARGBColor(Color &c){
 				r = c.r > 1.0f ? 255 : c.r * 255;
 				g = c.g > 1.0f ? 255 : c.g * 255;
@@ -642,10 +636,7 @@ namespace space{
 		typedef shared_ptr<ARGBColor> ARGBColor_ptr;
 		class ABGRColor{
 		public:
-			uchar a, b, g, r; 
-			ABGRColor() :r(0), g(0), b(0), a(1){}
-			//ABGRColor(uint r, uint g, uint b, uint a) :r(r), g(g), b(b), a(a){}
-			ABGRColor(uchar r, uchar g, uchar b, uchar a) :r(r), g(g), b(b), a(a){}
+			uchar a, b, g, r;
 			explicit ABGRColor(Color &c){
 				r = c.r > 1.0f ? 255 : c.r * 255;
 				g = c.g > 1.0f ? 255 : c.g * 255;
@@ -714,7 +705,7 @@ namespace space{
 			Color specular;
 			float ka, kd, ks;
 			uint n;
-			float reflect, refract;
+			float reflect,refract;
 			Material() :ka(0), kd(0), ks(0), n(1), reflect(0){}
 		};
 		typedef shared_ptr<Material> Material_ptr;
@@ -722,7 +713,7 @@ namespace space{
 		class Sampler;
 		typedef shared_ptr<Sampler> Sampler_ptr;
 
-		class Sample: public Pattern::Singleton<Sample>{
+		class Sample : public Pattern::Singleton<Sample>{
 		private:
 			Sampler_ptr sampler;
 		protected:
