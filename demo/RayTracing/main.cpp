@@ -17,7 +17,7 @@ Mesh cube;
 
 void Init(){
 	vector<uint> image;
-
+	
 	Vector3 eye(1,1,-2), lookat(0, 0, 0);
 	PerspectiveCamera camera(eye, lookat - eye);
 	GetGame()->GetRenderDevice()->SetView(camera);
@@ -44,39 +44,44 @@ void display(){
 	material.ambient = white;
 	material.ka = 0.1;
 
-	material.reflect = 0.2f;
+	material.reflect = 0.5f;
 	material.refract = 0.0f;
+	material.greflect = 0.0f;
 	GetGame()->GetRenderDevice()->SetMaterial(material);
 
 	GetGame()->GetRenderDevice()->SetColor(gray);
 	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(0, -0.5, 0));
 	GetGame()->GetRenderDevice()->DrawPlane(Vector3(0, 1, 0));
 
-	material.reflect = 0.2f;
+	material.reflect = 0.5f;
 	material.refract = 0.0f;
+	material.greflect = 0.0f;
 	GetGame()->GetRenderDevice()->SetMaterial(material);
 
-	GetGame()->GetRenderDevice()->SetColor(white);
+	GetGame()->GetRenderDevice()->SetColor(yellow);
 	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(0.5, 0, 1.3));
 	GetGame()->GetRenderDevice()->DrawSolidMesh(cube);
 
-	material.reflect = 0.2f;
-	material.refract = 0.0f;
+	material.reflect = 0.5f;
+	material.refract = 0.5f;
+	material.greflect = 0.0f;
 	GetGame()->GetRenderDevice()->SetMaterial(material);
 
 	GetGame()->GetRenderDevice()->SetColor(red);
 	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(-0.7, 0, 0.7));
 	GetGame()->GetRenderDevice()->DrawSolidMesh(cube);
 
-	material.reflect = 0.2f;
-	material.refract = 0.0f;
+	material.reflect = 0.3f;
+	material.refract = 0.8f;
+	material.greflect = 0.0f;
 	GetGame()->GetRenderDevice()->SetMaterial(material);
-	GetGame()->GetRenderDevice()->SetColor(yellow);
+	GetGame()->GetRenderDevice()->SetColor(white);
 	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(1.0, 0, 0));
 	GetGame()->GetRenderDevice()->DrawSphere(0.5);
 
-	material.reflect = 0.2f;
+	material.reflect = 0.5f;
 	material.refract = 0.0f;
+	material.greflect = 0.0f;
 	GetGame()->GetRenderDevice()->SetMaterial(material);
 	GetGame()->GetRenderDevice()->SetColor(green);
 	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(0.0, -0.2, -0.5));

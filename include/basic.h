@@ -43,6 +43,50 @@ namespace space{
 		shared_ptr<T> Singleton<T>::instance;
 	}
 
+	namespace util{
+
+		template< typename T>
+		class BinaryTree : public Object{
+		public:
+			static bool isLeaf() const = 0;
+		}; 
+		 		
+		template< typename T>
+		class BinaryTreeNode : public BinaryTree<T>{
+		private:
+			shared_ptr< BinaryTree< T > > leftChild, rightChild;
+		public:
+			BinaryTreeNode(const BinaryTree<T> &left, const BinaryTree<T> &right){
+				leftChild = BinaryTree<T>(left);
+				rightChild = BinaryTree<T>(right);
+			}
+			BinaryTree* GetLeft() const{
+				return leftChild.get();
+			}
+			BinaryTree* GetRight() const{
+				return rightChild.get();
+			}
+
+			static bool isLeaf() const{
+				return false;
+			}
+		};
+
+		template< typename T>
+		class BinaryTreeLeaf : public BinaryTree{
+		private:
+			T elem;
+		public:
+			BinaryTreeLeaf(const T& elem){
+				elem = T(elem);
+			}
+			static bool isLeaf() const{
+				return true;
+			}
+		};
+
+	}
+
 	namespace math{
 
 		const float Pi = 3.141592654f;
@@ -705,7 +749,7 @@ namespace space{
 			Color specular;
 			float ka, kd, ks;
 			uint n;
-			float reflect,refract;
+			float reflect,refract,greflect;
 			Material() :ka(0), kd(0), ks(0), n(1), reflect(0){}
 		};
 		typedef shared_ptr<Material> Material_ptr;

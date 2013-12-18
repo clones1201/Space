@@ -101,6 +101,29 @@ namespace space{
 				}
 			};
 
+			class BBox {
+			public:
+				Vector3 min, max;
+			};
+
+			using namespace util;
+			class BSPNode : public BinaryTreeNode< vector<Primitive_ptr> >{
+
+			};
+
+			class BSPLeaf : public BinaryTreeLeaf< vector<Primitive_ptr> >{
+
+			};
+
+			const uint maxDepth = 10;
+			const uint maxObjects = 16;
+
+			BSPNode* BuildTree(const vector<Primitive_ptr>& prims){
+				BSPNode *root = new BSPNode();
+				
+
+			}
+
 			Color RenderSystemRayTrace::RayTracer::Shade(const Shader& sd, const Vector3&wi,/*out*/ Vector3& wo, bool isInshadow){
 				wo = -sd.ray.dir;
 				Material m = sd.material;
@@ -169,7 +192,17 @@ namespace space{
 					Vector3 reflect = -wo + sd.normal * 2.0 * ndotwo;
 					Ray reflectRay;
 					reflectRay.ori = sd.hitPos; reflectRay.dir = Vec3Normalize(reflect);
-
+					
+					/*Glossy Reflection*/
+					Color greflectColor;
+					if (depth > 1){
+						for (uint i = 0; i < 10; i++){
+							Vector3 greflect = Sample::Instance()->HemiSphere(-wo + sd.normal * 2.0 * ndotwo, sd.hitPos, 1, sd.material.n) - sd.hitPos;
+							Ray greflectRay;
+							greflectRay.ori = sd.hitPos; greflectRay.dir = Vec3Normalize(greflect);
+							greflectColor = greflectColor + 1 / 10.0 * Trace(prims, greflectRay, 1);
+						}
+					}
 					/*Refraction*/
 					//Vector3 refract = -wo + -sd.normal * ndotwo * 1.3;
 					//Ray refractRay;
@@ -186,8 +219,7 @@ namespace space{
 					//		refractRay.dir = Vec3Normalize(refract);
 					//		break;
 					//	}
-					//}
-					/*Glossy Reflection*/
+					//}					
 
 					/* Indirect illumination */
 					/* using Monte Carlo 
@@ -207,6 +239,7 @@ namespace space{
 
 					return color /*+ indirectIllumination */
 						+ sd.material.reflect * Trace(prims, reflectRay, depth - 1)
+						+ sd.material.greflect * greflectColor
 						/* + sd.material.refract * Trace(prims, refractRay, depth - 1)*/
 						;
 				}
