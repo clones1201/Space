@@ -24,7 +24,7 @@ void Init(){
 
 	samples.resize(1000);
 	for (uint i = 0; i < 1000; i++){
-		samples[i] = Sample::Instance()->HemiSphere(n, o, 0.5,30);
+		samples[i] = Sample::Instance()->HemiSphere(n, o, 0.5,0);
 	}
 
 	glClearColor(0, 0, 0, 1);

@@ -9,17 +9,24 @@ namespace space{
 		protected:
 			vector<Vector2> samples;
 			uint idx;
-		public:
-			Sampler(uint num = 1000):idx(0){
-				samples.resize(num);
-				srand( clock() );
-				for (uint i = 0; i < num; i++){
+			void Init(){
+				srand(clock());
+				for (uint i = 0; i < samples.size(); i++){
 					samples[i] = Vector2(rand() / double(RAND_MAX), rand() / double(RAND_MAX));
 				}
 			}
+		public:
+			Sampler(uint size = 1000):idx(0){
+				samples.resize(size);
+				Init();
+			}
 			Vector2 GetSample(){
 				Vector2 result = samples[idx];
-				idx = (idx + 1) % samples.size();
+				idx++;
+				if (idx > 1000){
+					Init();
+					idx = 0;
+				}
 				return result;
 			}
 		};

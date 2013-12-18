@@ -5,33 +5,6 @@ namespace space{
 		namespace raytrace{
 			const float kEpsilon = 0.001;
 
-			class Shader{
-			public:
-				Vector3 normal;
-				Vector3 hitPos;
-				Vector3 dir;
-
-				Ray ray;
-				bool hitAnObject;
-
-				Material material;
-				//Color color;
-
-				float u, v;
-				uint texId;
-				Shader() :hitAnObject(false), material(){}
-			};
-
-			class Primitive : public Object{
-			protected:
-				//Color color;
-				Material_ptr material;
-			public:
-				Primitive(Material_ptr ptr) :material(ptr){};
-				virtual bool Hit(Ray, float&, Shader&) = 0;
-			};
-
-			typedef shared_ptr<Primitive> Primitive_ptr;
 			class Sphere : public Primitive{
 			private:
 				float r;
@@ -128,254 +101,237 @@ namespace space{
 				}
 			};
 
-			class RenderSystemRayTrace::RayTracer : private Interface{
-			private:
-				vector<Primitive_ptr> prims;
-				vector<Material_ptr> materials;
-				Material_ptr currentMaterial;
-				PerspectiveCamera_ptr camera;
-
-				Matrix matWorld;
-
-				struct StreamSource{
-					void* ptr;
-					uint stride;
-					uint size;
-					StreamSource() :ptr(nullptr), stride(0), size(0){}
-				}vertices, normals, texcoords;
-								
-				Color Shade(const Shader& sd, const Vector3&wi,/*out*/ Vector3& wo,bool isInshadow){
-					wo = -sd.ray.dir;
-					Material m = sd.material;
-					float ndotwi = Vec3Dot(sd.normal, wi);
-					Vector3 r = -wi + sd.normal * 2.0 * ndotwi;
-					float rdotwo = Vec3Dot(r, wo); 
-					Color ls;
-					if (isInshadow){
-						ls = Color(0.3f, 0.3f, 0.3f, 0.3f);
-					}
-					else{
-						ls = Color(1.0f, 1.0f, 1.0f, 1.0f);
-					}
-					/* Ambien */
-					Color ambient = ls * (m.ambient + m.diffuse) * m.ka;
-					Color lambertian, Glossy, Reflect;
-
-					if (ndotwi > 0.01){
-						/* Lambertian */
-						lambertian = ls * m.diffuse * m.kd * ndotwi;
-						/* Glossy */
-						Glossy = ls * m.specular * m.ks * powf(rdotwo, sd.material.n);
-					}
-					return ambient + lambertian + Glossy;
+			Color RenderSystemRayTrace::RayTracer::Shade(const Shader& sd, const Vector3&wi,/*out*/ Vector3& wo, bool isInshadow){
+				wo = -sd.ray.dir;
+				Material m = sd.material;
+				float ndotwi = Vec3Dot(sd.normal, wi);
+				Vector3 r = -wi + sd.normal * 2.0 * ndotwi;
+				float rdotwo = Vec3Dot(r, wo);
+				Color ls;
+				if (isInshadow){
+					ls = Color(0.1f, 0.1f, 0.1f, 0.1f);
 				}
+				else{
+					ls = Color(1.0f, 1.0f, 1.0f, 1.0f);
+				}
+				/* Ambien */
+				Color ambient = ls * (m.ambient + m.diffuse) * m.ka;
+				Color lambertian, Glossy, Reflect;
 
-				Color Trace(const vector<Primitive_ptr> &prims, Ray ray, uint depth){
-					if (depth == 0)
-						return black;
+				if (ndotwi > 0.01){
+					/* Lambertian */
+					lambertian = ls * m.diffuse * m.kd * ndotwi;
+					/* Glossy */
+					Glossy = ls * m.specular * m.ks * powf(rdotwo, sd.material.n);
+				}
+				return ambient + lambertian + Glossy;
+			}
+			Color RenderSystemRayTrace::RayTracer::Trace(const vector<Primitive_ptr> &prims, Ray ray, uint depth){
+				if (depth == 0)
+					return black;
 
-					float t, tmin = INFINITY;
-					Shader sd;
+				float t, tmin = INFINITY;
+				Shader sd;
+				for (uint i = 0; i < prims.size(); i++){
+					Shader sdt;
+
+					/* late, change it to a BSP tree */
+					if (prims[i]->Hit(ray, t, sdt)){
+						if (t < tmin){
+							sd = sdt;
+							tmin = t;
+						}
+					}
+				}
+				if (sd.hitAnObject){
+					if (t > 5000) return black;
+
+					Matrix matView = camera->GetModelViewMatrix();
+					Vector3 lightpos = Vec3Transform(matView, Vector4(0, 2, 2, 1));
+					Vector3 wi, wo;
+					wi = Vec3Normalize(lightpos - sd.hitPos);
+
+					/* Shadow */
+					Ray shadowRay; shadowRay.ori = sd.hitPos;
+					shadowRay.dir = wi;
+
+					bool isInShadow = false;
 					for (uint i = 0; i < prims.size(); i++){
-						Shader sdt;
-						if (prims[i]->Hit(ray, t, sdt)){
-							if (t < tmin){
-								sd = sdt;
-								tmin = t;
-							}
+						if (prims[i]->Hit(shadowRay, t, Shader())){
+							isInShadow = true;
+							break;
 						}
 					}
-					if (sd.hitAnObject){
-						if (t > 5000) return black;
+					Color color = Shade(sd, wi, wo, isInShadow);
 
-						Matrix matView = camera->GetModelViewMatrix();
-						Vector3 lightpos = Vec3Transform(matView, Vector4(0, 2, 2,1));
-						Vector3 wi, wo;
-						wi = Vec3Normalize(lightpos - sd.hitPos);
+					/* Reflection */
+					float ndotwo = Vec3Dot(sd.normal, wo);
+					Vector3 reflect = -wo + sd.normal * 2.0 * ndotwo;
+					Ray reflectRay;
+					reflectRay.ori = sd.hitPos; reflectRay.dir = Vec3Normalize(reflect);
 
-						/* Shadow */
-						Ray shadowRay; shadowRay.ori = sd.hitPos;
-						shadowRay.dir = wi;
-
-						bool isInShadow = false;
-						for (uint i = 0; i < prims.size(); i++){
-							if (prims[i]->Hit(shadowRay, t, Shader())){
-								isInShadow = true;
-								break;
-							}
-						}
-						Color color = Shade(sd,wi,wo,isInShadow);
-
-						/* Reflection */
-						float ndotwo = Vec3Dot(sd.normal, wo);
-						Vector3 r = -wo + sd.normal * 2.0 * ndotwo;
-						Ray rRay;
-						rRay.ori = sd.hitPos; rRay.dir = Vec3Normalize(r);
-
-						return color + sd.material.reflect * Trace(prims, rRay, depth - 1);
-					}
-					else return black;
-				}
-			public:
-				RayTracer() :currentMaterial(new Material){
-					currentMaterial->diffuse = gray;
-					currentMaterial->ka = 1.0f;
-					currentMaterial->kd = 0.6f;
-				}
-				~RayTracer(){}
-
-				template< typename T >
-				void Render(vector<T>& image, uint w, uint h){
-					/* construct accelerate structure */
-
-					/*trace the ray*/
-					float fovy, aspect, zNear, zFar;
-					camera->GetPerspective(fovy, aspect, zNear, zFar);
-					float t, b, l, r;
-					t = 1 * tanf(ToRadian(0.5f * fovy)) + 0.5f;
-					b = -t;
-					l = -(t - b) * aspect * 0.5f;
-					r = -l;
-					Matrix viewMat = camera->GetModelViewMatrix();
-					for (uint y = 0; y < h; y++){
-						for (uint x = 0; x < w; x++){
-							Ray ray;
-							ray.ori = Vector3((-1 + 2 * x / float(w)) * aspect, -1 + 2 * y / float(h), -1 * zNear);
-							Vector3 dist = Vector3(l + (r - l) * x / float(w),
-								b + (t - b) * y / float(h),
-								-1 * zNear - 1);
-							ray.dir = dist - ray.ori;
-
-							Color color = Trace(prims, ray, 4);
-							image.push_back(T(color));
+					/*Refraction*/
+					Vector3 refract = -wo + -sd.normal * ndotwo * 1.3;
+					Ray refractRay;
+					refractRay.ori = sd.hitPos - 2 * kEpsilon * sd.normal; /* below the surface */
+					refractRay.dir = Vec3Normalize(refract);
+					Shader rsd;
+					/* inside the object, find the way out */
+					for (uint i = 0; i < prims.size(); i++){
+						if (prims[i]->Hit(refractRay, t, rsd)){
+							wo = -refractRay.dir;
+							ndotwo = Vec3Dot(sd.normal, wo);
+							refract = -wo + rsd.normal * ndotwo * 1/1.3;
+							refractRay.ori = rsd.hitPos; 
+							refractRay.dir = Vec3Normalize(refract);
+							break;
 						}
 					}
+					/*Glossy Reflection*/
 
-					prims.clear();
-					materials.clear();
-				}
-				void SetView(const PerspectiveCamera&camera){
-					RayTracer::camera = PerspectiveCamera_ptr(new PerspectiveCamera(camera));
-				}
+					/* Indirect illumination */
+					/* using Monte Carlo 
+					/* not working good
+					*/
+					/*Color indirectIllumination;
+					Shader isd;
 
-				void SetMatrix(const Matrix& mat){
-					matWorld = mat;
-				}
-
-				void SetColor(const Color& color){
-					Material_ptr m = Material_ptr(new Material(*currentMaterial.get()));
-					m->diffuse = color;
-					m->ambient = color;
-					m->specular = color;
-					if (materials.end() == find(materials.begin(), materials.end(), m)){
-						materials.push_back(m);
-					}
-					currentMaterial = m;
-				}
-
-				void SetMaterial(const Material& m){
-					currentMaterial = Material_ptr(new Material(m));
-					if (materials.end() != find(materials.begin(), materials.end(), currentMaterial)){
-						materials.push_back(currentMaterial);
-					}
-				}
-				/* couldn't decide the interface...
-				/* seems that Direct3D style have more flexibility,
-				/* but OpenGl style may be easier to implement ...*/
-
-				void SetVertexPointer(uint size, uint stride, const float* vertices){
-					RayTracer::vertices.ptr = (float*)vertices;
-					RayTracer::vertices.size = size;
-					RayTracer::vertices.stride = stride;
-				}
-				void SetNormalPointer(uint stride, const float* normals){
-					RayTracer::normals.ptr = (float*)normals;
-					RayTracer::normals.size = 3;
-					RayTracer::normals.stride = stride;
-				}
-				void SetTexCoordPointer(uint size, uint stride, const float* texcoords){
-					RayTracer::texcoords.ptr = (float*)texcoords;
-					RayTracer::texcoords.size = size;
-					RayTracer::texcoords.stride = stride;
-				}
-				void DrawSphere(float r){
-					Vector3 centre = Vec3Transform(matWorld, Vector4(0, 0, 0, 1));
-					Primitive_ptr prim = Primitive_ptr(new Sphere(currentMaterial, r, centre));
-					prims.push_back(prim);
-				}
-				void DrawPlane(Vector3 normal){
-					Vector3 position = Vec3Transform(matWorld, Vector4(0, 0, 0, 1));
-					normal = Vec3Transform(matWorld, Vector4(normal)) - position;
-					Primitive_ptr prim = Primitive_ptr(new Plane(currentMaterial, normal, position));
-					prims.push_back(prim);
-				}
-				void DrawElements(PrimitiveType type, uint count, uint size, const uint* indices){
-					// do vertex process here
-					Vector3 o = Vec3Transform(matWorld, Vector4(0, 0, 0, 1));
-					switch (type){
-					case SP_TRIANGLES:
-
-						for (uint i = 0; i < count; i += 3){
-							graphic::Triangle tri;
-							uint idx0 = indices[i];
-							uint idx1 = indices[i + 1];
-							uint idx2 = indices[i + 2];
-
-							tri.v0 = Vec3Transform(matWorld,
-								Vector4(((float*)vertices.ptr)[idx0 * vertices.stride],
-								((float*)vertices.ptr)[idx0 * vertices.stride + 1],
-								((float*)vertices.ptr)[idx0 * vertices.stride + 2], 1));
-							tri.v1 = Vec3Transform(matWorld,
-								Vector4(((float*)vertices.ptr)[idx1 * vertices.stride],
-								((float*)vertices.ptr)[idx1 * vertices.stride + 1],
-								((float*)vertices.ptr)[idx1 * vertices.stride + 2], 1));
-							tri.v2 = Vec3Transform(matWorld,
-								Vector4(((float*)vertices.ptr)[idx2 * vertices.stride],
-								((float*)vertices.ptr)[idx2 * vertices.stride + 1],
-								((float*)vertices.ptr)[idx2 * vertices.stride + 2], 1));
-
-							if (normals.ptr != nullptr){
-								tri.n0 = Vec3Transform(matWorld,
-									Vector4(((float*)normals.ptr)[idx0 * normals.stride],
-									((float*)normals.ptr)[idx0 * normals.stride + 1],
-									((float*)normals.ptr)[idx0 * normals.stride + 2], 1)) - o;
-								tri.n1 = Vec3Transform(matWorld,
-									Vector4(((float*)normals.ptr)[idx1 * normals.stride],
-									((float*)normals.ptr)[idx1 * normals.stride + 1],
-									((float*)normals.ptr)[idx1 * normals.stride + 2], 1)) - o;
-								tri.n2 = Vec3Transform(matWorld,
-									Vector4(((float*)normals.ptr)[idx2 * normals.stride],
-									((float*)normals.ptr)[idx2 * normals.stride + 1],
-									((float*)normals.ptr)[idx2 * normals.stride + 2], 1)) - o;
-							}
-							if (texcoords.ptr != nullptr){
-								if (texcoords.size == 3){
-									tri.t0 = Vector3(((float*)texcoords.ptr)[idx0 * texcoords.stride],
-										((float*)texcoords.ptr)[idx0 * texcoords.stride + 1],
-										((float*)texcoords.ptr)[idx0 * texcoords.stride + 2]);
-									tri.t1 = Vector3(((float*)texcoords.ptr)[idx1 * texcoords.stride],
-										((float*)texcoords.ptr)[idx1 * texcoords.stride + 1],
-										((float*)texcoords.ptr)[idx1 * texcoords.stride + 2]);
-									tri.t2 = Vector3(((float*)texcoords.ptr)[idx2 * texcoords.stride],
-										((float*)texcoords.ptr)[idx2 * texcoords.stride + 1],
-										((float*)texcoords.ptr)[idx2 * texcoords.stride + 2]);
-								}
-								else if (texcoords.size == 2){
-									tri.t0 = Vector3(((float*)texcoords.ptr)[idx0 * texcoords.stride],
-										((float*)texcoords.ptr)[idx0 * texcoords.stride + 1], 0);
-									tri.t1 = Vector3(((float*)texcoords.ptr)[idx1 * texcoords.stride],
-										((float*)texcoords.ptr)[idx1 * texcoords.stride + 1], 0);
-									tri.t2 = Vector3(((float*)texcoords.ptr)[idx2 * texcoords.stride],
-										((float*)texcoords.ptr)[idx2 * texcoords.stride + 1], 0);
-								}
-							}
-							Primitive_ptr prim(new Triangle(currentMaterial, tri));
-							prims.push_back(prim);
+					if (depth > 3){
+						for (uint i = 0; i < 80; i++){
+							Ray iRay;
+							iRay.ori = sd.hitPos;
+							iRay.dir = Vec3Normalize(Sample::Instance()->HemiSphere(sd.normal, sd.hitPos, 1, 0));
+							indirectIllumination = indirectIllumination + (1 / 80.0) * Trace(prims, iRay, 1);
 						}
+					}*/
+
+					return color /*+ indirectIllumination */
+						+ sd.material.reflect * Trace(prims, reflectRay, depth - 1)
+						/* + sd.material.refract * Trace(prims, refractRay, depth - 1)*/
+						;
+				}
+				else return black;
+			}
+			void RenderSystemRayTrace::RayTracer::SetView(const PerspectiveCamera&camera){
+				RayTracer::camera = PerspectiveCamera_ptr(new PerspectiveCamera(camera));
+			}
+
+			void RenderSystemRayTrace::RayTracer::SetMatrix(const Matrix& mat){
+				matWorld = camera->GetModelViewMatrix() * mat;
+			}
+
+			void RenderSystemRayTrace::RayTracer::SetColor(const Color& color){
+				Material_ptr m = Material_ptr(new Material(*currentMaterial.get()));
+				m->diffuse = color;
+				m->ambient = color;
+				//m->specular = color;
+				if (materials.end() == find(materials.begin(), materials.end(), m)){
+					materials.push_back(m);
+				}
+				currentMaterial = m;
+			}
+
+			void RenderSystemRayTrace::RayTracer::SetMaterial(const Material& m){
+				currentMaterial = Material_ptr(new Material(m));
+				if (materials.end() != find(materials.begin(), materials.end(), currentMaterial)){
+					materials.push_back(currentMaterial);
+				}
+			}
+			/* couldn't decide the interface...
+			/* seems that Direct3D style have more flexibility,
+			/* but OpenGl style may be easier to implement ...*/
+
+			void RenderSystemRayTrace::RayTracer::SetVertexPointer(uint size, uint stride, const float* vertices){
+				RayTracer::vertices.ptr = (float*)vertices;
+				RayTracer::vertices.size = size;
+				RayTracer::vertices.stride = stride;
+			}
+			void RenderSystemRayTrace::RayTracer::SetNormalPointer(uint stride, const float* normals){
+				RayTracer::normals.ptr = (float*)normals;
+				RayTracer::normals.size = 3;
+				RayTracer::normals.stride = stride;
+			}
+			void RenderSystemRayTrace::RayTracer::SetTexCoordPointer(uint size, uint stride, const float* texcoords){
+				RayTracer::texcoords.ptr = (float*)texcoords;
+				RayTracer::texcoords.size = size;
+				RayTracer::texcoords.stride = stride;
+			}
+			void RenderSystemRayTrace::RayTracer::DrawSphere(float r){
+				Vector3 centre = Vec3Transform(matWorld, Vector4(0, 0, 0, 1));
+				//Primitive_ptr prim = Primitive_ptr(new Sphere(currentMaterial, r, centre));
+				prims.push_back(Primitive_ptr(new Sphere(currentMaterial, r, centre)));
+			}
+			void RenderSystemRayTrace::RayTracer::DrawPlane(Vector3 normal){
+				Vector3 position = Vec3Transform(matWorld, Vector4(0, 0, 0, 1));
+				normal = Vec3Transform(matWorld, Vector4(normal)) - position;
+				//Primitive_ptr prim = Primitive_ptr(new Plane(currentMaterial, normal, position));
+				prims.push_back(Primitive_ptr(new Plane(currentMaterial, normal, position)));
+			}
+			void RenderSystemRayTrace::RayTracer::DrawElements(PrimitiveType type, uint count, uint size, const uint* indices){
+				// do vertex process here
+				Vector3 o = Vec3Transform(matWorld, Vector4(0, 0, 0, 1));
+				switch (type){
+				case SP_TRIANGLES:
+
+					for (uint i = 0; i < count; i += 3){
+						graphic::Triangle tri;
+						uint idx0 = indices[i];
+						uint idx1 = indices[i + 1];
+						uint idx2 = indices[i + 2];
+
+						tri.v0 = Vec3Transform(matWorld,
+							Vector4(((float*)vertices.ptr)[idx0 * vertices.stride],
+							((float*)vertices.ptr)[idx0 * vertices.stride + 1],
+							((float*)vertices.ptr)[idx0 * vertices.stride + 2], 1));
+						tri.v1 = Vec3Transform(matWorld,
+							Vector4(((float*)vertices.ptr)[idx1 * vertices.stride],
+							((float*)vertices.ptr)[idx1 * vertices.stride + 1],
+							((float*)vertices.ptr)[idx1 * vertices.stride + 2], 1));
+						tri.v2 = Vec3Transform(matWorld,
+							Vector4(((float*)vertices.ptr)[idx2 * vertices.stride],
+							((float*)vertices.ptr)[idx2 * vertices.stride + 1],
+							((float*)vertices.ptr)[idx2 * vertices.stride + 2], 1));
+
+						if (normals.ptr != nullptr){
+							tri.n0 = Vec3Transform(matWorld,
+								Vector4(((float*)normals.ptr)[idx0 * normals.stride],
+								((float*)normals.ptr)[idx0 * normals.stride + 1],
+								((float*)normals.ptr)[idx0 * normals.stride + 2], 1)) - o;
+							tri.n1 = Vec3Transform(matWorld,
+								Vector4(((float*)normals.ptr)[idx1 * normals.stride],
+								((float*)normals.ptr)[idx1 * normals.stride + 1],
+								((float*)normals.ptr)[idx1 * normals.stride + 2], 1)) - o;
+							tri.n2 = Vec3Transform(matWorld,
+								Vector4(((float*)normals.ptr)[idx2 * normals.stride],
+								((float*)normals.ptr)[idx2 * normals.stride + 1],
+								((float*)normals.ptr)[idx2 * normals.stride + 2], 1)) - o;
+						}
+						if (texcoords.ptr != nullptr){
+							if (texcoords.size == 3){
+								tri.t0 = Vector3(((float*)texcoords.ptr)[idx0 * texcoords.stride],
+									((float*)texcoords.ptr)[idx0 * texcoords.stride + 1],
+									((float*)texcoords.ptr)[idx0 * texcoords.stride + 2]);
+								tri.t1 = Vector3(((float*)texcoords.ptr)[idx1 * texcoords.stride],
+									((float*)texcoords.ptr)[idx1 * texcoords.stride + 1],
+									((float*)texcoords.ptr)[idx1 * texcoords.stride + 2]);
+								tri.t2 = Vector3(((float*)texcoords.ptr)[idx2 * texcoords.stride],
+									((float*)texcoords.ptr)[idx2 * texcoords.stride + 1],
+									((float*)texcoords.ptr)[idx2 * texcoords.stride + 2]);
+							}
+							else if (texcoords.size == 2){
+								tri.t0 = Vector3(((float*)texcoords.ptr)[idx0 * texcoords.stride],
+									((float*)texcoords.ptr)[idx0 * texcoords.stride + 1], 0);
+								tri.t1 = Vector3(((float*)texcoords.ptr)[idx1 * texcoords.stride],
+									((float*)texcoords.ptr)[idx1 * texcoords.stride + 1], 0);
+								tri.t2 = Vector3(((float*)texcoords.ptr)[idx2 * texcoords.stride],
+									((float*)texcoords.ptr)[idx2 * texcoords.stride + 1], 0);
+							}
+						}
+						//Primitive_ptr prim(new Triangle(currentMaterial, tri));
+						prims.push_back(Primitive_ptr(new Triangle(currentMaterial, tri)));
 					}
 				}
-			};
-
+			}
 			RenderSystemRayTrace::RenderSystemRayTrace(HWND hWnd, uint width, uint height) : RenderSystemOpenGL(hWnd, width, height){
 				tracer = new RayTracer;
 				glClearColor(0, 0, 0, 1);
@@ -393,6 +349,10 @@ namespace space{
 				camera->SetAspect(_width / float(_height));
 			}
 
+			void RenderSystemRayTrace::SetView(const PerspectiveCamera& camera){
+				tracer->SetView(camera);
+				RenderSystemOpenGL::SetView(camera);
+			}
 			void RenderSystemRayTrace::SetColor(const Color& c){
 				tracer->SetColor(c);
 			}
@@ -403,12 +363,10 @@ namespace space{
 
 			void RenderSystemRayTrace::SetTransform(TransformType type, const Matrix &matWorld){
 
-				Matrix matView = camera->GetModelViewMatrix();
-
 				switch (type){
 				case SP_VIEW:
 
-					tracer->SetMatrix(matView * matWorld);
+					tracer->SetMatrix(matWorld);
 					break;
 				}
 			}

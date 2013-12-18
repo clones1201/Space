@@ -605,6 +605,8 @@ namespace space{
 		class RGBColor{
 		public:
 			uchar r, g, b;
+			RGBColor() :r(0), g(0), b(0){}
+			RGBColor(uchar r, uchar g, uchar b) :r(r), g(g), b(b){}
 			explicit RGBColor(Color &c){ 
 				r = c.r > 1.0f ? 255 : c.r * 255;
 				g = c.g > 1.0f ? 255 : c.g * 255;
@@ -614,7 +616,9 @@ namespace space{
 		typedef shared_ptr<RGBColor> RGBColor_ptr;
 		class RGBAColor{
 		public:
-			uchar r, g, b, a;
+			uchar r, g, b, a; 
+			RGBAColor() :r(0), g(0), b(0), a(1){}
+			RGBAColor(uchar r, uchar g, uchar b,uchar a) :r(r), g(g), b(b),a(a){}
 			explicit RGBAColor(Color &c){
 				r = c.r > 1.0f ? 255 : c.r * 255;
 				g = c.g > 1.0f ? 255 : c.g * 255;
@@ -625,7 +629,9 @@ namespace space{
 		typedef shared_ptr<RGBAColor> RGBAColor_ptr;
 		class ARGBColor{
 		public:
-			uchar a, r, g, b;
+			uchar a, r, g, b; 
+			ARGBColor() :r(0), g(0), b(0), a(1){}
+			ARGBColor(uchar r, uchar g, uchar b, uchar a) :r(r), g(g), b(b), a(a){}
 			explicit ARGBColor(Color &c){
 				r = c.r > 1.0f ? 255 : c.r * 255;
 				g = c.g > 1.0f ? 255 : c.g * 255;
@@ -636,7 +642,10 @@ namespace space{
 		typedef shared_ptr<ARGBColor> ARGBColor_ptr;
 		class ABGRColor{
 		public:
-			uchar a, b, g, r;
+			uchar a, b, g, r; 
+			ABGRColor() :r(0), g(0), b(0), a(1){}
+			//ABGRColor(uint r, uint g, uint b, uint a) :r(r), g(g), b(b), a(a){}
+			ABGRColor(uchar r, uchar g, uchar b, uchar a) :r(r), g(g), b(b), a(a){}
 			explicit ABGRColor(Color &c){
 				r = c.r > 1.0f ? 255 : c.r * 255;
 				g = c.g > 1.0f ? 255 : c.g * 255;
@@ -705,7 +714,7 @@ namespace space{
 			Color specular;
 			float ka, kd, ks;
 			uint n;
-			float reflect;
+			float reflect, refract;
 			Material() :ka(0), kd(0), ks(0), n(1), reflect(0){}
 		};
 		typedef shared_ptr<Material> Material_ptr;
