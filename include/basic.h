@@ -765,6 +765,42 @@ namespace space{
 		};
 		typedef shared_ptr<Triangle> Triangle_ptr;
 
+		class BBox {
+		public:
+			math::Vector3 bmin, bmax;
+			bool Intersect(Ray ray, float&tmin, float&tmax){
+
+				float ox = ray.ori.x; float oy = ray.ori.y; float oz = ray.ori.z;
+				float dx = ray.dir.x; float dy = ray.dir.y; float dz = ray.dir.z;
+
+				float tx_min, ty_min, tz_min;
+				float tx_max, ty_max, tz_max;
+
+				float a = 1.0 / dx;
+				if (a >= 0){ tx_min = (bmin.x - ox) * a;	tx_max = (bmax.x - ox) * a; }
+				else{ tx_min = (bmax.x - ox) * a;	tx_max = (bmin.x - ox) * a; }
+
+				float b = 1.0 / dy;
+				if (b >= 0){ ty_min = (bmin.y - oy) * b;	ty_max = (bmax.y - oy) * b; }
+				else{ ty_min = (bmax.y - oy) * b;	ty_max = (bmin.y - oy) * b; }
+
+				float c = 1.0 / dz;
+				if (c >= 0){ tz_min = (bmin.z - oz) * c;	tz_max = (bmax.z - oz) * c; }
+				else{ tz_min = (bmax.z - oz) * c;	tz_max = (bmin.z - oz) * c; }
+
+				//find largest entering t value
+				if (tx_min > ty_min){ tmin = tx_min; }
+				else{ tmin = ty_min; }
+				if (tz_min > tmin)		tmin = tz_min;
+				//find smallest exiting t value
+				if (tx_max < ty_max){ tmax = tx_max; }
+				else{ tmax = ty_max; }
+				if (tz_max < tmax)		tmax = tz_max;
+
+				return (tmin < tmax && tmax > 0.001);
+			}
+		};
+
 		class Material{
 		public:
 			Color ambient;

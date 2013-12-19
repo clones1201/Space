@@ -3,9 +3,6 @@
 
 #include "basic.h"
 #include "RenderSystem.h"
-using namespace space;
-using namespace space::math;
-
 
 namespace space{
 	namespace graphic{
@@ -20,7 +17,7 @@ namespace space{
 
 				void SetView(const PerspectiveCamera &);
 				//template <TransformType t>
-				void SetTransform(TransformType type, const Matrix &matWorld);
+				void SetTransform(TransformType type, const math::Matrix &matWorld);
 				void Flush();
 
 				void SetColor(const Color& color);
@@ -33,7 +30,7 @@ namespace space{
 				virtual void DrawScene(Scene&);
 				virtual void DrawSphere(float r);
 				virtual void DrawCube(float a, float b, float c);
-				virtual void DrawPlane(Vector3 normal);
+				virtual void DrawPlane(math::Vector3 normal);
 			private:
 				class RayTracer;
 
@@ -43,9 +40,9 @@ namespace space{
 
 			class Shader{
 			public:
-				Vector3 normal;
-				Vector3 hitPos;
-				Vector3 dir;
+				math::Vector3 normal;
+				math::Vector3 hitPos;
+				math::Vector3 dir;
 
 				Ray ray;
 				bool hitAnObject;
@@ -63,11 +60,37 @@ namespace space{
 				Texture_ptr texture;
 			public:
 				Primitive(Material_ptr mptr, Texture_ptr tptr) :material(mptr),texture(tptr){};
-				virtual bool Hit(Ray, float&, Shader&) = 0;
-				virtual void CalculateBoundsBox(Vector3 &max, Vector3 &min) = 0;
+				virtual bool Intersect(Ray, float&, Shader&) = 0;
+				virtual void CalculateBoundsBox(math::Vector3 &max, math::Vector3 &min) = 0;
 			};
 			typedef shared_ptr<Primitive> Primitive_ptr; 
 			//typedef shared_ptr<Primitive> Primitive_ptr;
+		
+			class BSPNode : public util::BinaryTreeNode< BBox >, public Primitive {
+			public:
+				BSPNode() :Primitive(nullptr, nullptr), util::BinaryTreeNode< BBox >(){}
+				BSPNode(BBox box) :Primitive(nullptr, nullptr), util::BinaryTreeNode< BBox >(box){
+
+				}
+
+				bool Intersect(Ray ray, float&t, Shader& sd);
+
+				void CalculateBoundsBox(math::Vector3 &max, math::Vector3 &min){
+					max = elem.bmax; min = elem.bmin;
+				}
+			};
+
+			class BSPLeaf : public util::BinaryTreeLeaf< BBox >, public Primitive {
+			private:
+				vector<Primitive_ptr> prims;
+			public:
+				BSPLeaf() :Primitive(nullptr, nullptr), util::BinaryTreeLeaf< BBox >(){}
+				BSPLeaf(BBox box, const vector<Primitive_ptr>& prims) :Primitive(nullptr, nullptr), util::BinaryTreeLeaf< BBox >(box), prims(prims){}
+
+				bool Intersect(Ray ray, float&t, Shader& sd);
+			};
+
+			BSPNode* BuildBSPTree(const vector<Primitive_ptr>& prims, uint depth);
 
 			class RenderSystemRayTrace::RayTracer : private Interface{
 			private:
@@ -80,7 +103,7 @@ namespace space{
 
 				PerspectiveCamera_ptr camera;
 
-				Matrix matWorld;
+				math::Matrix matWorld;
 
 				struct StreamSource{
 					void* ptr;
@@ -89,7 +112,7 @@ namespace space{
 					StreamSource() :ptr(nullptr), stride(0), size(0){}
 				}vertices, normals, texcoords;
 
-				Color Shade(const Shader& sd, const Vector3&wi,/*out*/ Vector3& wo, bool isInshadow);
+				Color Shade(const Shader& sd, const math::Vector3&wi,/*out*/ math::Vector3& wo, bool isInshadow);
 
 				Color Trace(const vector<Primitive_ptr> &prims, Ray ray, uint depth);
 
@@ -104,6 +127,7 @@ namespace space{
 				template< typename T >
 				void Render(vector<T>& image, uint width, uint height){
 					/* construct accelerate structure */
+					BuildBSPTree(prims, 10);
 
 					/*trace the ray*/
 					float fovy, aspect, zNear, zFar;
@@ -113,12 +137,12 @@ namespace space{
 					b = -t;
 					l = -(t - b) * aspect * 0.5f;
 					r = -l;
-					Matrix viewMat = camera->GetModelViewMatrix();
+					math::Matrix viewMat = camera->GetModelViewMatrix();
 					for (uint y = 0; y < height; y++){
 						for (uint x = 0; x < width; x++){
 							Ray ray;
-							ray.ori = Vector3((-1 + 2 * x / float(width)) * aspect, -1 + 2 * y / float(height), -1 * zNear);
-							Vector3 dist = Vector3(l + (r - l) * x / float(width),
+							ray.ori = math::Vector3((-1 + 2 * x / float(width)) * aspect, -1 + 2 * y / float(height), -1 * zNear);
+							math::Vector3 dist = math::Vector3(l + (r - l) * x / float(width),
 								b + (t - b) * y / float(height),
 								-1 * zNear - 1);
 							ray.dir = dist - ray.ori;
@@ -165,7 +189,7 @@ namespace space{
 				}
 				void SetView(const PerspectiveCamera&camera);
 
-				void SetMatrix(const Matrix& mat);
+				void SetMatrix(const math::Matrix& mat);
 
 				void SetColor(const Color& color);
 
@@ -175,12 +199,12 @@ namespace space{
 				/* couldn't decide the interface...
 				/* seems that Direct3D style have more flexibility,
 				/* but OpenGl style may be easier to implement ...*/
-
+				
 				void SetVertexPointer(uint size, uint stride, const float* vertices);
 				void SetNormalPointer(uint stride, const float* normals);
 				void SetTexCoordPointer(uint size, uint stride, const float* texcoords);
 				void DrawSphere(float r);
-				void DrawPlane(Vector3 normal);
+				void DrawPlane(math::Vector3 normal);
 				void DrawElements(PrimitiveType type, uint count, uint size, const uint* indices);
 			};
 		}

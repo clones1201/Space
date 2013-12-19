@@ -18,7 +18,6 @@ public:
 	BTreeLeaf(uint _nelm, float _lfe) :BinaryTreeLeaf<uint>(_nelm){
 		leafelem = _lfe;
 	}
-
 };
 
 void BuildTree(BTreeNode **node,uint depth){
@@ -36,8 +35,7 @@ void BuildTree(BTreeNode **node,uint depth){
 
 }
 
-void TravelTree(BTreeNode* node){
-	
+void TravelTree(BTreeNode* node){	
 
 	if (!node->isLeaf()){
 		std::cout << node->GetElem() << " ";

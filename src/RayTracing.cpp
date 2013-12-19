@@ -3,6 +3,8 @@
 namespace space{
 	namespace graphic{
 		namespace raytrace{
+			using namespace math;
+
 			const float kEpsilon = 0.001;
 
 			class Sphere : public Primitive{
@@ -12,7 +14,7 @@ namespace space{
 			public:
 				Sphere(Material_ptr m, Texture_ptr t, float r = 1, Vector3 centre = Vector3(0, 0, 0)) :
 					Primitive(m, t), r(r), centre(centre){}
-				bool Hit(Ray ray, float&tmin, Shader& sd){
+				bool Intersect(Ray ray, float&tmin, Shader& sd){
 					float t;
 					sd.hitAnObject = false;
 					Vector3 temp = ray.ori - centre;
@@ -81,7 +83,7 @@ namespace space{
 			public:
 				Plane(Material_ptr m, Texture_ptr t, Vector3 normal = Vector3(0, 1, 0), Vector3 pos = Vector3(0, 0, 0)) :
 					Primitive(m, t), normal(normal), pos(pos){}
-				bool Hit(Ray ray, float &t, Shader& sd){
+				bool Intersect(Ray ray, float &t, Shader& sd){
 					sd.hitAnObject = false;
 					float fm;
 					if ((fm = Vec3Dot(normal, ray.dir)) == 0){ // parallel to plane
@@ -117,7 +119,7 @@ namespace space{
 			public:
 				Triangle(Material_ptr m, Texture_ptr t, const graphic::Triangle &_tri) :
 					Primitive(m, t), tri(_tri){}
-				bool Hit(Ray ray, float&t, Shader& sd){
+				bool Intersect(Ray ray, float&t, Shader& sd){
 					if (tri.Intersect(ray, t)){
 						sd.hitAnObject = true;
 						sd.normal = (tri.n0 + tri.n1 + tri.n2) / 3; // flat surface
@@ -145,67 +147,34 @@ namespace space{
 				}
 			};
 
-
-			class BBox {
-			public:
-				Vector3 min, max;
-				bool Hit(Ray ray, float&tmin, float&tmax){
-
-					return false;
-				}
-			};
-
-			using namespace util;
-
-			class BSPNode : public BinaryTreeNode< BBox >, public Primitive {
-			public:
-				BSPNode() :Primitive(nullptr, nullptr), BinaryTreeNode< BBox >(){
-
-				}
-
-				bool Hit(Ray ray, float&t, Shader& sd){
-					bool result;
-					float tmax, tmin;
-					if (result = elem.Hit(ray, tmax, tmin)){
-
-						leftChild;
-
-					}
-					return result;
-				}
-
-				void CalculateBoundsBox(Vector3 &max, Vector3 &min){
-					max = elem.max; min = elem.min;
-				}
-			};
-
-			class BSPLeaf : public BinaryTreeLeaf< BBox >, public Primitive {
-			private:
-				vector<Primitive_ptr> prims;
-			public:
-				BSPLeaf() :Primitive(nullptr, nullptr), BinaryTreeLeaf< BBox >(){
-
-				}
-
-				bool Hit(Ray ray, float&t, Shader& sd){
-					bool result;
-					float tmin;
-					for (uint i = 0; i < prims.size(); i++){
-						Shader sdt;
-						if (result = prims[i]->Hit(ray, tmin, sdt)){
-							if (tmin < t){
-								sd = sdt;
-								t = tmin;
-							}
-						}
-					}
-					return result;
-				}
-			};
-
+			
 			const uint maxDepth = 10;
 			const uint maxObjects = 16;
 
+			bool BSPNode::Intersect(Ray ray, float&t, Shader& sd){
+				bool result;
+				float tmax, tmin;
+				if (result = elem.Intersect(ray, tmax, tmin)){
+
+					leftChild;
+
+				}
+				return result;
+			}
+			bool BSPLeaf::Intersect(Ray ray, float&t, Shader& sd){
+				bool result;
+				float tmin;
+				for (uint i = 0; i < prims.size(); i++){
+					Shader sdt;
+					if (result = prims[i]->Intersect(ray, tmin, sdt)){
+						if (tmin < t){
+							sd = sdt;
+							t = tmin;
+						}
+					}
+				}
+				return result;
+			}
 			void BuildTree(BSPNode** node, vector<BBox> bounds,uint depth){
 				*node = (BSPNode*)(new BSPNode());
 
@@ -217,14 +186,15 @@ namespace space{
 
 			BSPNode* BuildBSPTree(const vector<Primitive_ptr>& prims,uint depth){
 				vector<BBox> bounds;
+
 				for (uint i = 0; i < prims.size(); i++){
 					BBox box;
-
+					prims[i]->CalculateBoundsBox(box.bmax, box.bmin);
 					bounds.push_back(box);
 				}
+
 				return new BSPNode;
 			}
-
 
 			Color RenderSystemRayTrace::RayTracer::Shade(const Shader& sd, const Vector3&wi,/*out*/ Vector3& wo, bool isInshadow){
 				wo = -sd.ray.dir;
@@ -269,7 +239,7 @@ namespace space{
 					Shader sdt;
 
 					/* late, change it to a BSP tree */
-					if (prims[i]->Hit(ray, t, sdt)){
+					if (prims[i]->Intersect(ray, t, sdt)){
 						if (t < tmin){
 							sd = sdt;
 							tmin = t;
@@ -290,7 +260,7 @@ namespace space{
 
 					bool isInShadow = false;
 					for (uint i = 0; i < prims.size(); i++){
-						if (prims[i]->Hit(shadowRay, t, Shader())){
+						if (prims[i]->Intersect(shadowRay, t, Shader())){
 							isInShadow = true;
 							break;
 						}
@@ -529,6 +499,7 @@ namespace space{
 				}
 			}
 			void RenderSystemRayTrace::Flush(){
+
 				vector<ABGRColor> image; // low-endian byte order, see http://stackoverflow.com/questions/7786187/opengl-texture-upload-unsigned-byte-vs-unsigned-int-8-8-8-8
 
 				tracer->SetView(*camera);
