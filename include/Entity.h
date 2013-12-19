@@ -29,6 +29,7 @@ namespace space{
 		uint GetHeight() const;
 		Color GetTextureColor(float u, float v)const;
 	}Texture2D,Texture;
+	typedef shared_ptr<Texture> Texture_ptr;
 
 	class Entity : public Object{
 	public:

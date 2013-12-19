@@ -32,9 +32,17 @@ namespace space{
 
 	Color Texture::GetTextureColor(float u, float v)const{
 		/* Texture Wrap Repeat */
-		u = (int(floor(u)) % 2 == 0) ? fmod(u, 1) : 1 - fmod(u, 1);
-		v = (int(floor(v)) % 2 == 0) ? fmod(v, 1) : 1 - fmod(v, 1);
 		
+		u = fmod(u, 1);
+		if (u < 0){
+			u = 1+u;
+		}
+		
+		v = fmod(v, 1);
+		if (v < 0){
+			v = 1+v;
+		}
+
 		uint w = u * width;
 		uint h = v * height;
 

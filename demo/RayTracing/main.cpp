@@ -14,10 +14,29 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT){
 }
 
 Mesh cube;
+Texture tex;
 
 void Init(){
-	vector<uint> image;
-	
+	vector<uchar> chess;
+	chess.resize(400 * 4);
+	for (uint i = 0; i < 20; i++){
+		for (uint j = 0; j < 20; j++){
+			if (i < 10 && j >= 10 || i >= 10 && j < 10){
+				chess[4 * (i * 20 + j)] = 0;
+				chess[4 * (i * 20 + j) + 1] = 0;
+				chess[4 * (i * 20 + j) + 2] = 0;
+				chess[4 * (i * 20 + j) + 3] = 255;
+			}
+			else{
+				chess[4 * (i * 20 + j)] = 255;
+				chess[4 * (i * 20 + j) + 1] = 255;
+				chess[4 * (i * 20 + j) + 2] = 255;
+				chess[4 * (i * 20 + j) + 3] = 255;
+			}
+		}
+	}
+	tex.Load(chess, 20, 20);
+
 	Vector3 eye(1,1,-2), lookat(0, 0, 0);
 	PerspectiveCamera camera(eye, lookat - eye);
 	GetGame()->GetRenderDevice()->SetView(camera);
@@ -48,11 +67,12 @@ void display(){
 	material.refract = 0.0f;
 	material.greflect = 0.0f;
 	GetGame()->GetRenderDevice()->SetMaterial(material);
+	GetGame()->GetRenderDevice()->SetTexture(&tex);
 
 	GetGame()->GetRenderDevice()->SetColor(gray);
 	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(0, -0.5, 0));
 	GetGame()->GetRenderDevice()->DrawPlane(Vector3(0, 1, 0));
-
+	GetGame()->GetRenderDevice()->SetTexture(nullptr);
 	material.reflect = 0.5f;
 	material.refract = 0.0f;
 	material.greflect = 0.0f;
@@ -93,7 +113,8 @@ void display(){
 
 	wostringstream strfps; 
 	static uint fcount = 0;
-	strfps << "Space:Ray Trace " << "fc:" << fcount << "fps " << 1 / dt << "time " << dt << "s";
+	strfps.precision(4);
+	strfps << "Space:Ray Trace "/* << "fc:" << fcount */<<" "<<1 / dt << " fps " << " time:" << dt << "s";
 	
 	GetWindowController()->SetWindowsTitle(strfps.str());
 	fcount++;

@@ -24,8 +24,8 @@ namespace space{
 				void Flush();
 
 				void SetColor(const Color& color);
-
 				void SetMaterial(const Material &m);
+				void SetTexture(Texture*  tex);
 
 				virtual void DrawMesh(const Mesh& mesh);
 				virtual void DrawSolidMesh(const Mesh& mesh);
@@ -51,29 +51,32 @@ namespace space{
 				bool hitAnObject;
 
 				Material material;
-				//Color color;
 
 				float u, v;
-				uint texId;
+				Texture_ptr tex_ptr;
 				Shader() :hitAnObject(false), material(){}
 			};
 
 			class Primitive : public Object{
 			protected:
-				//Color color;
 				Material_ptr material;
+				Texture_ptr texture;
 			public:
-				Primitive(Material_ptr ptr) :material(ptr){};
+				Primitive(Material_ptr mptr, Texture_ptr tptr) :material(mptr),texture(tptr){};
 				virtual bool Hit(Ray, float&, Shader&) = 0;
 			};
-			typedef unique_ptr<Primitive> Primitive_ptr;  /* how to store it in a vector?*/
+			typedef unique_ptr<Primitive> Primitive_ptr; 
 			//typedef shared_ptr<Primitive> Primitive_ptr;
 
 			class RenderSystemRayTrace::RayTracer : private Interface{
 			private:
 				vector<Primitive_ptr> prims;
 				vector<Material_ptr> materials;
+				vector<Texture_ptr> textures;
+
 				Material_ptr currentMaterial;
+				Texture_ptr currentTexture;
+
 				PerspectiveCamera_ptr camera;
 
 				Matrix matWorld;
@@ -165,7 +168,7 @@ namespace space{
 
 				void SetColor(const Color& color);
 
-				void SetTexture(Texture& tex);
+				void SetTexture(Texture* tex);
 
 				void SetMaterial(const Material& m);
 				/* couldn't decide the interface...

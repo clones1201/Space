@@ -10,8 +10,8 @@ namespace space{
 				float r;
 				Vector3 centre;
 			public:
-				Sphere(Material_ptr m, float r = 1, Vector3 centre = Vector3(0, 0, 0)) :
-					Primitive(m), r(r), centre(centre){}
+				Sphere(Material_ptr m,Texture_ptr t, float r = 1, Vector3 centre = Vector3(0, 0, 0)) :
+					Primitive(m,t), r(r), centre(centre){}
 				bool Hit(Ray ray, float&tmin, Shader& sd){
 					float t;
 					sd.hitAnObject = false;
@@ -33,6 +33,11 @@ namespace space{
 							sd.hitPos = ray.ori + t * ray.dir;
 							sd.normal = Vec3Normalize(sd.hitPos - centre);
 							sd.material = *material;
+
+							sd.tex_ptr = texture;
+							sd.u = sd.hitPos.z;
+							sd.v = sd.hitPos.x;
+
 							sd.ray = ray;
 							sd.hitAnObject = true;
 							return true;
@@ -44,7 +49,12 @@ namespace space{
 							tmin = t;
 							sd.hitPos = ray.ori + t * ray.dir;
 							sd.normal = Vec3Normalize(sd.hitPos - centre);
-							sd.material = *material;
+							sd.material = *material; 
+							
+							sd.tex_ptr = texture;
+							sd.u = sd.hitPos.z;
+							sd.v = sd.hitPos.x;
+
 							sd.ray = ray;
 							sd.hitAnObject = true;
 							return true;
@@ -59,8 +69,8 @@ namespace space{
 				Vector3 normal;
 				Vector3 pos;
 			public:
-				Plane(Material_ptr m, Vector3 normal = Vector3(0, 1, 0), Vector3 pos = Vector3(0, 0, 0)) :
-					Primitive(m), normal(normal), pos(pos){}
+				Plane(Material_ptr m,Texture_ptr t, Vector3 normal = Vector3(0, 1, 0), Vector3 pos = Vector3(0, 0, 0)) :
+					Primitive(m,t), normal(normal), pos(pos){}
 				bool Hit(Ray ray, float &t, Shader& sd){
 					sd.hitAnObject = false;
 					float fm;
@@ -77,6 +87,11 @@ namespace space{
 					sd.hitPos = ray.ori + ray.dir * r1 + kEpsilon * sd.normal;
 					t = r1;
 					sd.material = *material;
+
+					sd.tex_ptr = texture;
+					sd.u = sd.hitPos.z;
+					sd.v = sd.hitPos.x;
+
 					sd.ray = ray;
 					return true;
 				}
@@ -86,14 +101,19 @@ namespace space{
 			private:
 				graphic::Triangle tri;
 			public:
-				Triangle(Material_ptr m, const graphic::Triangle &_tri) :
-					Primitive(m), tri(_tri){}
+				Triangle(Material_ptr m,Texture_ptr t, const graphic::Triangle &_tri) :
+					Primitive(m,t), tri(_tri){}
 				bool Hit(Ray ray, float&t, Shader& sd){
 					if (tri.Intersect(ray, t)){
 						sd.hitAnObject = true;
-						sd.normal = (tri.n0 + tri.n1 + tri.n2) / 3;
+						sd.normal = (tri.n0 + tri.n1 + tri.n2) / 3; // flat surface
 						sd.hitPos = ray.ori + t * ray.dir + kEpsilon * sd.normal;
 						sd.material = *material;
+						sd.tex_ptr = texture;
+
+						sd.u = (tri.t0.x + tri.t1.x + tri.t2.x) / 3;
+						sd.v = (tri.t0.y + tri.t1.y + tri.t2.y) / 3;
+						
 						sd.ray = ray;
 						return true;
 					}
@@ -138,12 +158,20 @@ namespace space{
 					ls = Color(1.0f, 1.0f, 1.0f, 1.0f);
 				}
 				/* Ambien */
-				Color ambient = ls * (m.ambient + m.diffuse) * m.ka;
+				Color ambient = ls * m.ambient * m.ka;
 				Color lambertian, Glossy, Reflect;
 
+				Color color;
+				if (sd.tex_ptr.get() == nullptr){
+					color = m.diffuse;
+				}
+				else{
+					color = sd.tex_ptr->GetTextureColor(sd.u, sd.v);
+				}
+			
 				if (ndotwi > 0.01){
 					/* Lambertian */
-					lambertian = ls * m.diffuse * m.kd * ndotwi;
+					lambertian = ls * color * m.kd * ndotwi;
 					/* Glossy */
 					Glossy = ls * m.specular * m.ks * powf(rdotwo, sd.material.n);
 				}
@@ -195,14 +223,14 @@ namespace space{
 					
 					/*Glossy Reflection*/
 					Color greflectColor;
-					if (depth > 1){
+					/*if (depth > 1){
 						for (uint i = 0; i < 90; i++){
 							Vector3 greflect = Sample::Instance()->HemiSphere(-wo + sd.normal * 2.0 * ndotwo, sd.hitPos, 1, sd.material.n) - sd.hitPos;
 							Ray greflectRay;
 							greflectRay.ori = sd.hitPos; greflectRay.dir = Vec3Normalize(greflect);
 							greflectColor = greflectColor + 1 / 90.0 * Trace(prims, greflectRay, 1);
 						}
-					}
+					}*/
 					/*Refraction*/
 					//Vector3 refract = -wo + -sd.normal * ndotwo * 1.3;
 					//Ray refractRay;
@@ -225,7 +253,7 @@ namespace space{
 					/* using Monte Carlo 
 					/* not working good
 					*/
-					Color indirectIllumination;
+					/*Color indirectIllumination;
 					Shader isd;
 
 					if (depth > 1){
@@ -235,9 +263,9 @@ namespace space{
 							iRay.dir = Vec3Normalize(Sample::Instance()->HemiSphere(sd.normal, sd.hitPos, 1, 0));
 							indirectIllumination = indirectIllumination + (1 / 90.0) * Trace(prims, iRay, 1);
 						}
-					}
+					}*/
 
-					return color + 0.5f * indirectIllumination 
+					return color/* + 0.5f * indirectIllumination */
 						+ sd.material.reflect * Trace(prims, reflectRay, depth - 1)
 						+ sd.material.greflect * greflectColor
 						/* + sd.material.refract * Trace(prims, refractRay, depth - 1)*/
@@ -270,6 +298,17 @@ namespace space{
 					materials.push_back(currentMaterial);
 				}
 			}
+
+			void RenderSystemRayTrace::RayTracer::SetTexture(Texture* tex){
+				if (tex == nullptr){
+					currentTexture = nullptr;
+					return;
+				}
+				currentTexture = Texture_ptr(new Texture(*tex));
+				if (textures.end() != find(textures.begin(), textures.end(), currentTexture)){
+					textures.push_back(currentTexture);
+				}
+			}
 			/* couldn't decide the interface...
 			/* seems that Direct3D style have more flexibility,
 			/* but OpenGl style may be easier to implement ...*/
@@ -292,13 +331,13 @@ namespace space{
 			void RenderSystemRayTrace::RayTracer::DrawSphere(float r){
 				Vector3 centre = Vec3Transform(matWorld, Vector4(0, 0, 0, 1));
 
-				prims.push_back(Primitive_ptr(new Sphere(currentMaterial, r, centre)));
+				prims.push_back(Primitive_ptr(new Sphere(currentMaterial, currentTexture, r, centre)));
 			}
 			void RenderSystemRayTrace::RayTracer::DrawPlane(Vector3 normal){
 				Vector3 position = Vec3Transform(matWorld, Vector4(0, 0, 0, 1));
 				normal = Vec3Transform(matWorld, Vector4(normal)) - position;
 
-				prims.push_back(Primitive_ptr(new Plane(currentMaterial, normal, position)));
+				prims.push_back(Primitive_ptr(new Plane(currentMaterial,currentTexture, normal, position)));
 			}
 			void RenderSystemRayTrace::RayTracer::DrawElements(PrimitiveType type, uint count, uint size, const uint* indices){
 				// do vertex process here
@@ -361,7 +400,7 @@ namespace space{
 							}
 						}
 						//Primitive_ptr prim(new Triangle(currentMaterial, tri));
-						prims.push_back(Primitive_ptr(new Triangle(currentMaterial, tri)));
+						prims.push_back(Primitive_ptr(new Triangle(currentMaterial, currentTexture, tri)));
 					}
 				}
 			}
@@ -392,6 +431,10 @@ namespace space{
 
 			void RenderSystemRayTrace::SetMaterial(const Material& m){
 				tracer->SetMaterial(m);
+			}
+
+			void RenderSystemRayTrace::SetTexture(Texture* tex){
+				tracer->SetTexture(tex);
 			}
 
 			void RenderSystemRayTrace::SetTransform(TransformType type, const Matrix &matWorld){

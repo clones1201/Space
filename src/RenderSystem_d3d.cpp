@@ -87,7 +87,7 @@ namespace space{
 
 		void RenderSystemDirect3D::SetMaterial(const Material &m){}
 
-		void RenderSystemDirect3D::SetTexture(Texture& tex){}
+		void RenderSystemDirect3D::SetTexture(Texture* tex){}
 
 		void RenderSystemDirect3D::DrawMesh(const Mesh& mesh){}
 

@@ -169,18 +169,22 @@ namespace space{
 			// set ambient and diffuse color using glColorMaterial (gold-yellow)
 			glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 		}
-		void RenderSystemOpenGL::SetTexture(Texture& tex){
-			if (tex.GetTexId() != 0){
-				glBindTexture(GL_TEXTURE_2D, tex.GetTexId());
+		void RenderSystemOpenGL::SetTexture(Texture* tex){
+			if (tex == nullptr){
+				glBindTexture(GL_TEXTURE_2D, 0);
+				return;
+			}
+			if (tex->GetTexId() != 0){
+				glBindTexture(GL_TEXTURE_2D, tex->GetTexId());
 			}
 			else{
-				uint format = 4 == tex.GetFormat() ? GL_RGBA : GL_RGB;
+				uint format = 4 == tex->GetFormat() ? GL_RGBA : GL_RGB;
 
 				uint Id;
 				glGenTextures(1, &Id);
-				tex.SetTexId(Id);
-				glBindTexture(GL_TEXTURE_2D, tex.GetTexId());
-				gluBuild2DMipmaps(GL_TEXTURE_2D, 3, tex.GetWidth(), tex.GetHeight(), format, GL_UNSIGNED_BYTE, tex.GetTextureImage().data() );
+				tex->SetTexId(Id);
+				glBindTexture(GL_TEXTURE_2D, tex->GetTexId());
+				gluBuild2DMipmaps(GL_TEXTURE_2D, 3, tex->GetWidth(), tex->GetHeight(), format, GL_UNSIGNED_BYTE, tex->GetTextureImage().data());
 				//glTexImage2D(GL_TEXTURE_2D, 3	, format, width, height, 0, format, GL_UNSIGNED_BYTE, image.data());
 
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
