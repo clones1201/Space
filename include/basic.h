@@ -48,13 +48,14 @@ namespace space{
 		template< typename T>
 		class BinaryTree : public Object{
 		public:
-			static bool isLeaf() const = 0;
+			typedef shared_ptr<BinaryTree> Ptr;
+			virtual bool isLeaf() = 0;
 		}; 
 		 		
 		template< typename T>
 		class BinaryTreeNode : public BinaryTree<T>{
 		private:
-			shared_ptr< BinaryTree< T > > leftChild, rightChild;
+			BinaryTree<T>::Ptr leftChild, rightChild;
 		public:
 			BinaryTreeNode(const BinaryTree<T> &left, const BinaryTree<T> &right){
 				leftChild = BinaryTree<T>(left);
@@ -67,20 +68,20 @@ namespace space{
 				return rightChild.get();
 			}
 
-			static bool isLeaf() const{
+			bool isLeaf(){
 				return false;
 			}
 		};
 
 		template< typename T>
-		class BinaryTreeLeaf : public BinaryTree{
+		class BinaryTreeLeaf : public BinaryTree<T>{
 		private:
 			T elem;
 		public:
 			BinaryTreeLeaf(const T& elem){
 				elem = T(elem);
 			}
-			static bool isLeaf() const{
+			bool isLeaf(){
 				return true;
 			}
 		};

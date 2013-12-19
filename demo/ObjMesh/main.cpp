@@ -33,7 +33,9 @@ void Init(){
 	Vector3 eye(0, 1, 4), lookat(0, 0, 0);
 	PerspectiveCamera camera(eye,lookat-eye);
 	GetGame()->GetRenderDevice()->SetView(camera);
-	
+
+	GetGame()->GetRenderDevice()->SetTexture(tex1);
+	GetGame()->GetRenderDevice()->SetTexture(tex2);
 	initLights();
 }
  
@@ -55,12 +57,20 @@ void display(){
 
 	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixIdentity());
 	
-	glBindTexture(GL_TEXTURE_2D, tex1.TexID);
+	Material material;
+	material.diffuse = gold;
+	material.kd = 15.0f/128.0f;
+
+	material.specular = white;
+	GetGame()->GetRenderDevice()->SetMaterial(material);
+	
+	glBindTexture(GL_TEXTURE_2D, tex1.GetTexId());
 	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(2, 0, 0));
 	GetGame()->GetRenderDevice()->DrawSolidMesh(venusm);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	glBindTexture(GL_TEXTURE_2D, tex2.TexID);
+
+	glBindTexture(GL_TEXTURE_2D, tex2.GetTexId());
 	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(-2, 0, 0));
 	GetGame()->GetRenderDevice()->DrawSolidMesh(venusm);
 	glBindTexture(GL_TEXTURE_2D, 0);

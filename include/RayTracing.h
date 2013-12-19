@@ -128,7 +128,7 @@ namespace space{
 					materials.clear();
 
 					/* make every pixel become the average of 8 pixels round it
-					/* not a good way to anti-artifact, make the picture blur 
+					/* not a good way to anti-alias, make the picture blur 
 					*/
 					/*for (uint y = 0; y < height; y++){
 						for (uint x = 0; x < width; x++){
@@ -164,6 +164,8 @@ namespace space{
 				void SetMatrix(const Matrix& mat);
 
 				void SetColor(const Color& color);
+
+				void SetTexture(Texture& tex);
 
 				void SetMaterial(const Material& m);
 				/* couldn't decide the interface...

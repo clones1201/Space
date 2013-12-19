@@ -1,5 +1,6 @@
 #include "RenderSystem.h"
 #include "WindowController.h"
+#include <GL\freeglut.h>
 
 namespace space{
 	namespace graphic{
@@ -157,13 +158,9 @@ namespace space{
 		}
 
 		void RenderSystemOpenGL::SetMaterial(const Material& material){
-
-		}
-		 
-		void RenderSystemOpenGL::DrawMesh(const Mesh& mesh){
-			float shininess = 15.0f;
-			float diffuseColor[3] = { 0.929524f, 0.796542f, 0.178823f };
-			float specularColor[4] = { 1.00000f, 0.980392f, 0.549020f, 1.0f };
+			float shininess = material.kd * 128;
+			float diffuseColor[3] = { material.diffuse.r, material.diffuse.g, material.diffuse.b };
+			float specularColor[4] = { material.specular.r, material.specular.g, material.specular.b, 1.0f };
 
 			// set specular and shiniess using glMaterial (gold-yellow)
 			glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess); // range 0 ~ 128
@@ -171,9 +168,34 @@ namespace space{
 
 			// set ambient and diffuse color using glColorMaterial (gold-yellow)
 			glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-			glColor3fv(diffuseColor); 
+		}
+		void RenderSystemOpenGL::SetTexture(Texture& tex){
+			if (tex.GetTexId() != 0){
+				glBindTexture(GL_TEXTURE_2D, tex.GetTexId());
+			}
+			else{
+				uint format = 4 == tex.GetFormat() ? GL_RGBA : GL_RGB;
 
-			glColor3f(1.0, 1.0, 1.0);
+				uint Id;
+				glGenTextures(1, &Id);
+				tex.SetTexId(Id);
+				glBindTexture(GL_TEXTURE_2D, tex.GetTexId());
+				gluBuild2DMipmaps(GL_TEXTURE_2D, 3, tex.GetWidth(), tex.GetHeight(), format, GL_UNSIGNED_BYTE, tex.GetTextureImage().data() );
+				//glTexImage2D(GL_TEXTURE_2D, 3	, format, width, height, 0, format, GL_UNSIGNED_BYTE, image.data());
+
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+				//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+				//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+				glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+				glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE); // automatic mipmap generation included in OpenGL v1.4
+				glBindTexture(GL_TEXTURE_2D, 0);
+			}
+		}
+		void RenderSystemOpenGL::DrawMesh(const Mesh& mesh){
+			
 			glVertexPointer(mesh.GetPositionSize(), GL_FLOAT, mesh.GetPositionSize() * sizeof(float), mesh.GetPositions());
 			glNormalPointer(GL_FLOAT, mesh.GetNormalSize() * sizeof(float), mesh.GetNormals() );
 			glEnableClientState(GL_VERTEX_ARRAY);
@@ -186,19 +208,7 @@ namespace space{
 		}
 
 		void RenderSystemOpenGL::DrawSolidMesh(const Mesh& mesh){
-			float shininess = 15.0f;
-			float diffuseColor[3] = { 0.929524f, 0.796542f, 0.178823f };
-			float specularColor[4] = { 1.00000f, 0.980392f, 0.549020f, 1.0f };
-
-			// set specular and shiniess using glMaterial (gold-yellow)
-			glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess); // range 0 ~ 128
-			glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specularColor);
-
-			// set ambient and diffuse color using glColorMaterial (gold-yellow)
-			glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-			glColor3fv(diffuseColor);
-
-			glColor4f(1.0, 1.0, 1.0, 1.0);
+			
 			glVertexPointer(mesh.GetPositionSize(), GL_FLOAT, mesh.GetCompiledVertexSize() * sizeof(float), mesh.GetCompiledVertices());
 			glEnableClientState(GL_VERTEX_ARRAY);
 			if (mesh.hasNormals()){
@@ -221,19 +231,7 @@ namespace space{
 			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		}
 		void RenderSystemOpenGL::DrawWiredMesh(const Mesh& mesh){
-			float shininess = 15.0f;
-			float diffuseColor[3] = { 0.929524f, 0.796542f, 0.178823f };
-			float specularColor[4] = { 1.00000f, 0.980392f, 0.549020f, 1.0f };
-
-			// set specular and shiniess using glMaterial (gold-yellow)
-			glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess); // range 0 ~ 128
-			glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specularColor);
-
-			// set ambient and diffuse color using glColorMaterial (gold-yellow)
-			glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-			glColor3fv(diffuseColor);
-
-			glColor4f(1.0, 1.0, 1.0, 1.0);
+			
 			glVertexPointer(mesh.GetPositionSize(), GL_FLOAT, mesh.GetCompiledVertexSize() * sizeof(float), mesh.GetCompiledVertices());
 			glNormalPointer(GL_FLOAT, mesh.GetCompiledVertexSize() * sizeof(float), mesh.GetCompiledVertices() + mesh.GetCompiledNormalOffset());
 			glEnableClientState(GL_VERTEX_ARRAY);

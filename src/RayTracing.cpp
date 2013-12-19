@@ -119,7 +119,7 @@ namespace space{
 			const uint maxObjects = 16;
 
 			BSPNode* BuildTree(const vector<Primitive_ptr>& prims){
-				BSPNode *root = new BSPNode();
+				//BSPNode *root = new BSPNode();
 				
 
 			}
@@ -196,11 +196,11 @@ namespace space{
 					/*Glossy Reflection*/
 					Color greflectColor;
 					if (depth > 1){
-						for (uint i = 0; i < 10; i++){
+						for (uint i = 0; i < 90; i++){
 							Vector3 greflect = Sample::Instance()->HemiSphere(-wo + sd.normal * 2.0 * ndotwo, sd.hitPos, 1, sd.material.n) - sd.hitPos;
 							Ray greflectRay;
 							greflectRay.ori = sd.hitPos; greflectRay.dir = Vec3Normalize(greflect);
-							greflectColor = greflectColor + 1 / 10.0 * Trace(prims, greflectRay, 1);
+							greflectColor = greflectColor + 1 / 90.0 * Trace(prims, greflectRay, 1);
 						}
 					}
 					/*Refraction*/
@@ -225,19 +225,19 @@ namespace space{
 					/* using Monte Carlo 
 					/* not working good
 					*/
-					/*Color indirectIllumination;
+					Color indirectIllumination;
 					Shader isd;
 
-					if (depth > 3){
-						for (uint i = 0; i < 80; i++){
+					if (depth > 1){
+						for (uint i = 0; i < 90; i++){
 							Ray iRay;
 							iRay.ori = sd.hitPos;
 							iRay.dir = Vec3Normalize(Sample::Instance()->HemiSphere(sd.normal, sd.hitPos, 1, 0));
-							indirectIllumination = indirectIllumination + (1 / 80.0) * Trace(prims, iRay, 1);
+							indirectIllumination = indirectIllumination + (1 / 90.0) * Trace(prims, iRay, 1);
 						}
-					}*/
+					}
 
-					return color /*+ indirectIllumination */
+					return color + 0.5f * indirectIllumination 
 						+ sd.material.reflect * Trace(prims, reflectRay, depth - 1)
 						+ sd.material.greflect * greflectColor
 						/* + sd.material.refract * Trace(prims, refractRay, depth - 1)*/

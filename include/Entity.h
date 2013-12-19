@@ -8,56 +8,27 @@
 namespace space{
 	using namespace graphic;
 	using namespace math;
-
-	/*typedef struct _Material{
-		Color diffuse;
-		Color specular;
-		float shininess;
-
-		_Material(Color _diffuse, Color _specular, float _shininess) :
-			diffuse(_diffuse), specular(_specular), shininess(_shininess){}
-	}Material;*/
-
-	typedef struct _Texture{
-		uint TexID;
+	
+	typedef struct _Texture2D{
 	private:
-		class TextureLoader :public Interface{
-		protected:
-			bool Setup(_Texture&,vector<uchar>&,uint,uint);
-		public:
-			virtual bool Load(_Texture&) = 0;
-		};
-		class PNGLoader : public TextureLoader{
-		private:
-			string filename;
-		public:
-			PNGLoader(const string&);
-			virtual bool Load(_Texture&);
-		};
-		class RGBLoader : public TextureLoader{
-		private:
-			uint width, height;
-			vector<uchar> *image;
-		public:
-			RGBLoader(vector<uchar>&,uint,uint);
-			virtual bool Load(_Texture&);
-		};
-		class ColorValueLoader : public TextureLoader{
-		private:
-			uint width, height;
-			vector<float> *image;
-		public:
-			ColorValueLoader(vector<float>&,uint,uint);
-			virtual bool Load(_Texture&);
-		};
-		TextureLoader* loader;
+		vector<uchar> image;
+		uint width, height;
+		uint TexID;
 	public:
-		_Texture(){}
-		~_Texture(){}
+		_Texture2D(){}
+		~_Texture2D(){}
 		void Load(vector<float>&,uint,uint);
 		void Load(vector<uchar>&,uint,uint);
 		void LoadFromPNG(const string&);
-	}Texture;
+
+		uint GetTexId()const;
+		void SetTexId(uint Id);
+		const vector<uchar>& GetTextureImage() const;
+		uint GetFormat() const;
+		uint GetWidth() const;
+		uint GetHeight() const;
+		Color GetTextureColor(float u, float v)const;
+	}Texture2D,Texture;
 
 	class Entity : public Object{
 	public:

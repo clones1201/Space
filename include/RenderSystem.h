@@ -35,6 +35,7 @@ namespace space{
 
 			virtual void SetColor(const Color&) = 0;
 			virtual void SetMaterial(const Material&) = 0;
+			virtual void SetTexture(Texture&) = 0;
 
 			virtual void DrawMesh(const Mesh&) = 0;
 
@@ -91,6 +92,7 @@ namespace space{
 			void SwapBuffer();
 			virtual void Flush();
 
+			virtual void SetTexture(Texture&);
 			virtual void SetColor(const Color&);
 			virtual void SetMaterial(const Material&);
 			//first, we try some inmidiate command
@@ -107,8 +109,8 @@ namespace space{
 
 		class RenderSystemDirect3D : public RenderSystem{
 		private:
-			LPDIRECT3D9				pD3D;
-			LPDIRECT3DDEVICE9		pd3dDevice;
+			class Direct3DDevice;
+			Direct3DDevice* d3d;
 
 			void Init(HWND hWnd, uint width, uint height);
 		public:
@@ -132,6 +134,7 @@ namespace space{
 
 			virtual void SetColor(const Color&);
 			virtual void SetMaterial(const Material&);
+			virtual void SetTexture(Texture&);
 
 			//first, we try some inmidiate command
 			//late, we will add handler and vbo management
