@@ -45,7 +45,7 @@ namespace space{
 
 	namespace util{
 
-		template< typename T>
+		template< typename T >
 		class BinaryTree : public Object{
 		public:
 			typedef shared_ptr<BinaryTree> Ptr;
@@ -54,13 +54,20 @@ namespace space{
 		 		
 		template< typename T>
 		class BinaryTreeNode : public BinaryTree<T>{
-		private:
+		protected:
 			BinaryTree<T>::Ptr leftChild, rightChild;
 		public:
+			BinaryTreeNode(){}
 			BinaryTreeNode(const BinaryTree<T> &left, const BinaryTree<T> &right){
 				leftChild = BinaryTree<T>(left);
 				rightChild = BinaryTree<T>(right);
 			}
+
+			void SetChildren(const BinaryTree<T> &left, const BinaryTree<T> &right){
+				leftChild = BinaryTree<T>(left);
+				rightChild = BinaryTree<T>(right);
+			}
+
 			BinaryTree* GetLeft() const{
 				return leftChild.get();
 			}
@@ -75,9 +82,11 @@ namespace space{
 
 		template< typename T>
 		class BinaryTreeLeaf : public BinaryTree<T>{
-		private:
+		protected:
 			T elem;
 		public:
+			BinaryTreeLeaf(){}
+
 			BinaryTreeLeaf(const T& elem){
 				elem = T(elem);
 			}

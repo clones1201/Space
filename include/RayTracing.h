@@ -64,6 +64,7 @@ namespace space{
 			public:
 				Primitive(Material_ptr mptr, Texture_ptr tptr) :material(mptr),texture(tptr){};
 				virtual bool Hit(Ray, float&, Shader&) = 0;
+				virtual void CalculateBoundsBox(Vector3 &max, Vector3 &min) = 0;
 			};
 			typedef unique_ptr<Primitive> Primitive_ptr; 
 			//typedef shared_ptr<Primitive> Primitive_ptr;

@@ -62,6 +62,16 @@ namespace space{
 					}
 					return false;
 				}
+
+				virtual void CalculateBoundsBox(Vector3 &max, Vector3 &min){
+					max.x = centre.x + r;
+					max.y = centre.y + r;
+					max.z = centre.z + r;
+
+					min.x = centre.x - r;
+					min.y = centre.y - r;
+					min.z = centre.z - r;
+				}
 			};
 
 			class Plane : public Primitive{
@@ -95,6 +105,10 @@ namespace space{
 					sd.ray = ray;
 					return true;
 				}
+				
+				virtual void CalculateBoundsBox(Vector3 &max, Vector3 &min){
+
+				}
 			};
 
 			class Triangle : public Primitive{
@@ -119,29 +133,99 @@ namespace space{
 					}
 					return false;
 				}
+
+				virtual void CalculateBoundsBox(Vector3 &max, Vector3 &min){
+					max.x = max(tri.v0.x, max(tri.v1.x, tri.v2.x));
+					max.y = max(tri.v0.y, max(tri.v1.y, tri.v2.y));
+					max.z = max(tri.v0.z, max(tri.v1.z, tri.v2.z));
+
+					min.x = min(tri.v0.x, min(tri.v1.x, tri.v2.x));
+					min.y = min(tri.v0.y, min(tri.v1.y, tri.v2.y));
+					min.z = min(tri.v0.z, min(tri.v1.z, tri.v2.z));
+				}
 			};
 
 			class BBox {
 			public:
+				Primitive_ptr prim;
 				Vector3 min, max;
+				bool Hit(Ray ray, float&tmin, float&tmax){
+
+				}
 			};
 
 			using namespace util;
-			class BSPNode : public BinaryTreeNode< vector<Primitive_ptr> >{
+			class BSPNode : public BinaryTreeNode< vector<Primitive_ptr> > , public Primitive {
+			private:
+				BBox bbox;
+			public:
+				BSPNode() :Primitive(nullptr, nullptr),BinaryTreeNode< vector<Primitive_ptr> >(){
+					
+				}
 
+				bool Hit(Ray ray, float&t, Shader& sd){
+					bool result;
+					float tmax, tmin;
+					if ( result = bbox.Hit(ray, tmax, tmin)){
+
+						leftChild
+
+					};
+					return result;
+				}
+				
+				virtual void CalculateBoundsBox(Vector3 &max, Vector3 &min){
+					max = bbox.max; min = bbox.min;
+				}
 			};
 
-			class BSPLeaf : public BinaryTreeLeaf< vector<Primitive_ptr> >{
+			class BSPLeaf : public BinaryTreeLeaf< vector<Primitive_ptr> > , public Primitive {
+			private:
+				BBox bbox; 
+			public:
+				BSPLeaf() :Primitive(nullptr, nullptr), BinaryTreeLeaf< vector<Primitive_ptr> >(){
 
+				}
+
+				bool Hit(Ray ray, float&t, Shader& sd){
+					bool result;
+					float tmin;
+					for (uint i = 0; i < elem.size(); i++){
+						Shader sdt;
+						if (result = elem[i]->Hit(ray, tmin, sdt)){
+							if (tmin < t){
+								sd = sdt;
+								t = tmin;
+							}
+						}
+					}
+					return result;
+				}
+
+				virtual void CalculateBoundsBox(Vector3 &max, Vector3 &min){
+					max = bbox.max; min = bbox.min; 
+				}
 			};
 
 			const uint maxDepth = 10;
 			const uint maxObjects = 16;
 
-			BSPNode* BuildTree(const vector<Primitive_ptr>& prims){
-				//BSPNode *root = new BSPNode();
+			void BuildTree(BSPNode::Ptr node, vector<BBox> bounds){
+				node = BSPNode::Ptr(new BSPNode());
 				
+				BSPNode::Ptr left, right;
+				BuildTree(left, bounds);
+				BuildTree(left, bounds);
 
+			}
+
+			BSPNode* BuildBSPTree(const vector<Primitive_ptr>& prims){
+				vector<BBox> bounds;
+				for (uint i = 0; i < prims.size(); i++){
+					BBox box;
+					
+					bounds.push_back();
+				}
 			}
 
 			Color RenderSystemRayTrace::RayTracer::Shade(const Shader& sd, const Vector3&wi,/*out*/ Vector3& wo, bool isInshadow){
