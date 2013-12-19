@@ -7,7 +7,7 @@ extern void Init();
 
 namespace space{
 
-	template <RenderSystemType>
+	template < graphic::RenderSystemType >
 	class Game :public IGame {
 	private:
 	public:
@@ -20,26 +20,26 @@ namespace space{
 			GetWindowController()->Loop();
 		}
 
-		RenderSystem* GetRenderDevice(){
+		graphic::RenderSystem* GetRenderDevice(){
 			return GetWindowController()->GetRenderSystem();
 		}
 	};
 
 	template <>
-	Game<RS_OGL>::Game(uint width, uint height){
-		SetWindowController(new WindowController(RS_OGL,width, height));
+	Game<graphic::RS_OGL>::Game(uint width, uint height){
+		SetWindowController(new WindowController(graphic::RS_OGL, width, height));
 		GetWindowController()->SetDisplayFunc(&display);
 	} 
 
 	template <>
-	Game<RS_RT>::Game(uint width, uint height){
-		SetWindowController(new WindowController(RS_RT, width, height));
+	Game<graphic::RS_RT>::Game(uint width, uint height){
+		SetWindowController(new WindowController(graphic::RS_RT, width, height));
 		GetWindowController()->SetDisplayFunc(&display);
 	}
 
 	template <>
-	Game<RS_D3D>::Game(uint width, uint height){
-		SetWindowController(new WindowController(RS_D3D, width, height));
+	Game<graphic::RS_D3D>::Game(uint width, uint height){
+		SetWindowController(new WindowController(graphic::RS_D3D, width, height));
 		GetWindowController()->SetDisplayFunc(&display);
 	}
 
@@ -50,8 +50,8 @@ namespace space{
 	}
 
 	template <>
-	int SetupRenderDevice<RS_OGL>(uint width, uint height){
-		game = new Game<RS_OGL>(width, height);
+	int SetupRenderDevice<graphic::RS_OGL>(uint width, uint height){
+		game = new Game<graphic::RS_OGL>(width, height);
 		Init();
 		game->Run();
 		delete game;
@@ -59,8 +59,8 @@ namespace space{
 	}
 
 	template <>
-	int SetupRenderDevice<RS_RT>(uint width, uint height){
-		game = new Game<RS_RT>(width, height);
+	int SetupRenderDevice<graphic::RS_RT>(uint width, uint height){
+		game = new Game<graphic::RS_RT>(width, height);
 		Init();
 		game->Run();
 		delete game;
@@ -68,8 +68,8 @@ namespace space{
 	}
 
 	template <>
-	int SetupRenderDevice<RS_D3D>(uint width, uint height){
-		game = new Game<RS_D3D>(width, height);
+	int SetupRenderDevice<graphic::RS_D3D>(uint width, uint height){
+		game = new Game<graphic::RS_D3D>(width, height);
 		Init();
 		game->Run();
 		delete game;
@@ -78,7 +78,7 @@ namespace space{
 
 
 	void DrawAxis(){
-		GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(0, 0, 0));
+		GetGame()->GetRenderDevice()->SetTransform(graphic::SP_VIEW, math::MatrixTranslation(0, 0, 0));
 		glBegin(GL_LINES);
 		glColor3f(1, 0, 0);
 		glVertex3f(0, 0, 0); glVertex3f(1, 0, 0);

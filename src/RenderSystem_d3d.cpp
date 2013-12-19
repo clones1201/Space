@@ -81,7 +81,7 @@ namespace space{
 
 		void RenderSystemDirect3D::SetView(const PerspectiveCamera &camera){}
 		 
-		void RenderSystemDirect3D::SetTransform(TransformType type, const Matrix &matWorld){}
+		void RenderSystemDirect3D::SetTransform(TransformType type, const math::Matrix &matWorld){}
 		
 		void RenderSystemDirect3D::SetColor(const Color &c){}
 
@@ -99,6 +99,6 @@ namespace space{
 
 		void RenderSystemDirect3D::DrawSphere(float r){}
 		void RenderSystemDirect3D::DrawCube(float a, float b, float c){}
-		void RenderSystemDirect3D::DrawPlane(Vector3 normal){}
+		void RenderSystemDirect3D::DrawPlane(math::Vector3 normal){}
 	}
 }

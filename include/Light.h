@@ -4,7 +4,6 @@
 #include "basic.h"
 
 namespace space{
-	using namespace math;
 	namespace graphic{
 		
 		typedef enum _LIGHTTYPE{
@@ -16,8 +15,8 @@ namespace space{
 			Color   Diffuse;         /* Diffuse color of light */
 			Color   Specular;        /* Specular color of light */
 			Color   Ambient;         /* Ambient color of light */
-			Vector3       Position;         /* Position in world space */
-			Vector3       Direction;        /* Direction in world space */
+			math::Vector3       Position;         /* Position in world space */
+			math::Vector3       Direction;        /* Direction in world space */
 			float           Range;            /* Cutoff range */
 			float           Falloff;          /* Falloff */
 			float           Attenuation0;     /* Constant attenuation */
@@ -35,7 +34,7 @@ namespace space{
 		inline Light CreateLights<POINTS>(){
 			Light result;
 			result.Type = POINTS;
-			result.Position = Vector3(0, 0, 0);
+			result.Position = math::Vector3(0, 0, 0);
 			result.Range = 1000;
 			result.Attenuation0 = 1;
 			result.Attenuation1 = 0;
@@ -43,7 +42,7 @@ namespace space{
 			result.Specular = Color(1.0f, 1.0f, 1.0f, 1.0f);
 			result.Diffuse = Color(1.0f, 1.0f, 1.0f, 1.0f);
 			result.Ambient = Color(0.1f, 0.1f, 0.1f, 1.0f);
-			result.Direction = Vector3(1, 0, 0);
+			result.Direction = math::Vector3(1, 0, 0);
 			result.Falloff = 1;
 			result.Phi = 0;
 			result.Theta = 0;
@@ -53,7 +52,7 @@ namespace space{
 		inline Light CreateLights<SPOT>(){
 			Light result;
 			result.Type = SPOT;
-			result.Position = Vector3(0, 0, 0);
+			result.Position = math::Vector3(0, 0, 0);
 			result.Range = 1000;
 			result.Attenuation0 = 1;
 			result.Attenuation1 = 0;
@@ -61,7 +60,7 @@ namespace space{
 			result.Specular = Color(1.0f, 1.0f, 1.0f, 1.0f);
 			result.Diffuse = Color(1.0f, 1.0f, 1.0f, 1.0f);
 			result.Ambient = Color(0.1f, 0.1f, 0.1f, 1.0f);
-			result.Direction = Vector3(1, 0, 0);
+			result.Direction = math::Vector3(1, 0, 0);
 			result.Falloff = 1;
 			result.Phi = 0;
 			result.Theta = 0;
@@ -71,7 +70,7 @@ namespace space{
 		inline Light CreateLights<DIRECTIONAL>(){
 			Light result;
 			result.Type = DIRECTIONAL;
-			result.Position = Vector3(0, 0, 0);
+			result.Position = math::Vector3(0, 0, 0);
 			result.Range = 1000;
 			result.Attenuation0 = 1;
 			result.Attenuation1 = 0;
@@ -79,7 +78,7 @@ namespace space{
 			result.Specular = Color(1.0f, 1.0f, 1.0f, 1.0f);
 			result.Diffuse = Color(1.0f, 1.0f, 1.0f, 1.0f);
 			result.Ambient = Color(0.1f, 0.1f, 0.1f, 1.0f);
-			result.Direction = Vector3(1, 0, 0);
+			result.Direction = math::Vector3(1, 0, 0);
 			result.Falloff = 1;
 			result.Phi = 0;
 			result.Theta = 0;

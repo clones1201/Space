@@ -24,6 +24,11 @@ namespace space{
 		virtual ~Object(){}
 	};
 
+	typedef unsigned char uchar;
+	typedef unsigned short ushort;
+	typedef unsigned int uint;
+	typedef unsigned long ulong;
+
 	namespace Pattern{
 
 		template< typename T>
@@ -113,11 +118,6 @@ namespace space{
 	namespace math{
 
 		const float Pi = 3.141592654f;
-
-		typedef unsigned char uchar;
-		typedef unsigned short ushort;
-		typedef unsigned int uint;
-		typedef unsigned long ulong;
 
 		struct uchar3{
 			uchar x, y, z;
@@ -627,7 +627,7 @@ namespace space{
 		}
 	}
 	namespace graphic{
-		using namespace math;
+
 		typedef class _Color{
 		public:
 			float r, g, b, a;
@@ -713,23 +713,23 @@ namespace space{
 		};
 		typedef shared_ptr<ABGRColor> ABGRColor_ptr;
 		struct Ray{
-			Vector3 ori, dir;
+			math::Vector3 ori, dir;
 		};
 		typedef shared_ptr<Ray> Ray_ptr;
 
 		struct Triangle{
-			Vector3 v0, v1, v2;
-			Vector3 n0, n1, n2;
-			Vector3 t0, t1, t2;
+			math::Vector3 v0, v1, v2;
+			math::Vector3 n0, n1, n2;
+			math::Vector3 t0, t1, t2;
 
 			// see: http://geomalgorithms.com/a06-_intersect-2.html
 			bool Intersect(Ray ray, float& t){
-				Vector3 u, v;
+				math::Vector3 u, v;
 				u = v1 - v0;
 				v = v2 - v0;
-				Vector3 nt = Vec3Normalize(Vec3Cross(u, v));
+				math::Vector3 nt = Vec3Normalize(Vec3Cross(u, v));
 				if (Vec3Dot(nt, n0) < 0){
-					Vector3 temp = v;
+					math::Vector3 temp = v;
 					v = u; u = temp;
 					nt = Vec3Cross(u, v);
 				}
@@ -743,8 +743,8 @@ namespace space{
 					return false;
 				}
 
-				Vector3 pi = ray.ori + ray.dir * r1;
-				Vector3 w = pi - v0;
+				math::Vector3 pi = ray.ori + ray.dir * r1;
+				math::Vector3 w = pi - v0;
 
 				float uv = Vec3Dot(u, v);
 				float wv = Vec3Dot(w, v);
@@ -787,9 +787,9 @@ namespace space{
 			Sample();
 			friend class Pattern::Singleton<Sample>;
 		public:
-			Vector3 HemiSphere(Vector3 normal, Vector3 pos, float r, uint exp);
-			Vector3 Sphere(Vector3 normal, Vector3 pos, float r);
-			Vector3 Square(Vector3 normal, Vector3 pos, float a, float b);
+			math::Vector3 HemiSphere(math::Vector3 normal, math::Vector3 pos, float r, uint exp);
+			math::Vector3 Sphere(math::Vector3 normal, math::Vector3 pos, float r);
+			math::Vector3 Square(math::Vector3 normal, math::Vector3 pos, float a, float b);
 		};
 	}
 }

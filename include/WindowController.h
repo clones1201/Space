@@ -4,7 +4,6 @@
 #include "RenderSystem.h"
 
 namespace space{
-	using namespace graphic;
 	//==========================
 	// Callback Function
 	//==========================
@@ -22,7 +21,7 @@ namespace space{
 		HWND					hWnd;
 		HINSTANCE				hInstance;
 		CallbackFunc			Callback[Total_CallbackFunc_Count];
-		RenderSystem_ptr			renderSystem;
+		graphic::RenderSystem_ptr			renderSystem;
 
 		class _MouseController{
 			DEFINE_IS_SET(LeftButtonDown);
@@ -39,7 +38,7 @@ namespace space{
 			renderSystem->SwapBuffer();
 		}
 	public:
-		WindowController(RenderSystemType type, uint width, uint height);
+		WindowController(graphic::RenderSystemType type, uint width, uint height);
 
 		void SetDisplayFunc(void(*callback)(void)){
 			Callback[DisplayFunc] = callback;
@@ -65,7 +64,7 @@ namespace space{
 			UnregisterClass(L"Space", hInstance);
 		}
 
-		RenderSystem* GetRenderSystem(){
+		graphic::RenderSystem* GetRenderSystem(){
 			return renderSystem.get();
 		}
 

@@ -24,11 +24,11 @@ namespace space{
 
 			vector<uchar> SetupShadow(Mesh& mesh, uint width, uint height){
 				vector<uchar> image;
-				Vector3 LightPos(2, 3, 2);
+				math::Vector3 LightPos(2, 3, 2);
 				for (uint i = 0; i < width * height; i++){
-					Ray ray, rayt; bool result = false; Vector3 normal, position;
-					ray.ori = Vector3(-5 + i / width * (1.0 / width), -1, -5 + i % height * (1.0 / height));
-					ray.dir = Vec3Normalize(LightPos - ray.ori);
+					Ray ray, rayt; bool result = false; math::Vector3 normal, position;
+					ray.ori = math::Vector3(-5 + i / width * (1.0 / width), -1, -5 + i % height * (1.0 / height));
+					ray.dir = math::Vec3Normalize(LightPos - ray.ori);
 
 					bool b1 = mesh.Intersect(ray, normal, position);
 
@@ -52,14 +52,14 @@ namespace space{
 				vector<uchar> image;
 				image.resize(width*height);
 
-				Vector3 LightPos(2, 3, 2);
+				math::Vector3 LightPos(2, 3, 2);
 				auto Indices = mesh.GetCompiledIndices();
 				for (uint i = 0; i < mesh.GetCompiledIndexCount(); i += 3){
 					Triangle tri = mesh.GetTriangle(Indices[i], Indices[i + 1], Indices[i + 2]);
 
-					Vector3 nt = Vec3Normalize(tri.n0 + tri.n1 + tri.n2);
+					math::Vector3 nt = Vec3Normalize(tri.n0 + tri.n1 + tri.n2);
 
-					float radiosity = Vec3Dot(nt, LightPos - tri.v0);
+					float radiosity = math::Vec3Dot(nt, LightPos - tri.v0);
 
 				}
 

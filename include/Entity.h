@@ -6,8 +6,6 @@
 #include "Camera.h"
 
 namespace space{
-	using namespace graphic;
-	using namespace math;
 	
 	typedef struct _Texture2D{
 	private:
@@ -27,33 +25,33 @@ namespace space{
 		uint GetFormat() const;
 		uint GetWidth() const;
 		uint GetHeight() const;
-		Color GetTextureColor(float u, float v)const;
+		graphic::Color GetTextureColor(float u, float v)const;
 	}Texture2D,Texture;
 	typedef shared_ptr<Texture> Texture_ptr;
 
 	class Entity : public Object{
 	public:
-		Entity(const Mesh*);
+		Entity(const graphic::Mesh*);
 
-		Vector3 GetPosition()const;
+		math::Vector3 GetPosition()const;
 
-		void Move(const Vector3& move);
+		void Move(const math::Vector3& move);
 		void Rotate(float angleX,float angleY,float angleZ);
 
 		void SetTexture(const Texture&);
 	
 	private:
-		Mesh* mesh;
+		graphic::Mesh* mesh;
 		Entity* sub;
 
-		Matrix matPos;
-		Matrix matRotate;
+		math::Matrix matPos;
+		math::Matrix matRotate;
 
 		Texture tex;
 	};
 
 	class Scene{
-		DEFINE_GET_SET(vector<Light*>, Lights); //multi light
+		DEFINE_GET_SET(vector<graphic::Light*>, Lights); //multi light
 		DEFINE_GET_SET(vector<Camera*>, Cameras); // multi camera
 		DEFINE_GET_SET(vector<Entity*>, Entitys); // multi object
 	};

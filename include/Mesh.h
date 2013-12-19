@@ -5,7 +5,7 @@
 #include "global.h"
 
 namespace space{
-	using namespace math;
+
 	namespace graphic{
 
 		//=========================
@@ -27,7 +27,7 @@ namespace space{
 			virtual bool CompileModel(PrimitiveType) = 0;
 			virtual void Rescale(float scale) = 0;
 
-			virtual void ComputeBoundingBox(Vector3 &min, Vector3 &max) = 0;
+			virtual void ComputeBoundingBox(math::Vector3 &min, math::Vector3 &max) = 0;
 			virtual void ComputeNormals() = 0;
 			virtual void ComputeTexCoords() = 0;
 
@@ -40,7 +40,7 @@ namespace space{
 
 			// Intersect( in , out, out );
 			// in model coords
-			virtual bool Intersect(const Ray &ray, Vector3 &normal, Vector3 &position) = 0;
+			virtual bool Intersect(const Ray &ray, math::Vector3 &normal, math::Vector3 &position) = 0;
 			virtual bool IntersectBBox(const Ray &ray) = 0;
 
 			//=================
@@ -97,7 +97,7 @@ namespace space{
 			int _tcOffset;
 			int _vtxSize;
 
-			Vector3 bmax, bmin;
+			math::Vector3 bmax, bmin;
 			bool isBoundingBoxComputed;
 			
 			class IModelLoader :public Interface{
@@ -136,7 +136,7 @@ namespace space{
 			virtual bool CompileModel(PrimitiveType) final;
 			virtual void Rescale(float radius)final;
 
-			virtual void ComputeBoundingBox(Vector3 &min, Vector3 &max) final;
+			virtual void ComputeBoundingBox(math::Vector3 &min, math::Vector3 &max) final;
 			virtual void ComputeNormals()final;
 			virtual void ComputeTexCoords()final;
 
@@ -149,7 +149,7 @@ namespace space{
 
 			// Intersect( in , out, out );
 			// in model coords
-			virtual bool Intersect(const Ray &ray, Vector3 &normal, Vector3 &position);
+			virtual bool Intersect(const Ray &ray, math::Vector3 &normal, math::Vector3 &position);
 			virtual bool IntersectBBox(const Ray &ray);
 			Triangle GetTriangle(uint i0, uint i1, uint i2) const;
 			//=================

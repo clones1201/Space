@@ -142,13 +142,13 @@ namespace space{
 			camera = PerspectiveCamera_ptr(new PerspectiveCamera(c)); 
 		}
 
-		void RenderSystemOpenGL::SetTransform( TransformType type ,const Matrix& mat){
+		void RenderSystemOpenGL::SetTransform( TransformType type ,const math::Matrix& mat){
 			switch (type){
 				case SP_VIEW:
 					glMatrixMode(GL_MODELVIEW);
-					Matrix matView = camera->GetMatrix();
+					math::Matrix matView = camera->GetMatrix();
 					matView = MatrixMultiply(matView, mat);
-					glLoadMatrixf( MatrixTranspose( matView ).m);
+					glLoadMatrixf(math::MatrixTranspose(matView).m);
 					break;
 			}
 		}
@@ -256,6 +256,6 @@ namespace space{
 
 		void RenderSystemOpenGL::DrawSphere(float r){}
 		void RenderSystemOpenGL::DrawCube(float a, float b, float c){}
-		void RenderSystemOpenGL::DrawPlane(Vector3 normal){}
+		void RenderSystemOpenGL::DrawPlane(math::Vector3 normal){}
 	}
 }

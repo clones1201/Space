@@ -29,7 +29,7 @@ namespace space{
 			virtual void RotateLook(float x, float y) =0;
 			virtual void SetView(const PerspectiveCamera &camera) = 0;
 			//template <TransformType t>
-			virtual void SetTransform(TransformType type, const Matrix&) = 0;
+			virtual void SetTransform(TransformType type, const math::Matrix&) = 0;
 			virtual void SwapBuffer() = 0;
 			virtual void Flush() = 0;
 
@@ -46,7 +46,7 @@ namespace space{
 
 			virtual void DrawSphere(float r) = 0;
 			virtual void DrawCube(float a, float b, float c) = 0;
-			virtual void DrawPlane(Vector3 normal) = 0;
+			virtual void DrawPlane(math::Vector3 normal) = 0;
 		};
 
 		//============================
@@ -88,7 +88,7 @@ namespace space{
 
 
 			//template <TransformType t>
-			void SetTransform(TransformType type, const Matrix &matWorld);
+			void SetTransform(TransformType type, const math::Matrix &matWorld);
 			void SwapBuffer();
 			virtual void Flush();
 
@@ -103,7 +103,7 @@ namespace space{
 			virtual void DrawScene(Scene&); 
 			virtual void DrawSphere(float r);
 			virtual void DrawCube(float a, float b, float c); 
-			virtual void DrawPlane(Vector3 normal);
+			virtual void DrawPlane(math::Vector3 normal);
 		};
 
 
@@ -127,7 +127,7 @@ namespace space{
 			void SetView(const PerspectiveCamera &camera);
 
 			//template <TransformType t>
-			void SetTransform(TransformType type, const Matrix &matWorld);
+			void SetTransform(TransformType type, const math::Matrix &matWorld);
 
 			void SwapBuffer(){}
 			void Flush(){}
@@ -144,7 +144,7 @@ namespace space{
 			virtual void DrawScene(  Scene&);
 			virtual void DrawSphere(float r);
 			virtual void DrawCube(float a, float b, float c);
-			virtual void DrawPlane(Vector3 normal);
+			virtual void DrawPlane(math::Vector3 normal);
 		};
 	}
 }

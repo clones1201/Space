@@ -13,8 +13,8 @@ namespace space{
 
 			struct Patch{
 				Color radiosity;
-				Vector3 position;
-				Vector3 normal;
+				math::Vector3 position;
+				math::Vector3 normal;
 			};
 			
 			//very slow, venusm.obj took me 1 hours to calculate a sh*t-like shadow map...
