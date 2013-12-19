@@ -44,57 +44,70 @@ namespace space{
 	}
 
 	namespace util{
-
-		template< typename T >
-		class BinaryTree : public Object{
-		public:
-			typedef shared_ptr<BinaryTree> Ptr;
-			virtual bool isLeaf() = 0;
-		}; 
-		 		
+		
 		template< typename T>
-		class BinaryTreeNode : public BinaryTree<T>{
-		protected:
-			BinaryTree<T>::Ptr leftChild, rightChild;
+		class BinaryTreeNode{
 		public:
+			typedef shared_ptr< BinaryTreeNode<T> > Ptr;
+		protected:
+			T elem;
+			Ptr leftChild, rightChild;
+		public:
+
 			BinaryTreeNode(){}
-			BinaryTreeNode(const BinaryTree<T> &left, const BinaryTree<T> &right){
-				leftChild = BinaryTree<T>(left);
-				rightChild = BinaryTree<T>(right);
+			BinaryTreeNode(const T &elem){ BinaryTreeNode::elem = T(elem); }
+			BinaryTreeNode(BinaryTreeNode<T> &left, BinaryTreeNode<T> &right, const T &elem);
+
+			virtual void SetChildren(BinaryTreeNode<T> &left, BinaryTreeNode<T> &right);
+
+			void SetElem(const T &elem){
+				BinaryTreeNode::elem = T(elem);
+			}
+			T GetElem()const{
+				return elem;
 			}
 
-			void SetChildren(const BinaryTree<T> &left, const BinaryTree<T> &right){
-				leftChild = BinaryTree<T>(left);
-				rightChild = BinaryTree<T>(right);
-			}
-
-			BinaryTree* GetLeft() const{
+			BinaryTreeNode* GetLeft() const{
 				return leftChild.get();
 			}
-			BinaryTree* GetRight() const{
+			BinaryTreeNode* GetRight() const{
 				return rightChild.get();
 			}
 
-			bool isLeaf(){
+			virtual bool isLeaf() const{
 				return false;
 			}
 		};
 
 		template< typename T>
-		class BinaryTreeLeaf : public BinaryTree<T>{
+		class BinaryTreeLeaf : public BinaryTreeNode<T>{
 		protected:
-			T elem;
+			virtual void SetChildren(BinaryTreeNode<T> &left, BinaryTreeNode<T> &right){}
 		public:
+			typedef shared_ptr< BinaryTreeLeaf<T> > Ptr;
+
 			BinaryTreeLeaf(){}
 
 			BinaryTreeLeaf(const T& elem){
-				elem = T(elem);
+				BinaryTreeLeaf::elem = T(elem);
 			}
-			bool isLeaf(){
+			virtual bool isLeaf() const{
 				return true;
 			}
 		};
 
+		template< typename T>
+		BinaryTreeNode<T>::BinaryTreeNode(BinaryTreeNode<T> &left, BinaryTreeNode<T> &right, const T &elem){
+			leftChild = BinaryTreeNode<T>::Ptr(&left);
+			rightChild = BinaryTreeNode<T>::Ptr(&right);			
+			BinaryTreeNode::elem = T(elem);
+		}
+
+		template< typename T>
+		void BinaryTreeNode<T>::SetChildren(BinaryTreeNode<T> &left, BinaryTreeNode<T> &right){
+			leftChild = BinaryTreeNode<T>::Ptr(&left);
+			rightChild = BinaryTreeNode<T>::Ptr(&right);
+		}
 	}
 
 	namespace math{

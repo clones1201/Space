@@ -10,8 +10,8 @@ namespace space{
 				float r;
 				Vector3 centre;
 			public:
-				Sphere(Material_ptr m,Texture_ptr t, float r = 1, Vector3 centre = Vector3(0, 0, 0)) :
-					Primitive(m,t), r(r), centre(centre){}
+				Sphere(Material_ptr m, Texture_ptr t, float r = 1, Vector3 centre = Vector3(0, 0, 0)) :
+					Primitive(m, t), r(r), centre(centre){}
 				bool Hit(Ray ray, float&tmin, Shader& sd){
 					float t;
 					sd.hitAnObject = false;
@@ -49,8 +49,8 @@ namespace space{
 							tmin = t;
 							sd.hitPos = ray.ori + t * ray.dir;
 							sd.normal = Vec3Normalize(sd.hitPos - centre);
-							sd.material = *material; 
-							
+							sd.material = *material;
+
 							sd.tex_ptr = texture;
 							sd.u = sd.hitPos.z;
 							sd.v = sd.hitPos.x;
@@ -79,8 +79,8 @@ namespace space{
 				Vector3 normal;
 				Vector3 pos;
 			public:
-				Plane(Material_ptr m,Texture_ptr t, Vector3 normal = Vector3(0, 1, 0), Vector3 pos = Vector3(0, 0, 0)) :
-					Primitive(m,t), normal(normal), pos(pos){}
+				Plane(Material_ptr m, Texture_ptr t, Vector3 normal = Vector3(0, 1, 0), Vector3 pos = Vector3(0, 0, 0)) :
+					Primitive(m, t), normal(normal), pos(pos){}
 				bool Hit(Ray ray, float &t, Shader& sd){
 					sd.hitAnObject = false;
 					float fm;
@@ -105,7 +105,7 @@ namespace space{
 					sd.ray = ray;
 					return true;
 				}
-				
+
 				virtual void CalculateBoundsBox(Vector3 &max, Vector3 &min){
 
 				}
@@ -115,8 +115,8 @@ namespace space{
 			private:
 				graphic::Triangle tri;
 			public:
-				Triangle(Material_ptr m,Texture_ptr t, const graphic::Triangle &_tri) :
-					Primitive(m,t), tri(_tri){}
+				Triangle(Material_ptr m, Texture_ptr t, const graphic::Triangle &_tri) :
+					Primitive(m, t), tri(_tri){}
 				bool Hit(Ray ray, float&t, Shader& sd){
 					if (tri.Intersect(ray, t)){
 						sd.hitAnObject = true;
@@ -127,7 +127,7 @@ namespace space{
 
 						sd.u = (tri.t0.x + tri.t1.x + tri.t2.x) / 3;
 						sd.v = (tri.t0.y + tri.t1.y + tri.t2.y) / 3;
-						
+
 						sd.ray = ray;
 						return true;
 					}
@@ -145,54 +145,54 @@ namespace space{
 				}
 			};
 
+
 			class BBox {
 			public:
-				Primitive_ptr prim;
 				Vector3 min, max;
 				bool Hit(Ray ray, float&tmin, float&tmax){
 
+					return false;
 				}
 			};
 
 			using namespace util;
-			class BSPNode : public BinaryTreeNode< vector<Primitive_ptr> > , public Primitive {
-			private:
-				BBox bbox;
+
+			class BSPNode : public BinaryTreeNode< BBox >, public Primitive {
 			public:
-				BSPNode() :Primitive(nullptr, nullptr),BinaryTreeNode< vector<Primitive_ptr> >(){
-					
+				BSPNode() :Primitive(nullptr, nullptr), BinaryTreeNode< BBox >(){
+
 				}
 
 				bool Hit(Ray ray, float&t, Shader& sd){
 					bool result;
 					float tmax, tmin;
-					if ( result = bbox.Hit(ray, tmax, tmin)){
+					if (result = elem.Hit(ray, tmax, tmin)){
 
-						leftChild
+						leftChild;
 
-					};
+					}
 					return result;
 				}
-				
-				virtual void CalculateBoundsBox(Vector3 &max, Vector3 &min){
-					max = bbox.max; min = bbox.min;
+
+				void CalculateBoundsBox(Vector3 &max, Vector3 &min){
+					max = elem.max; min = elem.min;
 				}
 			};
 
-			class BSPLeaf : public BinaryTreeLeaf< vector<Primitive_ptr> > , public Primitive {
+			class BSPLeaf : public BinaryTreeLeaf< BBox >, public Primitive {
 			private:
-				BBox bbox; 
+				vector<Primitive_ptr> prims;
 			public:
-				BSPLeaf() :Primitive(nullptr, nullptr), BinaryTreeLeaf< vector<Primitive_ptr> >(){
+				BSPLeaf() :Primitive(nullptr, nullptr), BinaryTreeLeaf< BBox >(){
 
 				}
 
 				bool Hit(Ray ray, float&t, Shader& sd){
 					bool result;
 					float tmin;
-					for (uint i = 0; i < elem.size(); i++){
+					for (uint i = 0; i < prims.size(); i++){
 						Shader sdt;
-						if (result = elem[i]->Hit(ray, tmin, sdt)){
+						if (result = prims[i]->Hit(ray, tmin, sdt)){
 							if (tmin < t){
 								sd = sdt;
 								t = tmin;
@@ -201,32 +201,30 @@ namespace space{
 					}
 					return result;
 				}
-
-				virtual void CalculateBoundsBox(Vector3 &max, Vector3 &min){
-					max = bbox.max; min = bbox.min; 
-				}
 			};
 
 			const uint maxDepth = 10;
 			const uint maxObjects = 16;
 
-			void BuildTree(BSPNode::Ptr node, vector<BBox> bounds){
-				node = BSPNode::Ptr(new BSPNode());
-				
-				BSPNode::Ptr left, right;
-				BuildTree(left, bounds);
-				BuildTree(left, bounds);
+			void BuildTree(BSPNode** node, vector<BBox> bounds,uint depth){
+				*node = (BSPNode*)(new BSPNode());
 
+				BSPNode* left = nullptr, *right=nullptr;
+				BuildTree(&left, bounds,depth-1);
+				BuildTree(&right, bounds,depth-1);
+				(*node)->SetChildren(*left, *right);
 			}
 
-			BSPNode* BuildBSPTree(const vector<Primitive_ptr>& prims){
+			BSPNode* BuildBSPTree(const vector<Primitive_ptr>& prims,uint depth){
 				vector<BBox> bounds;
 				for (uint i = 0; i < prims.size(); i++){
 					BBox box;
-					
-					bounds.push_back();
+
+					bounds.push_back(box);
 				}
+				return new BSPNode;
 			}
+
 
 			Color RenderSystemRayTrace::RayTracer::Shade(const Shader& sd, const Vector3&wi,/*out*/ Vector3& wo, bool isInshadow){
 				wo = -sd.ray.dir;
@@ -252,7 +250,7 @@ namespace space{
 				else{
 					color = sd.tex_ptr->GetTextureColor(sd.u, sd.v);
 				}
-			
+
 				if (ndotwi > 0.01){
 					/* Lambertian */
 					lambertian = ls * color * m.kd * ndotwi;
@@ -304,17 +302,17 @@ namespace space{
 					Vector3 reflect = -wo + sd.normal * 2.0 * ndotwo;
 					Ray reflectRay;
 					reflectRay.ori = sd.hitPos; reflectRay.dir = Vec3Normalize(reflect);
-					
+
 					/*Glossy Reflection*/
 					Color greflectColor;
 					/*if (depth > 1){
 						for (uint i = 0; i < 90; i++){
-							Vector3 greflect = Sample::Instance()->HemiSphere(-wo + sd.normal * 2.0 * ndotwo, sd.hitPos, 1, sd.material.n) - sd.hitPos;
-							Ray greflectRay;
-							greflectRay.ori = sd.hitPos; greflectRay.dir = Vec3Normalize(greflect);
-							greflectColor = greflectColor + 1 / 90.0 * Trace(prims, greflectRay, 1);
+						Vector3 greflect = Sample::Instance()->HemiSphere(-wo + sd.normal * 2.0 * ndotwo, sd.hitPos, 1, sd.material.n) - sd.hitPos;
+						Ray greflectRay;
+						greflectRay.ori = sd.hitPos; greflectRay.dir = Vec3Normalize(greflect);
+						greflectColor = greflectColor + 1 / 90.0 * Trace(prims, greflectRay, 1);
 						}
-					}*/
+						}*/
 					/*Refraction*/
 					//Vector3 refract = -wo + -sd.normal * ndotwo * 1.3;
 					//Ray refractRay;
@@ -334,19 +332,19 @@ namespace space{
 					//}					
 
 					/* Indirect illumination */
-					/* using Monte Carlo 
+					/* using Monte Carlo
 					/* not working good
 					*/
 					/*Color indirectIllumination;
 					Shader isd;
 
 					if (depth > 1){
-						for (uint i = 0; i < 90; i++){
-							Ray iRay;
-							iRay.ori = sd.hitPos;
-							iRay.dir = Vec3Normalize(Sample::Instance()->HemiSphere(sd.normal, sd.hitPos, 1, 0));
-							indirectIllumination = indirectIllumination + (1 / 90.0) * Trace(prims, iRay, 1);
-						}
+					for (uint i = 0; i < 90; i++){
+					Ray iRay;
+					iRay.ori = sd.hitPos;
+					iRay.dir = Vec3Normalize(Sample::Instance()->HemiSphere(sd.normal, sd.hitPos, 1, 0));
+					indirectIllumination = indirectIllumination + (1 / 90.0) * Trace(prims, iRay, 1);
+					}
 					}*/
 
 					return color/* + 0.5f * indirectIllumination */
@@ -421,7 +419,7 @@ namespace space{
 				Vector3 position = Vec3Transform(matWorld, Vector4(0, 0, 0, 1));
 				normal = Vec3Transform(matWorld, Vector4(normal)) - position;
 
-				prims.push_back(Primitive_ptr(new Plane(currentMaterial,currentTexture, normal, position)));
+				prims.push_back(Primitive_ptr(new Plane(currentMaterial, currentTexture, normal, position)));
 			}
 			void RenderSystemRayTrace::RayTracer::DrawElements(PrimitiveType type, uint count, uint size, const uint* indices){
 				// do vertex process here

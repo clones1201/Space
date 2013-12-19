@@ -66,7 +66,7 @@ namespace space{
 				virtual bool Hit(Ray, float&, Shader&) = 0;
 				virtual void CalculateBoundsBox(Vector3 &max, Vector3 &min) = 0;
 			};
-			typedef unique_ptr<Primitive> Primitive_ptr; 
+			typedef shared_ptr<Primitive> Primitive_ptr; 
 			//typedef shared_ptr<Primitive> Primitive_ptr;
 
 			class RenderSystemRayTrace::RayTracer : private Interface{
