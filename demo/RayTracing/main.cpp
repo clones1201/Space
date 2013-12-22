@@ -13,6 +13,7 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, LPWSTR, INT){
 	return SetupRenderDevice<RS_RT>(640,480);
 }
 
+Mesh venusm;
 Mesh cube;
 Texture tex;
 
@@ -43,7 +44,11 @@ void Init(){
 
 	cube.LoadFromFile("../../resourse/cubeuv.obj");
 	cube.Rescale(0.5);
-	cube.CompileModel(SP_TRIANGLES);
+	cube.CompileModel(SP_TRIANGLES); 
+	
+	venusm.LoadFromFile("../../resourse/venusm.obj");
+	venusm.Rescale(0.5f);
+	venusm.CompileModel(SP_TRIANGLES);
 }
 
 float dt = 1;
@@ -87,9 +92,9 @@ void display(){
 	material.greflect = 0.0f;
 	GetGame()->GetRenderDevice()->SetMaterial(material);
 
-	GetGame()->GetRenderDevice()->SetColor(red);
+	GetGame()->GetRenderDevice()->SetColor(white);
 	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(-0.7, 0, 0.7));
-	GetGame()->GetRenderDevice()->DrawSolidMesh(cube);
+	GetGame()->GetRenderDevice()->DrawSolidMesh(venusm);
 
 	material.reflect = 0.3f;
 	material.refract = 0.8f;
@@ -106,6 +111,15 @@ void display(){
 	GetGame()->GetRenderDevice()->SetColor(green);
 	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(0.0, -0.2, -0.5));
 	GetGame()->GetRenderDevice()->DrawSphere(0.3);
+
+	/*material.reflect = 0.3f;
+	material.refract = 0.0f;
+	material.greflect = 0.0f;
+	GetGame()->GetRenderDevice()->SetMaterial(material);
+	GetGame()->GetRenderDevice()->SetColor(white);
+	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(-0.5, 0, -1.0));
+	GetGame()->GetRenderDevice()->DrawSolidMesh(cube);*/
+
 	GetGame()->GetRenderDevice()->Flush();
 
 	clock_t t2 = clock();

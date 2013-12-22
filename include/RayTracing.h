@@ -54,7 +54,7 @@ namespace space{
 				Shader() :hitAnObject(false), material(){}
 			};
 
-			class Primitive : public Object{
+			class Primitive :virtual public Object{
 			protected:
 				Material_ptr material;
 				Texture_ptr texture;
@@ -66,7 +66,7 @@ namespace space{
 			typedef shared_ptr<Primitive> Primitive_ptr; 
 			//typedef shared_ptr<Primitive> Primitive_ptr;
 
-			class BSPNode : public util::BinaryTreeNode< BBox >, public Primitive {
+			class BSPNode : public Primitive, public util::BinaryTreeNode< BBox >{
 			public:
 				//typedef shared_ptr< BSPNode > Ptr;
 
@@ -75,14 +75,14 @@ namespace space{
 
 				}
 
-				bool Intersect(Ray ray, float&t, Shader& sd);
+				virtual bool Intersect(Ray ray, float&t, Shader& sd);
 
-				void CalculateBoundsBox(math::Vector3 &max, math::Vector3 &min)const{
+				virtual void CalculateBoundsBox(math::Vector3 &max, math::Vector3 &min)const{
 					max = elem.bmax; min = elem.bmin;
 				}
 			};
 
-			class BSPLeaf : public util::BinaryTreeLeaf< BBox >, public Primitive {
+			class BSPLeaf :public Primitive, public util::BinaryTreeLeaf< BBox >{
 			private:
 				vector<Primitive_ptr> prims;
 			public:
@@ -91,14 +91,15 @@ namespace space{
 				BSPLeaf() : Primitive(nullptr, nullptr), util::BinaryTreeLeaf< BBox >(){}
 				BSPLeaf(BBox box, const vector<Primitive_ptr>& prims) :Primitive(nullptr, nullptr), util::BinaryTreeLeaf< BBox >(box), prims(prims){}
 
-				bool Intersect(Ray ray, float&t, Shader& sd);
+				virtual bool Intersect(Ray ray, float&t, Shader& sd);
 
-				void CalculateBoundsBox(math::Vector3 &max, math::Vector3 &min)const{
+				virtual void CalculateBoundsBox(math::Vector3 &max, math::Vector3 &min)const{
 					max = elem.bmax; min = elem.bmin;
 				}
 			};
 
-			BSPNode::Ptr BuildBSPTree(const vector<Primitive_ptr>& prims, uint depth);
+			const uint maxDepth = 10;
+			BSPNode::Ptr BuildBSPTree(/*out*/vector<Primitive_ptr>& bsp, const vector<Primitive_ptr>& prims, uint depth);
 
 			void CreatePrimitives(vector<Primitive_ptr>& prims, const Mesh& mesh);
 
@@ -137,7 +138,8 @@ namespace space{
 				template< typename T >
 				void Render(vector<T>& image, uint width, uint height){
 					/* construct accelerate structure */
-					BuildBSPTree(prims, 10);
+					vector<Primitive_ptr> bspPrims;
+					BSPNode::Ptr root = BuildBSPTree(bspPrims, prims, maxDepth);
 
 					/*trace the ray*/
 					float fovy, aspect, zNear, zFar;
@@ -157,7 +159,7 @@ namespace space{
 								-1 * zNear - 1);
 							ray.dir = dist - ray.ori;
 
-							Color color = Trace(prims, ray, 4);
+							Color color = Trace(bspPrims, ray, 4);
 							image.push_back(T(color));
 						}
 					}

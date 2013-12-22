@@ -79,16 +79,16 @@ int main(){
 	return 0;
 }
 
-Mesh bunny;
+Mesh venusm;
 Mesh cube;
 
 BSPNode::Ptr root;
 
 
 void Init(){
-	bunny.LoadFromFile("../../resourse/venusm.obj");
-	bunny.Rescale(1.0f);
-	bunny.CompileModel(SP_TRIANGLES);
+	venusm.LoadFromFile("../../resourse/venusm.obj");
+	venusm.Rescale(1.0f);
+	venusm.CompileModel(SP_TRIANGLES);
 
 	cube.LoadFromFile("../../resourse/cubeuv.obj");
 	cube.Rescale(0.5);
@@ -98,7 +98,8 @@ void Init(){
 
 	CreatePrimitives(prims, bunny);
 
-	root = BuildBSPTree(prims,32);
+	vector<Primitive_ptr> bsp;
+	root = BuildBSPTree(bsp,prims,16);
 
 	Vector3 eye(0, 1, 2), lookat(0, 0, 0);
 	PerspectiveCamera camera(eye, lookat - eye);
@@ -112,6 +113,8 @@ void display(){
 
 	clock_t t1 = clock();
 
+	GetGame()->GetRenderDevice()->RotateEye(dt * 90, 0);
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glEnable(GL_DEPTH_TEST);
@@ -119,7 +122,6 @@ void display(){
 	glDepthFunc(GL_LEQUAL);
 	initLights();
 
-	GetGame()->GetRenderDevice()->RotateEye(dt * 90, 0);
 
 	Material material;
 	material.diffuse = gold;

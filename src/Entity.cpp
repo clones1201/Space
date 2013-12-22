@@ -43,8 +43,8 @@ namespace space{
 			v = 1+v;
 		}
 
-		uint w = u * width;
-		uint h = v * height;
+		uint w = u * width == width ? ( u * width -1 ):u*width;
+		uint h = v * height == height ?(v* height - 1):v*width;
 
 		Color result;
 		if (4 == image.size() / (width*height)){

@@ -28,7 +28,7 @@ namespace space{
 		virtual void RotateE(float degX, float degY) = 0;
 	};
 
-	class Camera : public Object, public ICamera{
+	class Camera : public Object,virtual public ICamera{
 	protected:
 		math::Vector3 vEye, vLook;
 		math::Vector3 vUp, vRight;
@@ -63,7 +63,7 @@ namespace space{
 		virtual void RotateE(float degX, float degY){}
 	};
 
-	class IPerspectiveCamera : public ICamera{
+	class IPerspectiveCamera : virtual public ICamera{
 	public:
 		virtual void SetPerspective(float fovy, float aspect, float zNear, float zFar) = 0;
 		virtual void SetAspect(float _aspect) = 0;

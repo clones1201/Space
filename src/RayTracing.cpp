@@ -147,28 +147,42 @@ namespace space{
 				}
 			};
 
-			const uint maxDepth = 10;
-			const uint maxObjects = 16;
+			const uint maxObjects = 32;
+
+			static uint tdepth = maxDepth;
 
 			bool BSPNode::Intersect(Ray ray, float&t, Shader& sd){
-				bool result;
+				bool result = false;
 				float tmax, tmin;
-				if (result = elem.Intersect(ray, tmax, tmin)){
+				float tl = INFINITY, tr = INFINITY;
+				Shader sdl, sdr; 
+				
+				if (result = elem.Intersect(ray, tmin, tmax)){
+					bool resultL = false, resultR=false;
+					resultL = ((BSPNode*)(leftChild.get()))->Intersect(ray, tl, sdl);
+					resultR = ((BSPNode*)(leftChild.get()))->Intersect(ray, tr, sdr);
 
-					leftChild;
-
+					if (tl < tr){
+						t = tl;	sd = sdl;
+					}
+					else{
+						t = tr; sd = sdr;
+					}
+					result = resultL || resultR;
 				}
 				return result;
 			}
-			bool BSPLeaf::Intersect(Ray ray, float&t, Shader& sd){
-				bool result;
-				float tmin;
+			bool BSPLeaf::Intersect(Ray ray, float&tmin, Shader& sd){
+				bool result = false;
+				float t;
+				tmin = INFINITY;
 				for (uint i = 0; i < prims.size(); i++){
 					Shader sdt;
-					if (result = prims[i]->Intersect(ray, tmin, sdt)){
-						if (tmin < t){
+					if (prims[i]->Intersect(ray, t, sdt)){
+						if (t < tmin){
 							sd = sdt;
-							t = tmin;
+							tmin = t;
+							result = true;
 						}
 					}
 				}
@@ -176,15 +190,17 @@ namespace space{
 			}
 
 			enum Axis{
-				AxisX = 0,AxisY = 1,AxisZ = 2
+				AxisX = 0, AxisY = 1, AxisZ = 2
 			};
 
-			void BuildTree(BSPNode::Ptr& node,const BBox& nodeBox,const vector<BBox>& bounds,const vector<Primitive_ptr>& prims, uint depth){
+			void BuildTree(BSPNode::Ptr& node, const BBox& nodeBox, 
+				const vector<BBox>& bounds, const vector<Primitive_ptr>& prims, uint depth){
 				node = (BSPNode::Ptr)(new BSPNode(nodeBox));
-				
+				ofstream fs("bsp.txt", ios_base::app);
+
 				/* reach threhold, create leaf */
 				if (depth == 0 || bounds.size() <= maxObjects){
-					node = (BSPNode::Ptr)(new BSPLeaf(nodeBox,prims));
+					node = (BSPNode::Ptr)(new BSPLeaf(nodeBox, prims));
 					return;
 				}
 				vector<Primitive_ptr> leftprims, rightprims;
@@ -210,56 +226,57 @@ namespace space{
 						axis = AxisZ;
 					}
 				}
-
 				auto piter = prims.begin();
 				auto biter = bounds.begin();
 				/* split the prims */
-					leftBox = rightBox = nodeBox;
-					((float*)&(leftBox.bmax))[axis] = (((float*)&(nodeBox.bmax))[axis] + ((float*)&(nodeBox.bmin))[axis]) / 2;
-					((float*)&(rightBox.bmin))[axis] = (((float*)&(nodeBox.bmax))[axis] + ((float*)&(nodeBox.bmin))[axis]) / 2;
-					for (; piter != prims.end() && biter != bounds.end();){
-						BBox box;
-						(*piter)->CalculateBoundsBox(box.bmax, box.bmin);
-						if (((float*)&(box.bmax))[axis] < ((float*)&(leftBox.bmax))[axis]){
-							leftboxs.push_back(box);
-							leftprims.push_back(*piter);
-						}
-						else if (((float*)&(box.bmin))[axis] > ((float*)&(rightBox.bmin))[axis]){
-							rightboxs.push_back(box);
-							rightprims.push_back(*piter);
-						}
-						else{
-							leftboxs.push_back(box);
-							leftprims.push_back(*piter);
-							rightboxs.push_back(box);
-							rightprims.push_back(*piter);
-						}
-						piter++; biter++;
+				leftBox = rightBox = nodeBox;
+				((float*)&(leftBox.bmax))[axis] = (((float*)&(nodeBox.bmax))[axis] + ((float*)&(nodeBox.bmin))[axis]) / 2;
+				((float*)&(rightBox.bmin))[axis] = (((float*)&(nodeBox.bmax))[axis] + ((float*)&(nodeBox.bmin))[axis]) / 2;
+				for (; piter != prims.end() && biter != bounds.end();){
+					BBox box;
+					(*piter)->CalculateBoundsBox(box.bmax, box.bmin);
+					if (((float*)&(box.bmax))[axis] < ((float*)&(leftBox.bmax))[axis]){
+						leftboxs.push_back(box);
+						leftprims.push_back(*piter);
 					}
-					
+					else if (((float*)&(box.bmin))[axis] > ((float*)&(rightBox.bmin))[axis]){
+						rightboxs.push_back(box);
+						rightprims.push_back(*piter);
+					}
+					else{
+						leftboxs.push_back(box);
+						leftprims.push_back(*piter);
+						rightboxs.push_back(box);
+						rightprims.push_back(*piter);
+					}
+					piter++; biter++;
+				}
 				/* recurisive bulid the tree */
-				BuildTree(left, leftBox,leftboxs,leftprims,depth-1);
-				BuildTree(right, rightBox,rightboxs,rightprims,depth-1);
-				
+				BuildTree(left, leftBox, leftboxs, leftprims, depth - 1);
+				BuildTree(right, rightBox, rightboxs, rightprims, depth - 1);
+
 				node->SetChildren(left, right);
 			}
-  
-			BSPNode::Ptr BuildBSPTree(const vector<Primitive_ptr>& prims,uint depth){
+
+			BSPNode::Ptr BuildBSPTree(vector<Primitive_ptr>& bsp, const vector<Primitive_ptr>& prims, uint depth){
 				vector<BBox> bounds;
 				BBox allbox;
 				/* Calculate all Bounding box */
 				for (uint i = 0; i < prims.size(); i++){
 					BBox box;
 					prims[i]->CalculateBoundsBox(box.bmax, box.bmin);
-					if (! (box.bmax == box.bmin)){
-						bounds.push_back(box);
-						allbox = allbox + box;
-					}
+					/*if (! (box.bmax == box.bmin)){*/
+					bounds.push_back(box);
+					allbox = allbox + box;
+					/*}
+					else{
+					bsp.push_back(prims[i]);
+					}*/
 				}
-				
-				BSPNode::Ptr root = nullptr;
-				BuildTree(root, allbox, bounds,prims, 10);
 
+				BSPNode::Ptr root = nullptr;
+				BuildTree(root, allbox, bounds, prims, depth);
+				bsp.push_back(*new Primitive_ptr((BSPNode*)(root.get())));
 				return root;
 			}
 			void CreatePrimitives(vector<Primitive_ptr>& prims, const Mesh& mesh){
@@ -267,7 +284,7 @@ namespace space{
 				uint stride = mesh.GetCompiledVertexSize();
 				const float *vertices = mesh.GetCompiledVertices();
 				const uint* indices = mesh.GetCompiledIndices();
-				
+
 				Matrix matWorld;
 				Vector3 o = Vec3Transform(matWorld, Vector4(0, 0, 0, 1));
 				for (uint i = 0; i < count; i += 3){
@@ -333,8 +350,6 @@ namespace space{
 				Shader sd;
 				for (uint i = 0; i < prims.size(); i++){
 					Shader sdt;
-
-					/* late, change it to a BSP tree */
 					if (prims[i]->Intersect(ray, t, sdt)){
 						if (t < tmin){
 							sd = sdt;
