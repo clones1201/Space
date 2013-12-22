@@ -811,13 +811,13 @@ namespace space{
 				else{ tz_min = (bmax.z - oz) * c;	tz_max = (bmin.z - oz) * c; }
 
 				//find largest entering t value
-				if (tx_min > ty_min){ tmin = tx_min; }
-				else{ tmin = ty_min; }
-				if (tz_min > tmin)		tmin = tz_min;
+				tmin = max(tz_min, max(tx_min, ty_min));
 				//find smallest exiting t value
-				if (tx_max < ty_max){ tmax = tx_max; }
-				else{ tmax = ty_max; }
-				if (tz_max < tmax)		tmax = tz_max;
+				tmax = min(tz_max, min(tx_max, ty_max));
+
+				math::Vector3 min, max;
+				max = ray.dir * tmax + ray.ori;
+				min = ray.dir * tmin + ray.ori;
 
 				return (tmin < tmax && tmax > 0.001);
 			}

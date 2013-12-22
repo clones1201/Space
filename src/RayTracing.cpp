@@ -109,7 +109,9 @@ namespace space{
 				}
 
 				virtual void CalculateBoundsBox(math::Vector3 &max, math::Vector3 &min)const{
-
+					min.x = min.y = min.z = -5;
+					max.x = max.y = 5;
+					max.z = 0;
 				}
 			};
 
@@ -155,10 +157,10 @@ namespace space{
 				bool result = false;
 				float tmax, tmin;
 				float tl = INFINITY, tr = INFINITY;
-				Shader sdl, sdr; 
-				
+				Shader sdl, sdr;
+
 				if (result = elem.Intersect(ray, tmin, tmax)){
-					bool resultL = false, resultR=false;
+					bool resultL = false, resultR = false;
 					resultL = ((BSPNode*)(leftChild.get()))->Intersect(ray, tl, sdl);
 					resultR = ((BSPNode*)(leftChild.get()))->Intersect(ray, tr, sdr);
 
@@ -193,9 +195,10 @@ namespace space{
 				AxisX = 0, AxisY = 1, AxisZ = 2
 			};
 
-			void BuildTree(BSPNode::Ptr& node, const BBox& nodeBox, 
+			void BuildTree(BSPNode::Ptr& node, const BBox& nodeBox,
 				const vector<BBox>& bounds, const vector<Primitive_ptr>& prims, uint depth){
 				node = (BSPNode::Ptr)(new BSPNode(nodeBox));
+
 				ofstream fs("bsp.txt", ios_base::app);
 
 				/* reach threhold, create leaf */
@@ -265,13 +268,18 @@ namespace space{
 				for (uint i = 0; i < prims.size(); i++){
 					BBox box;
 					prims[i]->CalculateBoundsBox(box.bmax, box.bmin);
-					/*if (! (box.bmax == box.bmin)){*/
-					bounds.push_back(box);
-					allbox = allbox + box;
-					/*}
-					else{
-					bsp.push_back(prims[i]);
-					}*/
+					if (!(box.bmax == box.bmin)){
+						bounds.push_back(box);
+						allbox = allbox + box;
+						//bsp.push_back(prims[i]);
+					}
+					//else{
+					//	box.bmin.x = box.bmin.y = box.bmin.z = -15;
+					//	box.bmax.x = box.bmax.y = box.bmax.z = 15;
+					//	bounds.push_back(box);
+					//	allbox = allbox + box;
+					//	//bsp.push_back(prims[i]);
+					//}
 				}
 
 				BSPNode::Ptr root = nullptr;
@@ -416,19 +424,19 @@ namespace space{
 					/* using Monte Carlo
 					/* not working good
 					*/
-					/*Color indirectIllumination;
+					Color indirectIllumination;
 					Shader isd;
 
-					if (depth > 1){
-					for (uint i = 0; i < 90; i++){
+					/*if (depth > 1){
+					for (uint i = 0; i < 30; i++){
 					Ray iRay;
 					iRay.ori = sd.hitPos;
 					iRay.dir = Vec3Normalize(Sample::Instance()->HemiSphere(sd.normal, sd.hitPos, 1, 0));
-					indirectIllumination = indirectIllumination + (1 / 90.0) * Trace(prims, iRay, 1);
+					indirectIllumination = indirectIllumination + (1 / 30.0) * Trace(prims, iRay, 1);
 					}
 					}*/
 
-					return color/* + 0.5f * indirectIllumination */
+					return color + 0.5f * indirectIllumination
 						+ sd.material.reflect * Trace(prims, reflectRay, depth - 1)
 						+ sd.material.greflect * greflectColor
 						/* + sd.material.refract * Trace(prims, refractRay, depth - 1)*/

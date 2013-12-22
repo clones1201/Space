@@ -96,7 +96,7 @@ void Init(){
 
 	vector<Primitive_ptr> prims;
 
-	CreatePrimitives(prims, bunny);
+	CreatePrimitives(prims, venusm);
 
 	vector<Primitive_ptr> bsp;
 	root = BuildBSPTree(bsp,prims,16);
@@ -128,7 +128,7 @@ void display(){
 	material.kd = 15.0f / 128.0f;
 	GetGame()->GetRenderDevice()->SetMaterial(material);
 	GetGame()->GetRenderDevice()->SetColor(graphic::white);
-	GetGame()->GetRenderDevice()->DrawSolidMesh(bunny);
+	GetGame()->GetRenderDevice()->DrawSolidMesh(venusm);
 
 	glDisable(GL_LIGHTING);
 	GetGame()->GetRenderDevice()->SetColor(graphic::green);

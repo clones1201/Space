@@ -98,7 +98,7 @@ namespace space{
 				}
 			};
 
-			const uint maxDepth = 10;
+			const uint maxDepth = 16;
 			BSPNode::Ptr BuildBSPTree(/*out*/vector<Primitive_ptr>& bsp, const vector<Primitive_ptr>& prims, uint depth);
 
 			void CreatePrimitives(vector<Primitive_ptr>& prims, const Mesh& mesh);
@@ -159,7 +159,7 @@ namespace space{
 								-1 * zNear - 1);
 							ray.dir = dist - ray.ori;
 
-							Color color = Trace(bspPrims, ray, 4);
+							Color color = Trace(bspPrims, ray, 2);
 							image.push_back(T(color));
 						}
 					}
