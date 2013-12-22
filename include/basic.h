@@ -61,9 +61,9 @@ namespace space{
 
 			BinaryTreeNode(){}
 			BinaryTreeNode(const T &elem){ BinaryTreeNode::elem = T(elem); }
-			BinaryTreeNode(BinaryTreeNode<T> &left, BinaryTreeNode<T> &right, const T &elem);
+			BinaryTreeNode(Ptr left,Ptr right, const T &elem);
 
-			virtual void SetChildren(BinaryTreeNode<T> &left, BinaryTreeNode<T> &right);
+			virtual void SetChildren(Ptr left,Ptr right);
 
 			void SetElem(const T &elem){
 				BinaryTreeNode::elem = T(elem);
@@ -72,11 +72,11 @@ namespace space{
 				return elem;
 			}
 
-			BinaryTreeNode* GetLeft() const{
-				return leftChild.get();
+			Ptr GetLeft() const{
+				return leftChild;
 			}
-			BinaryTreeNode* GetRight() const{
-				return rightChild.get();
+			Ptr GetRight() const{
+				return rightChild;
 			}
 
 			virtual bool isLeaf() const{
@@ -87,7 +87,7 @@ namespace space{
 		template< typename T>
 		class BinaryTreeLeaf : public BinaryTreeNode<T>{
 		protected:
-			virtual void SetChildren(BinaryTreeNode<T> &left, BinaryTreeNode<T> &right){}
+			virtual void SetChildren(BinaryTreeNode<T>::Ptr left, BinaryTreeNode<T>::Ptr right){}
 		public:
 			typedef shared_ptr< BinaryTreeLeaf<T> > Ptr;
 
@@ -102,16 +102,14 @@ namespace space{
 		};
 
 		template< typename T>
-		BinaryTreeNode<T>::BinaryTreeNode(BinaryTreeNode<T> &left, BinaryTreeNode<T> &right, const T &elem){
-			leftChild = BinaryTreeNode<T>::Ptr(&left);
-			rightChild = BinaryTreeNode<T>::Ptr(&right);			
+		BinaryTreeNode<T>::BinaryTreeNode(Ptr left,Ptr right, const T &elem){
+			leftChild = left; rightChild = right;
 			BinaryTreeNode::elem = T(elem);
 		}
 
 		template< typename T>
-		void BinaryTreeNode<T>::SetChildren(BinaryTreeNode<T> &left, BinaryTreeNode<T> &right){
-			leftChild = BinaryTreeNode<T>::Ptr(&left);
-			rightChild = BinaryTreeNode<T>::Ptr(&right);
+		void BinaryTreeNode<T>::SetChildren(Ptr left, Ptr right){
+			leftChild = left; rightChild = right;
 		}
 	}
 
@@ -192,21 +190,32 @@ namespace space{
 			return float2(-p.x, -p.y);
 		}
 
-		inline float2& operator+=(float2& p1, const float2& p2){
-			p1.x += p2.x; p1.y += p2.y;
-			return p1;
+		inline float2 operator+=(float2& p1, const float2& p2){
+			float2 result;
+			result.x = p1.x + p2.x; result.y = p1.y + p2.y; 
+			return result;
 		}
-		inline float2& operator-=(float2& p1, const float2& p2){
-			p1.x -= p2.x; p1.y -= p2.y;
-			return p1;
+		inline float2 operator-=(float2& p1, const float2& p2){
+			float2 result;
+			result.x = p1.x - p2.x; result.y = p1.y - p2.y;
+			return result;
 		}
-		inline float2& operator*=(float2& p1, float p2){
-			p1.x *= p2; p1.y *= p2;
-			return p1;
+		inline float2 operator*=(float2& p1, float p2){
+			float2 result;
+			result.x = p1.x * p2; result.y = p1.y * p2;
+			return result;
 		}
-		inline float2& operator/=(float2& p1, float p2){
-			p1.x /= p2; p1.y /= p2;
-			return p1;
+		inline float2 operator/=(float2& p1, float p2){
+			float2 result;
+			result.x = p1.x / p2; result.y = p1.y / p2;
+			return result;
+		}
+
+		inline bool operator== (const float2 &p1,const float2&p2){
+			return (p1.x == p2.x && p1.y == p2.y);
+		}
+		inline bool operator!=(const float2 &p1, const float2 &p2){
+			return !(p1 == p2);
 		}
 
 		inline float2 Vec2Normalize(const float2& p){
@@ -324,21 +333,33 @@ namespace space{
 			return float3(-p.x, -p.y, -p.z);
 		}
 
-		inline float3& operator+=(float3& p1, const float3& p2){
-			p1.x += p2.x; p1.y += p2.y; p1.z += p2.z;
+		inline float3 operator+=(const float3& p1, const float3& p2){
+			float3 result;
+			result.x = p1.x + p2.x; result.y = p1.y + p2.y; result.z = p1.z + p2.z;
 			return p1;
 		}
-		inline float3& operator-=(float3& p1, const float3& p2){
-			p1.x -= p2.x; p1.y -= p2.y; p1.z -= p2.z;
+		inline float3 operator-=(const float3& p1, const float3& p2){
+			float3 result;
+			result.x = p1.x - p2.x; result.y = p1.y - p2.y; result.z = p1.z - p2.z;
 			return p1;
 		}
-		inline float3& operator*=(float3& p1, float p2){
-			p1.x *= p2; p1.y *= p2; p1.z *= p2;
+		inline float3 operator*=(const float3& p1, float p2){
+			float3 result;
+			result.x = p1.x * p2; result.y = p1.y * p2; result.z = p1.z * p2;
 			return p1;
 		}
-		inline float3& operator/=(float3& p1, float p2){
-			p1.x /= p2; p1.y /= p2; p1.z /= p2;
+		inline float3 operator/=(const float3& p1, float p2){
+			float3 result;
+			result.x = p1.x / p2; result.y = p1.y / p2; result.z = p1.z / p2;
 			return p1;
+		}
+
+		inline bool operator== (const float3 &p1,const float3&p2){
+			return (p1.x == p2.x && p1.y == p2.y && p1.z == p2.z);
+		}
+
+		inline bool operator!=(const float3 &p1, const float3&p2){
+			return !(p1 == p2);
 		}
 
 		inline float Vec4Length(const float4& p){
@@ -768,6 +789,7 @@ namespace space{
 		class BBox {
 		public:
 			math::Vector3 bmin, bmax;
+			BBox() :bmin(), bmax(){}
 			bool Intersect(Ray ray, float&tmin, float&tmax){
 
 				float ox = ray.ori.x; float oy = ray.ori.y; float oz = ray.ori.z;
@@ -800,6 +822,18 @@ namespace space{
 				return (tmin < tmax && tmax > 0.001);
 			}
 		};
+
+		inline BBox operator+(const BBox&b1, const BBox& b2){
+			BBox result;
+			result.bmax.x = max(b1.bmax.x, b2.bmax.x);
+			result.bmax.y = max(b1.bmax.y, b2.bmax.y);
+			result.bmax.z = max(b1.bmax.z, b2.bmax.z);
+
+			result.bmin.x = min(b1.bmin.x, b2.bmin.x);
+			result.bmin.y = min(b1.bmin.y, b2.bmin.y);
+			result.bmin.z = min(b1.bmin.z, b2.bmin.z);
+			return result;
+		}
 
 		class Material{
 		public:

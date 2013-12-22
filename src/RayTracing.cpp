@@ -10,14 +10,14 @@ namespace space{
 			class Sphere : public Primitive{
 			private:
 				float r;
-				Vector3 centre;
+				math::Vector3 centre;
 			public:
-				Sphere(Material_ptr m, Texture_ptr t, float r = 1, Vector3 centre = Vector3(0, 0, 0)) :
+				Sphere(Material_ptr m, Texture_ptr t, float r = 1, math::Vector3 centre = math::Vector3(0, 0, 0)) :
 					Primitive(m, t), r(r), centre(centre){}
 				bool Intersect(Ray ray, float&tmin, Shader& sd){
 					float t;
 					sd.hitAnObject = false;
-					Vector3 temp = ray.ori - centre;
+					math::Vector3 temp = ray.ori - centre;
 					float a = Vec3Dot(ray.dir, ray.dir);
 					float b = 2.0 * Vec3Dot(temp, ray.dir);
 					float c = Vec3Dot(temp, temp) - r * r;
@@ -65,7 +65,7 @@ namespace space{
 					return false;
 				}
 
-				virtual void CalculateBoundsBox(Vector3 &max, Vector3 &min){
+				virtual void CalculateBoundsBox(math::Vector3 &max, math::Vector3 &min)const{
 					max.x = centre.x + r;
 					max.y = centre.y + r;
 					max.z = centre.z + r;
@@ -78,8 +78,8 @@ namespace space{
 
 			class Plane : public Primitive{
 			private:
-				Vector3 normal;
-				Vector3 pos;
+				math::Vector3 normal;
+				math::Vector3 pos;
 			public:
 				Plane(Material_ptr m, Texture_ptr t, Vector3 normal = Vector3(0, 1, 0), Vector3 pos = Vector3(0, 0, 0)) :
 					Primitive(m, t), normal(normal), pos(pos){}
@@ -108,7 +108,7 @@ namespace space{
 					return true;
 				}
 
-				virtual void CalculateBoundsBox(Vector3 &max, Vector3 &min){
+				virtual void CalculateBoundsBox(math::Vector3 &max, math::Vector3 &min)const{
 
 				}
 			};
@@ -136,7 +136,7 @@ namespace space{
 					return false;
 				}
 
-				virtual void CalculateBoundsBox(Vector3 &max, Vector3 &min){
+				virtual void CalculateBoundsBox(math::Vector3 &max, math::Vector3 &min)const{
 					max.x = max(tri.v0.x, max(tri.v1.x, tri.v2.x));
 					max.y = max(tri.v0.y, max(tri.v1.y, tri.v2.y));
 					max.z = max(tri.v0.z, max(tri.v1.z, tri.v2.z));
@@ -147,7 +147,6 @@ namespace space{
 				}
 			};
 
-			
 			const uint maxDepth = 10;
 			const uint maxObjects = 16;
 
@@ -175,27 +174,124 @@ namespace space{
 				}
 				return result;
 			}
-			void BuildTree(BSPNode** node, vector<BBox> bounds,uint depth){
-				*node = (BSPNode*)(new BSPNode());
 
-				BSPNode* left = nullptr, *right=nullptr;
-				BuildTree(&left, bounds,depth-1);
-				BuildTree(&right, bounds,depth-1);
-				(*node)->SetChildren(*left, *right);
+			enum Axis{
+				AxisX = 0,AxisY = 1,AxisZ = 2
+			};
+
+			void BuildTree(BSPNode::Ptr& node,const BBox& nodeBox,const vector<BBox>& bounds,const vector<Primitive_ptr>& prims, uint depth){
+				node = (BSPNode::Ptr)(new BSPNode(nodeBox));
+				
+				/* reach threhold, create leaf */
+				if (depth == 0 || bounds.size() <= maxObjects){
+					node = (BSPNode::Ptr)(new BSPLeaf(nodeBox,prims));
+					return;
+				}
+				vector<Primitive_ptr> leftprims, rightprims;
+				vector<BBox> leftboxs, rightboxs;
+				BBox leftBox, rightBox;
+				BSPNode::Ptr left = nullptr, right = nullptr;
+
+				/* find the longest axis */
+				float dx, dy, dz;
+				dx = nodeBox.bmax.x - nodeBox.bmin.x;
+				dy = nodeBox.bmax.y - nodeBox.bmin.y;
+				dz = nodeBox.bmax.z - nodeBox.bmin.z;
+				Axis axis;
+				if (dx > dy){
+					axis = AxisX;
+					if (dz > dx){
+						axis = AxisZ;
+					}
+				}
+				else{
+					axis = AxisY;
+					if (dz > dy){
+						axis = AxisZ;
+					}
+				}
+
+				auto piter = prims.begin();
+				auto biter = bounds.begin();
+				/* split the prims */
+					leftBox = rightBox = nodeBox;
+					((float*)&(leftBox.bmax))[axis] = (((float*)&(nodeBox.bmax))[axis] + ((float*)&(nodeBox.bmin))[axis]) / 2;
+					((float*)&(rightBox.bmin))[axis] = (((float*)&(nodeBox.bmax))[axis] + ((float*)&(nodeBox.bmin))[axis]) / 2;
+					for (; piter != prims.end() && biter != bounds.end();){
+						BBox box;
+						(*piter)->CalculateBoundsBox(box.bmax, box.bmin);
+						if (((float*)&(box.bmax))[axis] < ((float*)&(leftBox.bmax))[axis]){
+							leftboxs.push_back(box);
+							leftprims.push_back(*piter);
+						}
+						else if (((float*)&(box.bmin))[axis] > ((float*)&(rightBox.bmin))[axis]){
+							rightboxs.push_back(box);
+							rightprims.push_back(*piter);
+						}
+						else{
+							leftboxs.push_back(box);
+							leftprims.push_back(*piter);
+							rightboxs.push_back(box);
+							rightprims.push_back(*piter);
+						}
+						piter++; biter++;
+					}
+					
+				/* recurisive bulid the tree */
+				BuildTree(left, leftBox,leftboxs,leftprims,depth-1);
+				BuildTree(right, rightBox,rightboxs,rightprims,depth-1);
+				
+				node->SetChildren(left, right);
 			}
-
-			BSPNode* BuildBSPTree(const vector<Primitive_ptr>& prims,uint depth){
+  
+			BSPNode::Ptr BuildBSPTree(const vector<Primitive_ptr>& prims,uint depth){
 				vector<BBox> bounds;
-
+				BBox allbox;
+				/* Calculate all Bounding box */
 				for (uint i = 0; i < prims.size(); i++){
 					BBox box;
 					prims[i]->CalculateBoundsBox(box.bmax, box.bmin);
-					bounds.push_back(box);
+					if (! (box.bmax == box.bmin)){
+						bounds.push_back(box);
+						allbox = allbox + box;
+					}
 				}
+				
+				BSPNode::Ptr root = nullptr;
+				BuildTree(root, allbox, bounds,prims, 10);
 
-				return new BSPNode;
+				return root;
 			}
+			void CreatePrimitives(vector<Primitive_ptr>& prims, const Mesh& mesh){
+				uint count = mesh.GetCompiledIndexCount();
+				uint stride = mesh.GetCompiledVertexSize();
+				const float *vertices = mesh.GetCompiledVertices();
+				const uint* indices = mesh.GetCompiledIndices();
+				
+				Matrix matWorld;
+				Vector3 o = Vec3Transform(matWorld, Vector4(0, 0, 0, 1));
+				for (uint i = 0; i < count; i += 3){
+					graphic::Triangle tri;
+					uint idx0 = indices[i];
+					uint idx1 = indices[i + 1];
+					uint idx2 = indices[i + 2];
 
+					tri.v0 = Vec3Transform(matWorld,
+						Vector4(((float*)vertices)[idx0 * stride],
+						((float*)vertices)[idx0 * stride + 1],
+						((float*)vertices)[idx0 * stride + 2], 1));
+					tri.v1 = Vec3Transform(matWorld,
+						Vector4(((float*)vertices)[idx1 * stride],
+						((float*)vertices)[idx1 * stride + 1],
+						((float*)vertices)[idx1 * stride + 2], 1));
+					tri.v2 = Vec3Transform(matWorld,
+						Vector4(((float*)vertices)[idx2 * stride],
+						((float*)vertices)[idx2 * stride + 1],
+						((float*)vertices)[idx2 * stride + 2], 1));
+
+					prims.push_back(Primitive_ptr(new raytrace::Triangle(nullptr, nullptr, tri)));
+				}
+			}
 			Color RenderSystemRayTrace::RayTracer::Shade(const Shader& sd, const Vector3&wi,/*out*/ Vector3& wo, bool isInshadow){
 				wo = -sd.ray.dir;
 				Material m = sd.material;

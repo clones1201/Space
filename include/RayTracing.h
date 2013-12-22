@@ -61,13 +61,15 @@ namespace space{
 			public:
 				Primitive(Material_ptr mptr, Texture_ptr tptr) :material(mptr),texture(tptr){};
 				virtual bool Intersect(Ray, float&, Shader&) = 0;
-				virtual void CalculateBoundsBox(math::Vector3 &max, math::Vector3 &min) = 0;
+				virtual void CalculateBoundsBox(math::Vector3 &max, math::Vector3 &min) const = 0;
 			};
 			typedef shared_ptr<Primitive> Primitive_ptr; 
 			//typedef shared_ptr<Primitive> Primitive_ptr;
-		
+
 			class BSPNode : public util::BinaryTreeNode< BBox >, public Primitive {
 			public:
+				//typedef shared_ptr< BSPNode > Ptr;
+
 				BSPNode() :Primitive(nullptr, nullptr), util::BinaryTreeNode< BBox >(){}
 				BSPNode(BBox box) :Primitive(nullptr, nullptr), util::BinaryTreeNode< BBox >(box){
 
@@ -75,7 +77,7 @@ namespace space{
 
 				bool Intersect(Ray ray, float&t, Shader& sd);
 
-				void CalculateBoundsBox(math::Vector3 &max, math::Vector3 &min){
+				void CalculateBoundsBox(math::Vector3 &max, math::Vector3 &min)const{
 					max = elem.bmax; min = elem.bmin;
 				}
 			};
@@ -84,13 +86,21 @@ namespace space{
 			private:
 				vector<Primitive_ptr> prims;
 			public:
-				BSPLeaf() :Primitive(nullptr, nullptr), util::BinaryTreeLeaf< BBox >(){}
+				//typedef shared_ptr< BSPLeaf > Ptr;
+
+				BSPLeaf() : Primitive(nullptr, nullptr), util::BinaryTreeLeaf< BBox >(){}
 				BSPLeaf(BBox box, const vector<Primitive_ptr>& prims) :Primitive(nullptr, nullptr), util::BinaryTreeLeaf< BBox >(box), prims(prims){}
 
 				bool Intersect(Ray ray, float&t, Shader& sd);
+
+				void CalculateBoundsBox(math::Vector3 &max, math::Vector3 &min)const{
+					max = elem.bmax; min = elem.bmin;
+				}
 			};
 
-			BSPNode* BuildBSPTree(const vector<Primitive_ptr>& prims, uint depth);
+			BSPNode::Ptr BuildBSPTree(const vector<Primitive_ptr>& prims, uint depth);
+
+			void CreatePrimitives(vector<Primitive_ptr>& prims, const Mesh& mesh);
 
 			class RenderSystemRayTrace::RayTracer : private Interface{
 			private:

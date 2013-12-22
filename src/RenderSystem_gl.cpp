@@ -245,6 +245,7 @@ namespace space{
 
 			glDisableClientState(GL_VERTEX_ARRAY);
 			glDisableClientState(GL_NORMAL_ARRAY);
+
 		}
 
 		void RenderSystemOpenGL::DrawScene( Scene& scene ){
@@ -255,7 +256,37 @@ namespace space{
 		}
 
 		void RenderSystemOpenGL::DrawSphere(float r){}
-		void RenderSystemOpenGL::DrawCube(float a, float b, float c){}
+
+		const float cubevertices[] = {
+			0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+			1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+		};
+		const uint wirecube_indices[] = {
+			0, 1,	1, 2,	2, 3,	3, 0,
+			0, 4,	1, 5,	2, 6,	3, 7,
+			4, 5,	5, 6,	6, 7,	7, 4
+		};
+
+		void RenderSystemOpenGL::DrawCube(float a, float b, float c){
+			float vertices[24];
+
+			for (uint i = 0; i < 8; i++){
+				vertices[i * 3] = cubevertices[i * 3] * a;
+				vertices[i * 3 + 1] = cubevertices[i * 3 + 1] * b;
+				vertices[i * 3 + 2] = cubevertices[i * 3 + 2] * c;
+			}
+
+			glVertexPointer(3, GL_FLOAT, 3 * sizeof(float), vertices);
+			
+			glEnableClientState(GL_VERTEX_ARRAY);
+
+			glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, wirecube_indices);
+
+			glDisableClientState(GL_VERTEX_ARRAY);
+		}
+
 		void RenderSystemOpenGL::DrawPlane(math::Vector3 normal){}
 	}
 }

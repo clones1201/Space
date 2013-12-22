@@ -34,8 +34,8 @@ void Init(){
 	PerspectiveCamera camera(eye,lookat-eye);
 	GetGame()->GetRenderDevice()->SetView(camera);
 
-	GetGame()->GetRenderDevice()->SetTexture(tex1);
-	GetGame()->GetRenderDevice()->SetTexture(tex2);
+	GetGame()->GetRenderDevice()->SetTexture(&tex1);
+	GetGame()->GetRenderDevice()->SetTexture(&tex2);
 	initLights();
 }
  
@@ -68,8 +68,7 @@ void display(){
 	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(2, 0, 0));
 	GetGame()->GetRenderDevice()->DrawSolidMesh(venusm);
 	glBindTexture(GL_TEXTURE_2D, 0);
-
-
+	
 	glBindTexture(GL_TEXTURE_2D, tex2.GetTexId());
 	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(-2, 0, 0));
 	GetGame()->GetRenderDevice()->DrawSolidMesh(venusm);

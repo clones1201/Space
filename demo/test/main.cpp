@@ -8,6 +8,7 @@ using namespace std;
 #include <Space.h>
 using namespace space::math;
 using namespace space;
+using namespace space::graphic;
 
 ostream& operator<<(ostream &out, const Matrix &mat){
 	for (int i = 0; i < 16; i++){
