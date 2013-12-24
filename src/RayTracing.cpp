@@ -153,22 +153,64 @@ namespace space{
 
 			static uint tdepth = maxDepth;
 
+			enum Axis{
+				AxisX = 0, AxisY = 1, AxisZ = 2
+			};
+
+			inline Axis GetLongestAxis(const BBox& box){
+				/* find the longest axis */
+				float dx, dy, dz;
+				dx = box.bmax.x - box.bmin.x;
+				dy = box.bmax.y - box.bmin.y;
+				dz = box.bmax.z - box.bmin.z;
+				Axis axis;
+				if (dx > dy){
+					axis = AxisX;
+					if (dz > dx){
+						axis = AxisZ;
+					}
+				}
+				else{
+					axis = AxisY;
+					if (dz > dy){
+						axis = AxisZ;
+					}
+				}
+				return axis;
+			}
+
 			bool BSPNode::Intersect(Ray ray, float&t, Shader& sd){
 				bool result = false;
 				float tmax, tmin;
 				float tl = INFINITY, tr = INFINITY;
 				Shader sdl, sdr;
 
+				/* got some big problem here. */
 				if (result = elem.Intersect(ray, tmin, tmax)){
-					bool resultL = false, resultR = false;
-					resultL = ((BSPNode*)(leftChild.get()))->Intersect(ray, tl, sdl);
-					resultR = ((BSPNode*)(leftChild.get()))->Intersect(ray, tr, sdr);
+					Axis axis = GetLongestAxis(elem);
+					float ta_max, ta_min;
+					ta_max = ((float*)&(ray.dir * tmax + ray.ori))[axis];
+					ta_min = ((float*)&(ray.dir * tmin + ray.ori))[axis];
 
-					if (tl < tr){
-						t = tl;	sd = sdl;
+					bool resultL = false, resultR = false;
+					resultL = static_cast<BSPNode*>(leftChild.get())->Intersect(ray, tl, sdl);
+					resultR = static_cast<BSPNode*>(rightChild.get())->Intersect(ray, tr, sdr);
+					
+					if (ta_max > ta_min){
+						if (tl < tr && resultL){
+							t = tl;	sd = sdl;
+						}
+						else if (resultR){
+							t = tr; sd = sdr;
+						}
 					}
 					else{
-						t = tr; sd = sdr;
+						if (tr < tl && resultR){
+							t = tr;	sd = sdr;
+						}
+						else if (resultL){
+							t = tl; sd = sdl;
+						}
 					}
 					result = resultL || resultR;
 				}
@@ -191,10 +233,6 @@ namespace space{
 				return result;
 			}
 
-			enum Axis{
-				AxisX = 0, AxisY = 1, AxisZ = 2
-			};
-
 			void BuildTree(BSPNode::Ptr& node, const BBox& nodeBox,
 				const vector<BBox>& bounds, const vector<Primitive_ptr>& prims, uint depth){
 				node = (BSPNode::Ptr)(new BSPNode(nodeBox));
@@ -211,24 +249,8 @@ namespace space{
 				BBox leftBox, rightBox;
 				BSPNode::Ptr left = nullptr, right = nullptr;
 
-				/* find the longest axis */
-				float dx, dy, dz;
-				dx = nodeBox.bmax.x - nodeBox.bmin.x;
-				dy = nodeBox.bmax.y - nodeBox.bmin.y;
-				dz = nodeBox.bmax.z - nodeBox.bmin.z;
-				Axis axis;
-				if (dx > dy){
-					axis = AxisX;
-					if (dz > dx){
-						axis = AxisZ;
-					}
-				}
-				else{
-					axis = AxisY;
-					if (dz > dy){
-						axis = AxisZ;
-					}
-				}
+				Axis axis = GetLongestAxis(nodeBox);
+				
 				auto piter = prims.begin();
 				auto biter = bounds.begin();
 				/* split the prims */
