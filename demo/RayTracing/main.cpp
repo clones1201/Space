@@ -127,7 +127,7 @@ void display(){
 	wostringstream strfps;
 	static uint fcount = 0;
 	strfps.precision(4);
-	strfps << "Space:Ray Trace " << " time:" << dt << "s" << 1 / dt << " fps ";
+	strfps << "Space:Ray Trace " << " time:" << dt << "s " << 1 / dt << " fps ";
 	
 	GetWindowController()->SetWindowsTitle(strfps.str());
 	fcount++;

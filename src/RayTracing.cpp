@@ -306,7 +306,7 @@ namespace space{
 
 				BSPNode::Ptr root = nullptr;
 				BuildTree(root, allbox, bounds, prims, depth);
-				bsp.push_back(*new Primitive_ptr((BSPNode*)(root.get())));
+				bsp.push_back(*new Primitive_ptr(static_cast<BSPNode*>(root.get())));
 				return root;
 			}
 			void CreatePrimitives(vector<Primitive_ptr>& prims, const Mesh& mesh){
