@@ -13,13 +13,15 @@ namespace space{
 				RenderSystemRayTrace(HWND hWnd, uint width, uint height);
 				~RenderSystemRayTrace();
 
+				void BeginScene();
+				void EndScene();
+
 				void Resize(int width, int height);
 
 				void SetView(const PerspectiveCamera &);
 				//template <TransformType t>
 				void SetTransform(TransformType type, const math::Matrix &matWorld);
-				void Flush();
-
+				
 				void SetColor(const Color& color);
 				void SetMaterial(const Material &m);
 				void SetTexture(Texture*  tex);
@@ -69,14 +71,14 @@ namespace space{
 			class BSPNode : public Primitive, public util::BinaryTreeNode< BBox >{
 			public:
 				//typedef shared_ptr< BSPNode > Ptr;
-
+				/*...*/
 				BSPNode() :Primitive(nullptr, nullptr), util::BinaryTreeNode< BBox >(){}
 				BSPNode(BBox box) :Primitive(nullptr, nullptr), util::BinaryTreeNode< BBox >(box){
 
 				}
 
 				virtual bool Intersect(Ray ray, float&t, Shader& sd);
-
+			
 				virtual void CalculateBoundsBox(math::Vector3 &max, math::Vector3 &min)const{
 					max = elem.bmax; min = elem.bmin;
 				}

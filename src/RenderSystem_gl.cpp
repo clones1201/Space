@@ -92,13 +92,6 @@ namespace space{
 			glClearColor(0, 0, 1, 1);
 		}
 		
-		void RenderSystemOpenGL::SwapBuffer(){
-			SwapBuffers(hDC);
-		}
-		void RenderSystemOpenGL::Flush(){
-			glFlush();
-		}
-
 		RenderSystemOpenGL::RenderSystemOpenGL(HWND hWnd, uint width, uint height) :RenderSystem(width, height){
 			glewInit();
 
@@ -288,5 +281,22 @@ namespace space{
 		}
 
 		void RenderSystemOpenGL::DrawPlane(math::Vector3 normal){}
+
+
+		void RenderSystemOpenGL::BeginScene(){
+
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			glEnable(GL_DEPTH_TEST);
+			glEnable(GL_LIGHTING);
+			glDepthFunc(GL_LEQUAL);
+
+			glEnable(GL_TEXTURE_2D);
+
+		}
+		void RenderSystemOpenGL::EndScene(){ 
+			glFlush();
+			SwapBuffers(hDC); 
+		}
 	}
 }

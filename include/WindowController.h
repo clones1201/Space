@@ -34,9 +34,6 @@ namespace space{
 
 		}KeyboardController;
 
-		void SwapBuffer(){
-			renderSystem->SwapBuffer();
-		}
 	public:
 		WindowController(graphic::RenderSystemType type, uint width, uint height);
 
@@ -58,7 +55,6 @@ namespace space{
 				}
 				else{
 					Callback[DisplayFunc]();
-					SwapBuffer();
 				}
 			}
 			UnregisterClass(L"Space", hInstance);

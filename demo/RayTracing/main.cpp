@@ -54,7 +54,7 @@ void Init(){
 float dt = 1;
 void display(){	
 	clock_t t1 = clock();
-
+	GetGame()->GetRenderDevice()->BeginScene();
 	GetGame()->GetRenderDevice()->RotateEye(10,0);
 
 	Material material;
@@ -91,9 +91,17 @@ void display(){
 	GetGame()->GetRenderDevice()->SetMaterial(material);
 	GetGame()->GetRenderDevice()->SetColor(white);
 	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(-0.7, 0, 0.7));
+	GetGame()->GetRenderDevice()->DrawSolidMesh(cube);
+
+	material.reflect = 0.5f;
+	material.refract = 0.5f;
+	material.greflect = 0.0f;
+	GetGame()->GetRenderDevice()->SetMaterial(material);
+	GetGame()->GetRenderDevice()->SetColor(white);
+	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(1.2, 0,-0.8));
 	GetGame()->GetRenderDevice()->DrawSolidMesh(venusm);
 
-	material.reflect = 0.3f;
+	/*material.reflect = 0.3f;
 	material.refract = 0.8f;
 	material.greflect = 0.0f;
 	GetGame()->GetRenderDevice()->SetMaterial(material);
@@ -101,7 +109,7 @@ void display(){
 	for (uint i = 0; i < 100; i++){
 		GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation( rand()/float(RAND_MAX), 0, rand()/float(RAND_MAX)));
 		GetGame()->GetRenderDevice()->DrawSphere(0.2);
-	}
+	}*/
 	material.reflect = 0.5f;
 	material.refract = 0.0f;
 	material.greflect = 0.0f;
@@ -109,6 +117,14 @@ void display(){
 	GetGame()->GetRenderDevice()->SetColor(green);
 	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(0.0, -0.2, -0.5));
 	GetGame()->GetRenderDevice()->DrawSphere(0.3);
+
+	material.reflect = 0.5f;
+	material.refract = 0.0f;
+	material.greflect = 0.0f;
+	GetGame()->GetRenderDevice()->SetMaterial(material);
+	GetGame()->GetRenderDevice()->SetColor(yellow);
+	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(0.0, -0.2, 1));
+	GetGame()->GetRenderDevice()->DrawSphere(0.5);
 
 	material.reflect = 0.3f;
 	material.refract = 0.0f;
@@ -119,7 +135,7 @@ void display(){
 	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixScale(4,1,4) * MatrixTranslation(0, -1, 0));
 	GetGame()->GetRenderDevice()->DrawSolidMesh(cube);
 	GetGame()->GetRenderDevice()->SetTexture(nullptr);
-	GetGame()->GetRenderDevice()->Flush();
+	GetGame()->GetRenderDevice()->EndScene();
 
 	clock_t t2 = clock();
 	dt = (t2 - t1) / 1000.0;

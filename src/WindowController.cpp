@@ -48,7 +48,8 @@ namespace space{
 
 		switch (type){
 		case RS_D3D:
-			renderSystem = RenderSystem_ptr(new RenderSystemDirect3D(hWnd,width,height));
+			//renderSystem = RenderSystem_ptr(new RenderSystemDirect3D9(hWnd,width,height));
+			renderSystem = RenderSystem_ptr(new RenderSystemDirect3D11(hWnd, width, height));
 			break;
 		case RS_OGL:
 			renderSystem = RenderSystem_ptr(new RenderSystemOpenGL(hWnd, width, height));

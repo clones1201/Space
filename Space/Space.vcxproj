@@ -62,7 +62,7 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(DXSDK_DIR)lib\x86</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;d3dx9d.lib;d3d9.lib;winmm.lib;glew32.lib;</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;d3dx9d.lib;d3d9.lib;d3dx11d.lib;d3d11.lib;winmm.lib;glew32.lib;</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -114,7 +114,8 @@
     <ClCompile Include="..\src\Radiosity.cpp" />
     <ClCompile Include="..\src\RayTracing.cpp" />
     <ClCompile Include="..\src\RenderSystem.cpp" />
-    <ClCompile Include="..\src\RenderSystem_d3d.cpp" />
+    <ClCompile Include="..\src\RenderSystem_D3D11.cpp" />
+    <ClCompile Include="..\src\RenderSystem_D3D9.cpp" />
     <ClCompile Include="..\src\RenderSystem_gl.cpp" />
     <ClCompile Include="..\src\Sampler.cpp" />
     <ClCompile Include="..\src\Space.cpp" />

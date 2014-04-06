@@ -43,13 +43,8 @@ void Init(){
 void display(){
 	clock_t t1 = clock();
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	GetGame()->GetRenderDevice()->BeginScene();
 
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_LIGHTING);
-	glDepthFunc(GL_LEQUAL);
-
-	glEnable(GL_TEXTURE_2D);
 	GetGame()->GetRenderDevice()->RotateEye(dt * 90, 0);
 	
 	GetGame()->GetRenderDevice()->SetTransform(SP_VIEW, MatrixTranslation(2, 3, 2));
@@ -74,7 +69,7 @@ void display(){
 	GetGame()->GetRenderDevice()->DrawSolidMesh(venusm);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	glFlush();
+	GetGame()->GetRenderDevice()->EndScene();
 	clock_t t2 = clock();
 	dt =( t2 - t1 )/ 1000.0;
 }

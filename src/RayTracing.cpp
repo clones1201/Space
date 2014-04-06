@@ -195,7 +195,7 @@ namespace space{
 					bool resultL = false, resultR = false;
 					resultL = static_cast<BSPNode*>(leftChild.get())->Intersect(ray, tl, sdl);
 					resultR = static_cast<BSPNode*>(rightChild.get())->Intersect(ray, tr, sdr);
-					
+
 					if (ta_max > ta_min){
 						if (tl < tr && resultL){
 							t = tl;	sd = sdl;
@@ -237,9 +237,7 @@ namespace space{
 				const vector<BBox>& bounds, const vector<Primitive_ptr>& prims, uint depth){
 				node = (BSPNode::Ptr)(new BSPNode(nodeBox));
 
-				ofstream fs("bsp.txt", ios_base::app);
-
-				/* reach threhold, create leaf */
+				/* reach threshold, create leaf */
 				if (depth == 0 || bounds.size() <= maxObjects){
 					node = (BSPNode::Ptr)(new BSPLeaf(nodeBox, prims));
 					return;
@@ -250,7 +248,7 @@ namespace space{
 				BSPNode::Ptr left = nullptr, right = nullptr;
 
 				Axis axis = GetLongestAxis(nodeBox);
-				
+
 				auto piter = prims.begin();
 				auto biter = bounds.begin();
 				/* split the prims */
@@ -258,8 +256,8 @@ namespace space{
 				((float*)&(leftBox.bmax))[axis] = (((float*)&(nodeBox.bmax))[axis] + ((float*)&(nodeBox.bmin))[axis]) / 2;
 				((float*)&(rightBox.bmin))[axis] = (((float*)&(nodeBox.bmax))[axis] + ((float*)&(nodeBox.bmin))[axis]) / 2;
 				for (; piter != prims.end() && biter != bounds.end();){
-					BBox box;
-					(*piter)->CalculateBoundsBox(box.bmax, box.bmin);
+					BBox box = *biter;
+					//(*piter)->CalculateBoundsBox(box.bmax, box.bmin);
 					if (((float*)&(box.bmax))[axis] < ((float*)&(leftBox.bmax))[axis]){
 						leftboxs.push_back(box);
 						leftprims.push_back(*piter);
@@ -312,8 +310,8 @@ namespace space{
 			void CreatePrimitives(vector<Primitive_ptr>& prims, const Mesh& mesh){
 				uint count = mesh.GetCompiledIndexCount();
 				uint stride = mesh.GetCompiledVertexSize();
-				const float *vertices = mesh.GetCompiledVertices();
-				const uint* indices = mesh.GetCompiledIndices();
+				float *vertices = (float *)mesh.GetCompiledVertices();
+				uint* indices = (uint *)mesh.GetCompiledIndices();
 
 				Matrix matWorld;
 				Vector3 o = Vec3Transform(matWorld, Vector4(0, 0, 0, 1));
@@ -447,18 +445,16 @@ namespace space{
 					/* not working good
 					*/
 					Color indirectIllumination;
-					Shader isd;
-
 					/*if (depth > 1){
-					for (uint i = 0; i < 30; i++){
-					Ray iRay;
-					iRay.ori = sd.hitPos;
-					iRay.dir = Vec3Normalize(Sample::Instance()->HemiSphere(sd.normal, sd.hitPos, 1, 0));
-					indirectIllumination = indirectIllumination + (1 / 30.0) * Trace(prims, iRay, 1);
-					}
+						for (uint i = 0; i < 50; i++){
+							Ray iRay;
+							iRay.ori = sd.hitPos;
+							iRay.dir = Vec3Normalize(Sample::Instance()->HemiSphere(sd.normal, sd.hitPos, 1, 0));
+							indirectIllumination = indirectIllumination + (1 / 50.0) * Trace(prims, iRay, 1);
+						}
 					}*/
 
-					return color + 0.5f * indirectIllumination
+					return color + 0.7f * indirectIllumination
 						+ sd.material.reflect * Trace(prims, reflectRay, depth - 1)
 						+ sd.material.greflect * greflectColor
 						/* + sd.material.refract * Trace(prims, refractRay, depth - 1)*/
@@ -639,8 +635,11 @@ namespace space{
 					break;
 				}
 			}
-			void RenderSystemRayTrace::Flush(){
+			
+			void RenderSystemRayTrace::BeginScene(){
 
+			}
+			void RenderSystemRayTrace::EndScene(){
 				vector<ABGRColor> image; // low-endian byte order, see http://stackoverflow.com/questions/7786187/opengl-texture-upload-unsigned-byte-vs-unsigned-int-8-8-8-8
 
 				tracer->SetView(*camera);
@@ -649,6 +648,7 @@ namespace space{
 				glClear(GL_COLOR_BUFFER_BIT);
 				glDrawPixels(RenderSystem::width, RenderSystem::height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, image.data());
 				glFlush();
+				
 			}
 
 			void RenderSystemRayTrace::DrawMesh(const Mesh& mesh){}

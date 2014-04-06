@@ -99,7 +99,7 @@ void Init(){
 	CreatePrimitives(prims, venusm);
 
 	vector<Primitive_ptr> bsp;
-	root = BuildBSPTree(bsp,prims,16);
+	root = BuildBSPTree(bsp,prims,10);
 
 	Vector3 eye(0, 1, 2), lookat(0, 0, 0);
 	PerspectiveCamera camera(eye, lookat - eye);

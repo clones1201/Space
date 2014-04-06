@@ -80,9 +80,6 @@
     <ClCompile Include="..\src\RenderSystem.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\RenderSystem_d3d.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\RenderSystem_gl.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -102,6 +99,12 @@
       <Filter>RayTrace</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Sampler.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\RenderSystem_D3D11.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\RenderSystem_D3D9.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

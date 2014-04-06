@@ -50,6 +50,7 @@ namespace space{
 
 	namespace util{
 		
+		//anyway, it sucks. I should re-write it later...
 		template< typename T>
 		class BinaryTreeNode{
 		public:
