@@ -11,7 +11,7 @@
 namespace space{
 	namespace graphic{
 
-		class RenderSystemDirect3D11::Direct3DDevice{
+		class D3D11RenderSystem::Direct3DDevice{
 		public:
 			D3D_DRIVER_TYPE         driverType = D3D_DRIVER_TYPE_NULL;
 			D3D_FEATURE_LEVEL       featureLevel = D3D_FEATURE_LEVEL_11_0;
@@ -23,13 +23,13 @@ namespace space{
 			ID3D11DepthStencilView* pDepthStencilView = NULL;
 		};
 		
-		RenderSystemDirect3D11::RenderSystemDirect3D11(HWND hWnd, uint width, uint height):RenderSystem(width,height){
+		D3D11RenderSystem::D3D11RenderSystem(HWND hWnd, uint width, uint height):RenderSystem(width,height){
 			d3d = new Direct3DDevice;
 			camera = PerspectiveCamera_ptr(new PerspectiveCamera); 
 			Init(hWnd, width, height);
 		}
 
-		RenderSystemDirect3D11::~RenderSystemDirect3D11(){
+		D3D11RenderSystem::~D3D11RenderSystem(){
 			if (d3d){ 
 				if (d3d->pd3dDevice)
 					d3d->pd3dDevice->Release();
@@ -41,7 +41,7 @@ namespace space{
 			}
 		}
 
-		void RenderSystemDirect3D11::Init(HWND hWnd, uint width, uint height){
+		void D3D11RenderSystem::Init(HWND hWnd, uint width, uint height){
 			HRESULT hr = S_OK;
 
 			UINT createDeviceFlags = 0;
@@ -144,7 +144,7 @@ namespace space{
 			d3d->pImmediateContext->RSSetViewports(1, &vp);
 		}
 
-		void RenderSystemDirect3D11::BeginScene(){
+		void D3D11RenderSystem::BeginScene(){
 			float ClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; // red, green, blue, alpha
 			d3d->pImmediateContext->ClearRenderTargetView(d3d->pRenderTargetView, ClearColor);
 
@@ -154,45 +154,45 @@ namespace space{
 			d3d->pImmediateContext->ClearDepthStencilView(d3d->pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 		}
 
-		void RenderSystemDirect3D11::EndScene(){
+		void D3D11RenderSystem::EndScene(){
 			//
 			// Present our back buffer to our front buffer
 			//
 			d3d->pSwapChain->Present(0, 0);
 		}
 
-		void RenderSystemDirect3D11::Resize(int width, int height){}
-		void RenderSystemDirect3D11::LookAt(float eyex, float eyey, float eyez,
+		void D3D11RenderSystem::Resize(int width, int height){}
+		void D3D11RenderSystem::LookAt(float eyex, float eyey, float eyez,
 			float centrex, float centrey, float centrez,
 			float upx, float upy, float upz){
 
 		}
-		void RenderSystemDirect3D11::Perspective(float fovy, float aspect, float zNear, float zFar){}
+		void D3D11RenderSystem::Perspective(float fovy, float aspect, float zNear, float zFar){}
 
-		void RenderSystemDirect3D11::RotateEye(float x, float y){}
+		void D3D11RenderSystem::RotateEye(float x, float y){}
 
-		void RenderSystemDirect3D11::RotateLook(float x, float y){}
+		void D3D11RenderSystem::RotateLook(float x, float y){}
 
-		void RenderSystemDirect3D11::SetView(const PerspectiveCamera &camera){}
+		void D3D11RenderSystem::SetView(const PerspectiveCamera &camera){}
 
-		void RenderSystemDirect3D11::SetTransform(TransformType type, const math::Matrix &matWorld){}
+		void D3D11RenderSystem::SetTransform(TransformType type, const math::Matrix &matWorld){}
 
-		void RenderSystemDirect3D11::SetColor(const Color &c){}
+		void D3D11RenderSystem::SetColor(const Color &c){}
 
-		void RenderSystemDirect3D11::SetMaterial(const Material &m){}
+		void D3D11RenderSystem::SetMaterial(const Material &m){}
 
-		void RenderSystemDirect3D11::SetTexture(Texture* tex){}
+		void D3D11RenderSystem::SetTexture(Texture* tex){}
 
-		void RenderSystemDirect3D11::DrawMesh(const Mesh& mesh){}
+		void D3D11RenderSystem::DrawMesh(const Mesh& mesh){}
 
-		void RenderSystemDirect3D11::DrawSolidMesh(const Mesh& mesh){}
+		void D3D11RenderSystem::DrawSolidMesh(const Mesh& mesh){}
 
-		void RenderSystemDirect3D11::DrawWiredMesh(const Mesh& mesh){}
+		void D3D11RenderSystem::DrawWiredMesh(const Mesh& mesh){}
 
-		void RenderSystemDirect3D11::DrawScene(Scene& scene){}
+		void D3D11RenderSystem::DrawScene(Scene& scene){}
 
-		void RenderSystemDirect3D11::DrawSphere(float r){}
-		void RenderSystemDirect3D11::DrawCube(float a, float b, float c){}
-		void RenderSystemDirect3D11::DrawPlane(math::Vector3 normal){}
+		void D3D11RenderSystem::DrawSphere(float r){}
+		void D3D11RenderSystem::DrawCube(float a, float b, float c){}
+		void D3D11RenderSystem::DrawPlane(math::Vector3 normal){}
 	}
 }

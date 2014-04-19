@@ -1,5 +1,5 @@
 #include "Light.h"
-#include "global.h"
+#include "Prerequisites.h"
 
 namespace space{
 

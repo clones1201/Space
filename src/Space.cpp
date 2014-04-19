@@ -1,6 +1,6 @@
 #include "Space.h"
 
-#include "global.h"
+#include "Prerequisites.h"
 
 extern void display();
 extern void Init();

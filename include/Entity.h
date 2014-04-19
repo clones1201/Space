@@ -1,6 +1,7 @@
 #ifndef __ENTITY_H__
 #define __ENTITY_H__
 
+#inclued "Renderable.h"
 #include "Mesh.h"
 #include "Light.h"
 #include "Camera.h"
@@ -29,7 +30,7 @@ namespace space{
 	}Texture2D,Texture;
 	typedef shared_ptr<Texture> Texture_ptr;
 
-	class Entity : public Object{
+	class Entity : public Renderable{
 	public:
 		Entity(const graphic::Mesh*);
 

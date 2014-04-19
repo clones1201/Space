@@ -8,7 +8,7 @@ namespace space{
 	namespace graphic{
 		namespace raytrace{
 
-			class RenderSystemRayTrace : public RenderSystemOpenGL{
+			class RenderSystemRayTrace : public GLRenderSystem{
 			public:
 				RenderSystemRayTrace(HWND hWnd, uint width, uint height);
 				~RenderSystemRayTrace();
@@ -63,6 +63,7 @@ namespace space{
 			public:
 				Primitive(Material_ptr mptr, Texture_ptr tptr) :material(mptr),texture(tptr){};
 				virtual bool Intersect(Ray, float&, Shader&) = 0;
+				virtual bool IntersectP(Ray) = 0;
 				virtual void CalculateBoundsBox(math::Vector3 &max, math::Vector3 &min) const = 0;
 			};
 			typedef shared_ptr<Primitive> Primitive_ptr; 
@@ -78,7 +79,7 @@ namespace space{
 				}
 
 				virtual bool Intersect(Ray ray, float&t, Shader& sd);
-			
+				virtual bool IntersectP(Ray) ;
 				virtual void CalculateBoundsBox(math::Vector3 &max, math::Vector3 &min)const{
 					max = elem.bmax; min = elem.bmin;
 				}
@@ -94,7 +95,7 @@ namespace space{
 				BSPLeaf(BBox box, const vector<Primitive_ptr>& prims) :Primitive(nullptr, nullptr), util::BinaryTreeLeaf< BBox >(box), prims(prims){}
 
 				virtual bool Intersect(Ray ray, float&t, Shader& sd);
-
+				virtual bool IntersectP(Ray);
 				virtual void CalculateBoundsBox(math::Vector3 &max, math::Vector3 &min)const{
 					max = elem.bmax; min = elem.bmin;
 				}

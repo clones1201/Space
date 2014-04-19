@@ -84,6 +84,24 @@ Mesh cube;
 
 BSPNode::Ptr root;
 
+#include <ctime>
+
+using namespace std;
+
+class Timer{
+public:
+	Timer(const string _name) :name(_name){
+		t = clock();
+	}
+	~Timer(){
+		cout << name << " took " << ((float)(clock() - t) / CLOCKS_PER_SEC) << "s" << endl;
+	}
+private:
+	string name;
+	clock_t t;
+};
+
+#define TIMER(name) Timer _t(name)
 
 void Init(){
 	venusm.LoadFromFile("../../resourse/venusm.obj");
@@ -98,9 +116,11 @@ void Init(){
 
 	CreatePrimitives(prims, venusm);
 
-	vector<Primitive_ptr> bsp;
-	root = BuildBSPTree(bsp,prims,10);
-
+	{
+		TIMER("bsp create");
+		vector<Primitive_ptr> bsp;
+		root = BuildBSPTree(bsp, prims, 10);
+	}
 	Vector3 eye(0, 1, 2), lookat(0, 0, 0);
 	PerspectiveCamera camera(eye, lookat - eye);
 	GetGame()->GetRenderDevice()->SetView(camera);
@@ -115,11 +135,8 @@ void display(){
 
 	GetGame()->GetRenderDevice()->RotateEye(dt * 90, 0);
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_LIGHTING);
-	glDepthFunc(GL_LEQUAL);
+	GetGame()->GetRenderDevice()->BeginScene();
 	initLights();
 
 
@@ -136,7 +153,7 @@ void display(){
 
 	DrawAxis();
 
-	GetGame()->GetRenderDevice()->Flush();
+	GetGame()->GetRenderDevice()->EndScene();
 
 	clock_t t2 = clock();
 	dt = (t2 - t1) / 1000.0;

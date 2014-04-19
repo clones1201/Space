@@ -1,4 +1,4 @@
-#include "RenderSystem.h"
+#include "GLRenderSystem.h"
 #include "WindowController.h"
 #include <GL\freeglut.h>
 
@@ -39,7 +39,7 @@ namespace space{
 		}
 
 
-		void RenderSystemOpenGL::Init(HWND hWnd, uint width, uint height){
+		void GLRenderSystem::Init(HWND hWnd, uint width, uint height){
 			hDC = GetDC(hWnd);
 			PIXELFORMATDESCRIPTOR pfd;
 			memset(&pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
@@ -92,14 +92,14 @@ namespace space{
 			glClearColor(0, 0, 1, 1);
 		}
 		
-		RenderSystemOpenGL::RenderSystemOpenGL(HWND hWnd, uint width, uint height) :RenderSystem(width, height){
+		GLRenderSystem::GLRenderSystem(HWND hWnd, uint width, uint height) :IRenderSystem(width, height){
 			glewInit();
 
 			Init(hWnd, width, height);
 			camera = PerspectiveCamera_ptr(new PerspectiveCamera);
-		
+		 
 		}
-		RenderSystemOpenGL::~RenderSystemOpenGL(){
+		GLRenderSystem::~GLRenderSystem(){
 			 
 			wglMakeCurrent(NULL, NULL);
 			wglDeleteContext(hGLRC);
@@ -107,7 +107,7 @@ namespace space{
 			ReleaseDC(GetWindowController()->GetWndHandler(), hDC);
 		}
 
-		void RenderSystemOpenGL::Resize(int _width, int _height){
+		void GLRenderSystem::Resize(int _width, int _height){
 			RenderSystem::width = _width;
 			RenderSystem::height = _height;
 			glViewport(0, 0, _width, _height);
@@ -116,26 +116,26 @@ namespace space{
 			camera->SetAspect(_width / float(_height));
 		}
 
-		void RenderSystemOpenGL::LookAt(float eyex, float eyey, float eyez,
+		void GLRenderSystem::LookAt(float eyex, float eyey, float eyez,
 			float centrex, float centrey, float centrez,
 			float upx, float upy, float upz){
 			camera->SetEye(eyex, eyey, eyez);
 			camera->SetLookAt(centrex, centrey, centrez);
 		}
-		void RenderSystemOpenGL::Perspective(float fovy, float aspect, float zNear, float zFar){
+		void GLRenderSystem::Perspective(float fovy, float aspect, float zNear, float zFar){
 			camera->SetPerspective(fovy, aspect, zNear, zFar);
 		}
-		void RenderSystemOpenGL::RotateEye(float x, float y){
+		void GLRenderSystem::RotateEye(float x, float y){
 			camera->RotateE(x, y);
 		}
-		void RenderSystemOpenGL::RotateLook(float x, float y){
+		void GLRenderSystem::RotateLook(float x, float y){
 			camera->RotateL(x, y);
 		}
-		void RenderSystemOpenGL::SetView(const PerspectiveCamera & c){
+		void GLRenderSystem::SetView(const PerspectiveCamera & c){
 			camera = PerspectiveCamera_ptr(new PerspectiveCamera(c)); 
 		}
 
-		void RenderSystemOpenGL::SetTransform( TransformType type ,const math::Matrix& mat){
+		void GLRenderSystem::SetTransform( TransformType type ,const math::Matrix& mat){
 			switch (type){
 				case SP_VIEW:
 					glMatrixMode(GL_MODELVIEW);
@@ -146,11 +146,11 @@ namespace space{
 			}
 		}
 
-		void RenderSystemOpenGL::SetColor(const Color& color){
+		void GLRenderSystem::SetColor(const Color& color){
 			glColor4fv((GLfloat*)&color);
 		}
 
-		void RenderSystemOpenGL::SetMaterial(const Material& material){
+		void GLRenderSystem::SetMaterial(const Material& material){
 			float shininess = material.kd * 128;
 			float diffuseColor[3] = { material.diffuse.r, material.diffuse.g, material.diffuse.b };
 			float specularColor[4] = { material.specular.r, material.specular.g, material.specular.b, 1.0f };
@@ -162,7 +162,7 @@ namespace space{
 			// set ambient and diffuse color using glColorMaterial (gold-yellow)
 			glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 		}
-		void RenderSystemOpenGL::SetTexture(Texture* tex){
+		void GLRenderSystem::SetTexture(Texture* tex){
 			if (tex == nullptr){
 				glBindTexture(GL_TEXTURE_2D, 0);
 				return;
@@ -191,7 +191,7 @@ namespace space{
 				glBindTexture(GL_TEXTURE_2D, 0);
 			}
 		}
-		void RenderSystemOpenGL::DrawMesh(const Mesh& mesh){
+		void GLRenderSystem::DrawMesh(const Mesh& mesh){
 			
 			glVertexPointer(mesh.GetPositionSize(), GL_FLOAT, mesh.GetPositionSize() * sizeof(float), mesh.GetPositions());
 			glNormalPointer(GL_FLOAT, mesh.GetNormalSize() * sizeof(float), mesh.GetNormals() );
@@ -204,7 +204,7 @@ namespace space{
 			glDisableClientState(GL_NORMAL_ARRAY); 
 		}
 
-		void RenderSystemOpenGL::DrawSolidMesh(const Mesh& mesh){
+		void GLRenderSystem::DrawSolidMesh(const Mesh& mesh){
 			
 			glVertexPointer(mesh.GetPositionSize(), GL_FLOAT, mesh.GetCompiledVertexSize() * sizeof(float), mesh.GetCompiledVertices());
 			glEnableClientState(GL_VERTEX_ARRAY);
@@ -227,7 +227,7 @@ namespace space{
 			glDisableClientState(GL_NORMAL_ARRAY);
 			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		}
-		void RenderSystemOpenGL::DrawWiredMesh(const Mesh& mesh){
+		void GLRenderSystem::DrawWiredMesh(const Mesh& mesh){
 			
 			glVertexPointer(mesh.GetPositionSize(), GL_FLOAT, mesh.GetCompiledVertexSize() * sizeof(float), mesh.GetCompiledVertices());
 			glNormalPointer(GL_FLOAT, mesh.GetCompiledVertexSize() * sizeof(float), mesh.GetCompiledVertices() + mesh.GetCompiledNormalOffset());
@@ -241,14 +241,14 @@ namespace space{
 
 		}
 
-		void RenderSystemOpenGL::DrawScene( Scene& scene ){
+		void GLRenderSystem::DrawScene( Scene& scene ){
 			vector<Entity*>::iterator eIter = scene.GetEntitys().begin();
 			for (; eIter != scene.GetEntitys().end();){ 
 
 			}
 		}
 
-		void RenderSystemOpenGL::DrawSphere(float r){}
+		void GLRenderSystem::DrawSphere(float r){}
 
 		const float cubevertices[] = {
 			0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
@@ -262,7 +262,7 @@ namespace space{
 			4, 5,	5, 6,	6, 7,	7, 4
 		};
 
-		void RenderSystemOpenGL::DrawCube(float a, float b, float c){
+		void GLRenderSystem::DrawCube(float a, float b, float c){
 			float vertices[24];
 
 			for (uint i = 0; i < 8; i++){
@@ -280,10 +280,9 @@ namespace space{
 			glDisableClientState(GL_VERTEX_ARRAY);
 		}
 
-		void RenderSystemOpenGL::DrawPlane(math::Vector3 normal){}
+		void GLRenderSystem::DrawPlane(math::Vector3 normal){}
 
-
-		void RenderSystemOpenGL::BeginScene(){
+		void GLRenderSystem::BeginScene(){
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -294,7 +293,7 @@ namespace space{
 			glEnable(GL_TEXTURE_2D);
 
 		}
-		void RenderSystemOpenGL::EndScene(){ 
+		void GLRenderSystem::EndScene(){ 
 			glFlush();
 			SwapBuffers(hDC); 
 		}

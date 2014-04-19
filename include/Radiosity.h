@@ -1,7 +1,7 @@
 #ifndef __SPACE_RADIOSITY_H__
 #define __SPACE_RADIOSITY_H__
 
-#include "global.h"
+#include "Prerequisites.h"
 #include "basic.h"
 #include "Entity.h"
 

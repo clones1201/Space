@@ -583,6 +583,8 @@ namespace space{
 				return (_indices[1].size() > 0) ? _indices[1].data() : 0;
 			case SP_TRIANGLES:
 				return (_indices[2].size() > 0) ? _indices[2].data() : 0;
+			default:
+				return (_indices[2].size() > 0) ? _indices[2].data() : 0;
 			}
 		}
 

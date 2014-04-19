@@ -64,7 +64,33 @@ namespace space{
 					}
 					return false;
 				}
+				virtual bool IntersectP(Ray ray){
+					float t;
+					math::Vector3 temp = ray.ori - centre;
+					float a = Vec3Dot(ray.dir, ray.dir);
+					float b = 2.0 * Vec3Dot(temp, ray.dir);
+					float c = Vec3Dot(temp, temp) - r * r;
+					float disc = b * b - 4 * a * c;
 
+					if (disc < 0.0)
+						return false;
+					else{
+						float e = sqrt(disc);
+						float denom = 2.0 * a;
+						t = (-b - e) / denom;
+
+						if (t > kEpsilon){							
+							return true;
+						}
+
+						t = (-b + e) / denom;
+
+						if (t > kEpsilon){							
+							return true;
+						}
+					}
+					return false;
+				}
 				virtual void CalculateBoundsBox(math::Vector3 &max, math::Vector3 &min)const{
 					max.x = centre.x + r;
 					max.y = centre.y + r;
@@ -107,7 +133,15 @@ namespace space{
 					sd.ray = ray;
 					return true;
 				}
-
+				virtual bool IntersectP(Ray ray){
+					if (Vec3Dot(normal, ray.dir) == 0){ // parallel to plane
+						return false;
+					}
+					if (Vec3Dot(normal, pos - ray.ori) / Vec3Dot(normal, ray.dir) < 0){// wrong direction
+						return false;
+					}
+					return true;
+				}
 				virtual void CalculateBoundsBox(math::Vector3 &max, math::Vector3 &min)const{
 					min.x = min.y = min.z = -5;
 					max.x = max.y = 5;
@@ -137,7 +171,9 @@ namespace space{
 					}
 					return false;
 				}
-
+				virtual bool IntersectP(Ray ray){
+					return tri.Intersect(ray,*new float);
+				}
 				virtual void CalculateBoundsBox(math::Vector3 &max, math::Vector3 &min)const{
 					max.x = max(tri.v0.x, max(tri.v1.x, tri.v2.x));
 					max.y = max(tri.v0.y, max(tri.v1.y, tri.v2.y));
@@ -216,6 +252,43 @@ namespace space{
 				}
 				return result;
 			}
+			bool BSPNode::IntersectP(Ray ray){
+				bool result = false;
+				float tmax, tmin,t;
+				float tl = INFINITY, tr = INFINITY;
+
+				/* got some big problem here. */
+				if (result = elem.Intersect(ray, tmin, tmax)){
+					Axis axis = GetLongestAxis(elem);
+					float ta_max, ta_min;
+					ta_max = ((float*)&(ray.dir * tmax + ray.ori))[axis];
+					ta_min = ((float*)&(ray.dir * tmin + ray.ori))[axis];
+
+					bool resultL = false, resultR = false;
+					resultL = static_cast<BSPNode*>(leftChild.get())->IntersectP(ray);
+					resultR = static_cast<BSPNode*>(rightChild.get())->IntersectP(ray);
+
+					if (ta_max > ta_min){
+						if (tl < tr && resultL){
+							t = tl;
+						}
+						else if (resultR){
+							t = tr;
+						}
+					}
+					else{
+						if (tr < tl && resultR){
+							t = tr;
+						}
+						else if (resultL){
+							t = tl;
+						}
+					}
+					result = resultL || resultR;
+				}
+				return result;
+			}
+
 			bool BSPLeaf::Intersect(Ray ray, float&tmin, Shader& sd){
 				bool result = false;
 				float t;
@@ -232,7 +305,14 @@ namespace space{
 				}
 				return result;
 			}
-
+			bool BSPLeaf::IntersectP(Ray ray){
+				for (uint i = 0; i < prims.size(); i++){
+					if (prims[i]->IntersectP(ray)){
+						return true;
+					}
+				}
+				return false;
+			}
 			void BuildTree(BSPNode::Ptr& node, const BBox& nodeBox,
 				const vector<BBox>& bounds, const vector<Primitive_ptr>& prims, uint depth){
 				node = (BSPNode::Ptr)(new BSPNode(nodeBox));
@@ -399,6 +479,7 @@ namespace space{
 
 					bool isInShadow = false;
 					for (uint i = 0; i < prims.size(); i++){
+						//if (prims[i]->IntersectP(shadowRay)){
 						if (prims[i]->Intersect(shadowRay, t, Shader())){
 							isInShadow = true;
 							break;
@@ -593,7 +674,7 @@ namespace space{
 					}
 				}
 			}
-			RenderSystemRayTrace::RenderSystemRayTrace(HWND hWnd, uint width, uint height) : RenderSystemOpenGL(hWnd, width, height){
+			RenderSystemRayTrace::RenderSystemRayTrace(HWND hWnd, uint width, uint height) : GLRenderSystem(hWnd, width, height){
 				tracer = new RayTracer;
 				glClearColor(0, 0, 0, 1);
 				Material m;
@@ -612,7 +693,7 @@ namespace space{
 
 			void RenderSystemRayTrace::SetView(const PerspectiveCamera& camera){
 				tracer->SetView(camera);
-				RenderSystemOpenGL::SetView(camera);
+				GLRenderSystem::SetView(camera);
 			}
 			void RenderSystemRayTrace::SetColor(const Color& c){
 				tracer->SetColor(c);

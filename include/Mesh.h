@@ -2,7 +2,7 @@
 #define __MESH_H__
 
 #include "basic.h"
-#include "global.h"
+#include "Prerequisites.h"
 
 namespace space{
 

@@ -1,7 +1,7 @@
 #ifndef __BASIC_H__
 #define __BASIC_H__
 
-#include "global.h"
+#include "Prerequisites.h"
 
 namespace space{
 
@@ -19,15 +19,13 @@ namespace space{
 		virtual ~Interface(){}
 	};
 
+#define __INTERFACE :public Interface
+
 	class Object{
 	public:
 		virtual ~Object(){}
 	};
 
-	typedef unsigned char uchar;
-	typedef unsigned short ushort;
-	typedef unsigned int uint;
-	typedef unsigned long ulong;
 
 	namespace Pattern{
 
@@ -745,7 +743,7 @@ namespace space{
 			math::Vector3 t0, t1, t2;
 
 			// see: http://geomalgorithms.com/a06-_intersect-2.html
-			bool Intersect(Ray ray, float& t){
+			bool Intersect(Ray ray, float& t) const{
 				math::Vector3 u, v;
 				u = v1 - v0;
 				v = v2 - v0;
@@ -791,7 +789,7 @@ namespace space{
 		public:
 			math::Vector3 bmin, bmax;
 			BBox() :bmin(), bmax(){}
-			bool Intersect(Ray ray, float&tmin, float&tmax){
+			bool Intersect(Ray ray, float&tmin, float&tmax) const{
 
 				float ox = ray.ori.x; float oy = ray.ori.y; float oz = ray.ori.z;
 				float dx = ray.dir.x; float dy = ray.dir.y; float dz = ray.dir.z;
