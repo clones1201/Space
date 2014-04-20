@@ -95,6 +95,7 @@
     <ClInclude Include="..\common\lodepng\lodepng.h" />
     <ClInclude Include="..\include\basic.h" />
     <ClInclude Include="..\include\Camera.h" />
+    <ClInclude Include="..\include\Core.h" />
     <ClInclude Include="..\Include\D3D11RenderSystem.h" />
     <ClInclude Include="..\Include\D3D9RenderSystem.h" />
     <ClInclude Include="..\include\Entity.h" />
@@ -104,6 +105,7 @@
     <ClInclude Include="..\include\Mesh.h" />
     <ClInclude Include="..\include\Radiosity.h" />
     <ClInclude Include="..\include\RayTracing.h" />
+    <ClInclude Include="..\include\RenderOperation.h" />
     <ClInclude Include="..\include\RenderSystem.h" />
     <ClInclude Include="..\Include\RenderTarget.h" />
     <ClInclude Include="..\Include\RenderWindows.h" />
@@ -111,7 +113,7 @@
     <ClInclude Include="..\include\Space.h" />
     <ClInclude Include="..\include\Renderable.h" />
     <ClInclude Include="..\Include\ViewPort.h" />
-    <ClInclude Include="..\include\D3D9RenderWindows.h" />
+    <ClInclude Include="..\include\D3D9RenderWindow.h" />
     <ClInclude Include="D3D11RenderWindow.h" />
     <ClInclude Include="GLRenderWindow.h" />
     <ClInclude Include="WindowsUtilities.h" />
@@ -131,7 +133,7 @@
     <ClCompile Include="..\src\Sampler.cpp" />
     <ClCompile Include="..\src\Space.cpp" />
     <ClCompile Include="..\src\utility.cpp" />
-    <ClCompile Include="..\src\WindowController.cpp" />
+    <ClCompile Include="..\src\D3D9RenderWindow.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

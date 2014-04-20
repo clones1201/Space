@@ -6,7 +6,7 @@
 namespace space{
 	namespace graphic{
 
-		class D3D9RenderSystem : public IRenderSystem{
+		class D3D9RenderSystem : virtual public IRenderSystem{
 		private:
 			class Direct3DDevice;
 			Direct3DDevice* d3d;

@@ -1,5 +1,5 @@
 #include "RenderSystem.h"
-#include "WindowController.h"
+#include "D3D9RenderWindow.h"
 
 
 #include <mmsystem.h>
@@ -18,13 +18,13 @@
 namespace space{
 	namespace graphic{
 		
-		class RenderSystemDirect3D9::Direct3DDevice{
+		class D3D9RenderSystem::Direct3DDevice{
 		public:
 			LPDIRECT3D9				pD3D;
 			LPDIRECT3DDEVICE9		pd3dDevice;
 		};
 		
-		void RenderSystemDirect3D9::Init(HWND hWnd, uint width,uint height){
+		void D3D9RenderSystem::Init(HWND hWnd, uint width,uint height){
 			d3d = new Direct3DDevice;
 			// Create the D3D object.
 			if (NULL == (d3d->pD3D = Direct3DCreate9(D3D_SDK_VERSION)))
@@ -54,11 +54,11 @@ namespace space{
 			return ;
 		}
 
-		RenderSystemDirect3D9::RenderSystemDirect3D9(HWND hWnd, uint width, uint height):RenderSystem(width,height){
+		D3D9RenderSystem::D3D9RenderSystem(HWND hWnd, uint width, uint height):RenderSystem(width,height){
 			Init(hWnd, width, height);
 			camera = PerspectiveCamera_ptr( new PerspectiveCamera);
 		}
-		RenderSystemDirect3D9::~RenderSystemDirect3D9(){
+		D3D9RenderSystem::~D3D9RenderSystem(){
 			if (d3d->pd3dDevice != NULL)
 				d3d->pd3dDevice->Release();
 
@@ -67,38 +67,38 @@ namespace space{
 
 			if ( d3d != nullptr) delete d3d;
 		}
-		void RenderSystemDirect3D9::Resize(int width, int height){}
-		void RenderSystemDirect3D9::LookAt(float eyex, float eyey, float eyez,
+		void D3D9RenderSystem::Resize(int width, int height){}
+		void D3D9RenderSystem::LookAt(float eyex, float eyey, float eyez,
 			float centrex, float centrey, float centrez,
 			float upx, float upy, float upz){
 
 		}
-		void RenderSystemDirect3D9::Perspective(float fovy, float aspect, float zNear, float zFar){}
+		void D3D9RenderSystem::Perspective(float fovy, float aspect, float zNear, float zFar){}
 
-		void RenderSystemDirect3D9::RotateEye(float x, float y){}
+		void D3D9RenderSystem::RotateEye(float x, float y){}
 
-		void RenderSystemDirect3D9::RotateLook(float x, float y){}
+		void D3D9RenderSystem::RotateLook(float x, float y){}
 
-		void RenderSystemDirect3D9::SetView(const PerspectiveCamera &camera){}
+		void D3D9RenderSystem::SetView(const PerspectiveCamera &camera){}
 		 
-		void RenderSystemDirect3D9::SetTransform(TransformType type, const math::Matrix &matWorld){}
+		void D3D9RenderSystem::SetTransform(TransformType type, const math::Matrix &matWorld){}
 		
-		void RenderSystemDirect3D9::SetColor(const Color &c){}
+		void D3D9RenderSystem::SetColor(const Color &c){}
 
-		void RenderSystemDirect3D9::SetMaterial(const Material &m){}
+		void D3D9RenderSystem::SetMaterial(const Material &m){}
 
-		void RenderSystemDirect3D9::SetTexture(Texture* tex){}
+		void D3D9RenderSystem::SetTexture(Texture* tex){}
 
-		void RenderSystemDirect3D9::DrawMesh(const Mesh& mesh){}
+		void D3D9RenderSystem::DrawMesh(const Mesh& mesh){}
 
-		void RenderSystemDirect3D9::DrawSolidMesh(const Mesh& mesh){}
+		void D3D9RenderSystem::DrawSolidMesh(const Mesh& mesh){}
 
-		void RenderSystemDirect3D9::DrawWiredMesh(const Mesh& mesh){}
+		void D3D9RenderSystem::DrawWiredMesh(const Mesh& mesh){}
 
-		void RenderSystemDirect3D9::DrawScene(Scene& scene){}
+		void D3D9RenderSystem::DrawScene(Scene& scene){}
 
-		void RenderSystemDirect3D9::DrawSphere(float r){}
-		void RenderSystemDirect3D9::DrawCube(float a, float b, float c){}
-		void RenderSystemDirect3D9::DrawPlane(math::Vector3 normal){}
+		void D3D9RenderSystem::DrawSphere(float r){}
+		void D3D9RenderSystem::DrawCube(float a, float b, float c){}
+		void D3D9RenderSystem::DrawPlane(math::Vector3 normal){}
 	}
 }

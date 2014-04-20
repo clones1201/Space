@@ -1,7 +1,7 @@
 #ifndef __ENTITY_H__
 #define __ENTITY_H__
 
-#inclued "Renderable.h"
+#include "Renderable.h"
 #include "Mesh.h"
 #include "Light.h"
 #include "Camera.h"

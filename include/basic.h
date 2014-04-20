@@ -5,45 +5,44 @@
 
 namespace space{
 
-	class Uncopyble{
+	class Uncopyable{
 	protected:
-		Uncopyble(){}
-		~Uncopyble(){}
+		Uncopyable(){}
+		~Uncopyable(){}
 	private:
-		Uncopyble(const Uncopyble&);
-		Uncopyble& operator=(const Uncopyble&);
+		Uncopyable(const Uncopyable&);
+		Uncopyable& operator=(const Uncopyable&);
 	};
 
-	class Interface : private Uncopyble{
+	class Interface : private Uncopyable{
 	public:
 		virtual ~Interface(){}
 	};
 
-#define __INTERFACE :public Interface
+#define __INTERFACE(i) virtual public i
 
 	class Object{
 	public:
 		virtual ~Object(){}
 	};
 
-
 	namespace Pattern{
 
 		template< typename T>
 		class Singleton : private Uncopyble{
 		protected:
-			static shared_ptr<T> instance;
+			static unique_ptr<T> instance;
 			Singleton(){}
 		public:
 			static T* Instance(){
 				if (instance == nullptr){
-					instance = shared_ptr<T>(new T);
+					instance = unique_ptr<T>(new T);
 				}
 				return instance.get();
 			}
 		};
 		template <typename T>
-		shared_ptr<T> Singleton<T>::instance;
+		unique_ptr<T> Singleton<T>::instance;
 	}
 
 	namespace util{
@@ -736,6 +735,10 @@ namespace space{
 			math::Vector3 ori, dir;
 		};
 		typedef shared_ptr<Ray> Ray_ptr;
+
+		struct Rect{
+			math::int2 a, b;
+		};
 
 		struct Triangle{
 			math::Vector3 v0, v1, v2;

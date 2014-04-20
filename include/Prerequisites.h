@@ -44,6 +44,14 @@ namespace space{
 	typedef unsigned int uint;
 	typedef unsigned long ulong;
 
+	namespace graphic{
+		
+		class Renderable;
+		class IRenderSystem;
+		class IRenderTarget;
+		class ViewPort;
+		class IRenderWindow;
+	}
 }
 
 #endif

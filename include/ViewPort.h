@@ -5,13 +5,15 @@
 
 namespace space{
 
-	class ViewPort : public Interface{
-	public:
+	namespace graphic{
 
-	protected:
+		class ViewPort : public Interface{
+		public:
 
-	};
-
+		protected:
+			Rect rect;
+		};
+	}
 }
 
 #endif

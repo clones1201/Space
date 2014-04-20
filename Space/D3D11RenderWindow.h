@@ -1,0 +1,6 @@
+#ifndef __SPACE_D3D11_RENDERWINDOW_H__
+#define __SPACE_D3D11_RENDERWINDOW_H__
+
+
+
+#endif

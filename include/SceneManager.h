@@ -4,10 +4,19 @@
 #include "basic.h"
 
 namespace space{
+	namespace graphic{
 
-	class SceneManager : public Uncopyable{
+		class SceneNode : public Uncopyable{
 
-	};
+		};
+
+		class SceneManager : public Uncopyable{
+		protected:
+			SceneNode* root;
+		public:
+			
+		};
+	}
 }
 
 

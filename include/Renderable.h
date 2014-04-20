@@ -5,7 +5,7 @@
 
 namespace space{
 
-	class Renderable : public Interface {
+	class Renderable {
 	public:
 		
 

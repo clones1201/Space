@@ -22,14 +22,29 @@
     <Filter Include="RenderSystem">
       <UniqueIdentifier>{bf9e3610-a063-4a59-9c56-cdf219d22410}</UniqueIdentifier>
     </Filter>
-    <Filter Include="RenderSystem\D3D9">
+    <Filter Include="RenderSystem\Include">
+      <UniqueIdentifier>{6db4853e-8412-4066-8ee8-9b88ab330a99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderSystem\src">
+      <UniqueIdentifier>{db014c4c-4fa5-44ac-b0ca-89c0a6ee4a1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderSystem\src\D3D9">
       <UniqueIdentifier>{777eafa9-526f-4082-b43d-bcf489c3373a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="RenderSystem\D3D11">
+    <Filter Include="RenderSystem\src\D3D11">
       <UniqueIdentifier>{60a6cb56-ceaa-4a95-902f-dda96928134f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="RenderSystem\GL">
+    <Filter Include="RenderSystem\src\GL">
       <UniqueIdentifier>{380538fe-f0f7-4b4b-b2f8-2d36f3c7bbcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderSystem\Include\D3D9">
+      <UniqueIdentifier>{91b9713e-7a99-4ac9-8814-e14184a7c6d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderSystem\Include\D3D11">
+      <UniqueIdentifier>{a6e97595-87ec-4e64-a051-0e3634fe272a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderSystem\Include\GL">
+      <UniqueIdentifier>{083302ef-b35e-4902-9928-c396668b3f7b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -84,25 +99,31 @@
     <ClInclude Include="..\Include\ViewPort.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\D3D9RenderWindows.h">
-      <Filter>RenderSystem\D3D9</Filter>
+    <ClInclude Include="WindowsUtilities.h">
+      <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\D3D9RenderSystem.h">
-      <Filter>RenderSystem\D3D9</Filter>
+      <Filter>RenderSystem\Include\D3D9</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\D3D11RenderSystem.h">
-      <Filter>RenderSystem\D3D11</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D11RenderWindow.h">
-      <Filter>RenderSystem\D3D11</Filter>
+      <Filter>RenderSystem\Include\D3D11</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\GLRenderSystem.h">
-      <Filter>RenderSystem\GL</Filter>
+      <Filter>RenderSystem\Include\GL</Filter>
     </ClInclude>
     <ClInclude Include="GLRenderWindow.h">
-      <Filter>RenderSystem\GL</Filter>
+      <Filter>RenderSystem\Include\GL</Filter>
     </ClInclude>
-    <ClInclude Include="WindowsUtilities.h">
+    <ClInclude Include="D3D11RenderWindow.h">
+      <Filter>RenderSystem\Include\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\D3D9RenderWindow.h">
+      <Filter>RenderSystem\Include\D3D9</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Core.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\RenderOperation.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -131,9 +152,6 @@
     <ClCompile Include="..\src\utility.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\WindowController.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\common\lodepng\lodepng.cpp">
       <Filter>common</Filter>
     </ClCompile>
@@ -144,13 +162,16 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\src\D3D9RenderSystem.cpp">
-      <Filter>RenderSystem\D3D9</Filter>
+      <Filter>RenderSystem\src\D3D9</Filter>
     </ClCompile>
     <ClCompile Include="..\src\D3D11RenderSystem.cpp">
-      <Filter>RenderSystem\D3D11</Filter>
+      <Filter>RenderSystem\src\D3D11</Filter>
     </ClCompile>
     <ClCompile Include="..\src\GLRenderSystem.cpp">
-      <Filter>RenderSystem\GL</Filter>
+      <Filter>RenderSystem\src\GL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\D3D9RenderWindow.cpp">
+      <Filter>RenderSystem\src\D3D9</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
