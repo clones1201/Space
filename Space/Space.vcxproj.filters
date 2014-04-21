@@ -90,16 +90,10 @@
     <ClInclude Include="..\include\Renderable.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\RenderWindows.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\Include\RenderTarget.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\ViewPort.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WindowsUtilities.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\D3D9RenderSystem.h">
@@ -111,12 +105,6 @@
     <ClInclude Include="..\Include\GLRenderSystem.h">
       <Filter>RenderSystem\Include\GL</Filter>
     </ClInclude>
-    <ClInclude Include="GLRenderWindow.h">
-      <Filter>RenderSystem\Include\GL</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D11RenderWindow.h">
-      <Filter>RenderSystem\Include\D3D11</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\D3D9RenderWindow.h">
       <Filter>RenderSystem\Include\D3D9</Filter>
     </ClInclude>
@@ -125,6 +113,24 @@
     </ClInclude>
     <ClInclude Include="..\include\RenderOperation.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\D3D11Prerequisites.h">
+      <Filter>RenderSystem\Include\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\RenderWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\WindowsUtilities.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\D3D11RenderWindow.h">
+      <Filter>RenderSystem\Include\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\GLRenderWindow.h">
+      <Filter>RenderSystem\Include\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\D3D9Prerequisites.h">
+      <Filter>RenderSystem\Include\D3D9</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +178,9 @@
     </ClCompile>
     <ClCompile Include="..\src\D3D9RenderWindow.cpp">
       <Filter>RenderSystem\src\D3D9</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\D3D11RenderWindow.cpp">
+      <Filter>RenderSystem\src\D3D11</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -9,11 +9,12 @@ namespace space{
 		class IRenderWindow : virtual public IRenderTarget{
 		public:
 			virtual void Create(const string& name, uint width, uint height, bool fullScreen) = 0;
+			virtual void _Initialize(bool fullScreen) = 0;
+
 			virtual void SetFullScreen(bool fullScreen, uint width, uint height){}
 			virtual bool isFullScreen(void) const{ return mIsFullScreen; }
 
 			virtual void Resize(uint width, uint height) = 0;
-
 			virtual void Reposition(int left, int top) = 0;
 
 		protected:

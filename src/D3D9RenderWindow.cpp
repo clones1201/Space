@@ -6,8 +6,6 @@ namespace space{
 	using namespace graphic;
 	using namespace graphic::raytrace;
 
-	WindowController* windowController = 0;
-
 	WindowController* GetWindowController(){
 		return windowController;
 	}

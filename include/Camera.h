@@ -4,31 +4,8 @@
 #include "basic.h"
 
 namespace space{
-	class ICamera : public Interface{
-	public:
-		virtual math::Matrix GetMatrix() const = 0;
-		virtual math::Matrix GetModelViewMatrix() const = 0;
-
-		virtual void SetEye(float x, float y, float z) = 0;
-		virtual void SetEye(const math::Vector3&) = 0;
-		virtual void SetLookAt(float x, float y, float z) = 0;
-		virtual void SetLookAt(const math::Vector3&) = 0;
-		virtual void SetUp(float x, float y, float z) = 0;
-		virtual void SetUp(const math::Vector3&) = 0;
-
-		virtual math::Vector3 GetForward() const = 0;
-		virtual math::Vector3 GetRight() const = 0;
-		virtual math::Vector3 GetLook() const = 0;
-		virtual math::Vector3 GetEye() const = 0;
-
-		virtual void ZoomIn() = 0;
-		virtual void ZoomOut() = 0;
-		virtual void Move(math::Vector3 dir) = 0;
-		virtual void RotateL(float degX, float degY) = 0;
-		virtual void RotateE(float degX, float degY) = 0;
-	};
-
-	class Camera : public Object,virtual public ICamera{
+	
+	class Camera : public Object{
 	protected:
 		math::Vector3 vEye, vLook;
 		math::Vector3 vUp, vRight;
@@ -63,15 +40,7 @@ namespace space{
 		virtual void RotateE(float degX, float degY){}
 	};
 
-	class IPerspectiveCamera : virtual public ICamera{
-	public:
-		virtual void SetPerspective(float fovy, float aspect, float zNear, float zFar) = 0;
-		virtual void SetAspect(float _aspect) = 0;
-
-		void GetPerspective(float &fovy, float &aspect, float &zNear, float &zFar)const;
-	};
-
-	class PerspectiveCamera : public Camera, public IPerspectiveCamera{
+	class PerspectiveCamera : public Camera{
 	private:
 		float fovy;
 		float aspect;

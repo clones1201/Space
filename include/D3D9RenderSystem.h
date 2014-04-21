@@ -2,48 +2,57 @@
 #define __SPACE_D3D9_RENDERSYSTEM_H__
 
 #include "RenderSystem.h"
+#include "D3D9Prerequisites.h"
 
 namespace space{
 	namespace graphic{
 
-		class D3D9RenderSystem : virtual public IRenderSystem{
+		class D3D9Device{
 		private:
-			class Direct3DDevice;
-			Direct3DDevice* d3d;
-
-			void Init(HWND hWnd, uint width, uint height);
+			IDirect3DDevice9* pD3Ddevice;
 		public:
-			D3D9RenderSystem(HWND hWnd, uint width, uint height);
+			D3D9Device(IDirect3DDevice9* device);
+			D3D9Device();
+			~D3D9Device();
+
+			inline IDirect3DDevice9* operator->(){
+				return pD3Ddevice;
+			}
+
+			bool isNull() const;
+
+			IDirect3DDevice9* Get(){
+				return pD3Ddevice;
+			}
+		};
+
+		class D3D9RenderSystem : virtual public IRenderSystem{
+		public:
+			D3D9RenderSystem(HINSTANCE hInst);
 			~D3D9RenderSystem();
 
-			void BeginScene();
-			void EndScene();
+			virtual IRenderWindow* _createRenderWindow(const string &name, unsigned int width, unsigned int height,
+				bool fullScreen);
 
-			void Resize(int width, int height);
-			void LookAt(float eyex, float eyey, float eyez,
-				float centrex, float centrey, float centrez,
-				float upx, float upy, float upz);
-			void Perspective(float fovy, float aspect, float zNear, float zFar);
-			void RotateEye(float x, float y);
-			void RotateLook(float x, float y);
-			void SetView(const PerspectiveCamera &camera);
+			virtual void InitRenderSystem();
+			//virtual void AttachRenderTarget(IRenderTarget &rt) = 0;
+			//virtual void DetachRenderTarget(const string &name) = 0;
+			virtual void _Initialize(bool autoCreateWindow){}
 
-			//template <TransformType t>
-			void SetTransform(TransformType type, const math::Matrix &matWorld);
+			virtual void _Render();
 
-			virtual void SetColor(const Color&);
-			virtual void SetMaterial(const Material&);
-			virtual void SetTexture(Texture*);
+			virtual void _BeginScene();
 
-			//first, we try some inmidiate command
-			//late, we will add handler and vbo management
-			virtual void DrawMesh(const Mesh& mesh);
-			virtual void DrawSolidMesh(const Mesh& mesh);
-			virtual void DrawWiredMesh(const Mesh& mesh);
-			virtual void DrawScene(Scene&);
-			virtual void DrawSphere(float r);
-			virtual void DrawCube(float a, float b, float c);
-			virtual void DrawPlane(math::Vector3 normal);
+			virtual void _EndScene();
+
+			virtual void ShutDown(void);
+
+			virtual void SetAmbientLight(float r, float g, float b);
+			
+		private:
+			HINSTANCE mhInstance;
+			D3D9Device mDevice;
+			IDirect3D9* pd3d;
 		};
 
 	}

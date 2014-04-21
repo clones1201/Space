@@ -2,48 +2,69 @@
 #define __SPACE_D3D11_RENDERSYSTEM_H__
 
 #include "RenderSystem.h"
+#include "D3D11Prerequisites.h"
 
 namespace space{
 	namespace graphic{
 
-		class D3D11RenderSystem : public IRenderSystem{
+		class D3D11Device{
 		private:
-			class Direct3DDevice;
-			Direct3DDevice* d3d;
-
-			void Init(HWND hWnd, uint width, uint height);
+			ID3D11Device *pD3D11Device;
+			ID3D11DeviceContext *pImmediateContext;
 		public:
-			D3D11RenderSystem(HWND hWnd, uint width, uint height);
+			D3D11Device(ID3D11Device * device);
+			D3D11Device();
+			~D3D11Device();
+
+			inline ID3D11Device * operator->(){
+				return pD3D11Device;
+			}
+
+			ID3D11Device * Get(){
+				return pD3D11Device;
+			}
+
+			bool isNull() const;
+
+			ID3D11DeviceContext* GetImmediateContext(){
+				return pImmediateContext;
+			}
+
+			void Release(){
+				SAFE_RELEASE(pD3D11Device);
+				SAFE_RELEASE(pImmediateContext);
+			}
+
+		};
+
+		class D3D11RenderSystem : public IRenderSystem{
+		
+		public:
+			D3D11RenderSystem(HINSTANCE inst);
 			~D3D11RenderSystem();
 
-			void BeginScene();
-			void EndScene();
+			virtual IRenderWindow* _createRenderWindow(const string &name, unsigned int width, unsigned int height,
+				bool fullScreen);
 
-			void Resize(int width, int height);
-			void LookAt(float eyex, float eyey, float eyez,
-				float centrex, float centrey, float centrez,
-				float upx, float upy, float upz);
-			void Perspective(float fovy, float aspect, float zNear, float zFar);
-			void RotateEye(float x, float y);
-			void RotateLook(float x, float y);
-			void SetView(const PerspectiveCamera &camera);
+			//virtual void AttachRenderTarget(IRenderTarget &rt) = 0;
+			//virtual void DetachRenderTarget(const string &name) = 0;
 
-			//template <TransformType t>
-			void SetTransform(TransformType type, const math::Matrix &matWorld);
+			virtual void InitRenderSystem();
 
-			virtual void SetColor(const Color&);
-			virtual void SetMaterial(const Material&);
-			virtual void SetTexture(Texture*);
+			virtual void _Initialize(bool autoCreateWindow){}
 
-			//first, we try some inmidiate command
-			//late, we will add handler and vbo management
-			virtual void DrawMesh(const Mesh& mesh);
-			virtual void DrawSolidMesh(const Mesh& mesh);
-			virtual void DrawWiredMesh(const Mesh& mesh);
-			virtual void DrawScene(Scene&);
-			virtual void DrawSphere(float r);
-			virtual void DrawCube(float a, float b, float c);
-			virtual void DrawPlane(math::Vector3 normal);
+			virtual void _Render();
+
+			virtual void _BeginScene();
+
+			virtual void _EndScene();
+
+			virtual void ShutDown(void);
+
+			virtual void SetAmbientLight(float r, float g, float b);
+		private:
+			HINSTANCE mhInstance;
+			D3D11Device mDevice;
 		};
 	}
 }

@@ -96,10 +96,14 @@
     <ClInclude Include="..\include\basic.h" />
     <ClInclude Include="..\include\Camera.h" />
     <ClInclude Include="..\include\Core.h" />
+    <ClInclude Include="..\include\D3D11Prerequisites.h" />
     <ClInclude Include="..\Include\D3D11RenderSystem.h" />
+    <ClInclude Include="..\include\D3D11RenderWindow.h" />
+    <ClInclude Include="..\include\D3D9Prerequisites.h" />
     <ClInclude Include="..\Include\D3D9RenderSystem.h" />
     <ClInclude Include="..\include\Entity.h" />
     <ClInclude Include="..\Include\GLRenderSystem.h" />
+    <ClInclude Include="..\include\GLRenderWindow.h" />
     <ClInclude Include="..\include\Prerequisites.h" />
     <ClInclude Include="..\include\Light.h" />
     <ClInclude Include="..\include\Mesh.h" />
@@ -108,19 +112,18 @@
     <ClInclude Include="..\include\RenderOperation.h" />
     <ClInclude Include="..\include\RenderSystem.h" />
     <ClInclude Include="..\Include\RenderTarget.h" />
-    <ClInclude Include="..\Include\RenderWindows.h" />
+    <ClInclude Include="..\Include\RenderWindow.h" />
     <ClInclude Include="..\include\SceneManager.h" />
     <ClInclude Include="..\include\Space.h" />
     <ClInclude Include="..\include\Renderable.h" />
     <ClInclude Include="..\Include\ViewPort.h" />
     <ClInclude Include="..\include\D3D9RenderWindow.h" />
-    <ClInclude Include="D3D11RenderWindow.h" />
-    <ClInclude Include="GLRenderWindow.h" />
-    <ClInclude Include="WindowsUtilities.h" />
+    <ClInclude Include="..\include\WindowsUtilities.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\lodepng\lodepng.cpp" />
     <ClCompile Include="..\src\Camera.cpp" />
+    <ClCompile Include="..\src\D3D11RenderWindow.cpp" />
     <ClCompile Include="..\src\Entity.cpp" />
     <ClCompile Include="..\src\Light.cpp" />
     <ClCompile Include="..\src\Mesh.cpp" />

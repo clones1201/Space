@@ -27,6 +27,10 @@ namespace space{
 			//virtual void AttachRenderTarget(IRenderTarget &rt) = 0;
 			//virtual void DetachRenderTarget(const string &name) = 0;
 
+			virtual void InitRenderSystem();
+
+			virtual void _Initialize(bool autoCreateWindow){}
+
 			virtual void _Render() = 0;
 
 			virtual void _BeginScene() = 0;
