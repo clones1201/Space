@@ -30,9 +30,10 @@ namespace space{
 			d3dpp.EnableAutoDepthStencil = TRUE;
 			d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
 			// Create the D3DDevice
-			if (FAILED(pd3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd,
+			IDirect3DDevice9 *device;
+			if (FAILED(pd3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, mhWnd,
 				D3DCREATE_SOFTWARE_VERTEXPROCESSING,
-				&d3dpp, &d3d->pd3dDevice)))
+				&d3dpp, &device)))
 			{
 				return ;
 			}

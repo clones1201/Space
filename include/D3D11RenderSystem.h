@@ -43,7 +43,7 @@ namespace space{
 			D3D11RenderSystem(HINSTANCE inst);
 			~D3D11RenderSystem();
 
-			virtual IRenderWindow* _createRenderWindow(const string &name, unsigned int width, unsigned int height,
+			virtual IRenderWindow* _createRenderWindow(const String &name, unsigned int width, unsigned int height,
 				bool fullScreen);
 
 			//virtual void AttachRenderTarget(IRenderTarget &rt) = 0;
@@ -51,7 +51,7 @@ namespace space{
 
 			virtual void InitRenderSystem();
 
-			virtual void _Initialize(bool autoCreateWindow){}
+			virtual IRenderWindow* _Initialize(bool autoCreateWindow);
 
 			virtual void _Render();
 

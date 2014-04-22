@@ -5,9 +5,6 @@
 
 namespace space{
 	namespace graphic{
-
-
-
 		class RenderOperation : virtual Uncopyable{
 		protected:
 			//VertexData* vertexData;

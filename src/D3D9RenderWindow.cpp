@@ -1,104 +1,52 @@
-#include "WindowController.h"
-
-#include "RayTracing.h"
+#include "D3D9RenderWindow.h"
+#include "WindowsUtilities.h"
 
 namespace space{
 	using namespace graphic;
-	using namespace graphic::raytrace;
 
-	WindowController* GetWindowController(){
-		return windowController;
+	D3D9RenderWindow::D3D9RenderWindow(HINSTANCE hInst) :
+		mhInstance(hInst){
+
 	}
 
-	void SetWindowController(WindowController* _windowController){
-		windowController = _windowController;
+	D3D9RenderWindow::~D3D9RenderWindow(){
+
 	}
 
-	LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
-		WindowController* controller = GetWindowController();
-		if ( controller ){
-			LRESULT result;
-			if ( controller->HandleWndMessage(hWnd,msg, wParam, lParam, result)){
-				return result;
-			}
-		}
-		return DefWindowProc(hWnd, msg, wParam, lParam);
-	}
+	void D3D9RenderWindow::Create(const String& name,uint width,uint height,bool fullScreen){
+		//mhInstance = (HINSTANCE)GetModuleHandle(NULL);
 
-	WindowController::WindowController(RenderSystemType type,uint width,uint height){
-		hInstance = (HINSTANCE)GetModuleHandle(NULL);
+		mWidth = width; mHeight = height;
+
+		WNDCLASSEX windowClass;
 		windowClass.cbSize = sizeof(WNDCLASSEX);
-		windowClass.style = type == RS_D3D ? CS_CLASSDC : CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
-		windowClass.lpfnWndProc = MsgProc;
+		windowClass.style = CS_CLASSDC;
+		windowClass.lpfnWndProc = WindowsUtilities::_WndProc;
 		windowClass.cbClsExtra = 0;
 		windowClass.cbWndExtra = 0;
-		windowClass.hInstance = hInstance;
-		windowClass.hIcon = type == RS_D3D ? NULL : LoadIcon(0, IDI_APPLICATION);
-		windowClass.hCursor = type == RS_D3D ? NULL : LoadCursor(0, IDC_ARROW);
-		windowClass.hbrBackground = type == RS_D3D ? NULL : (HBRUSH)GetStockObject(BLACK_BRUSH);
+		windowClass.hInstance = mhInstance;
+		windowClass.hIcon = NULL;
+		windowClass.hCursor = NULL;
+		windowClass.hbrBackground = NULL;
 		windowClass.lpszMenuName = 0;
-		windowClass.lpszClassName = L"Space";
+		windowClass.lpszClassName = name.c_str();
 		windowClass.hIconSm = NULL;
 		RegisterClassEx(&windowClass);
-		hWnd = CreateWindowW(windowClass.lpszClassName, L"Space",
+		mhWnd = CreateWindow(windowClass.lpszClassName, name.c_str(),
 			WS_OVERLAPPEDWINDOW,
-			0, 0, width, height, 0, 0, hInstance, 0);
+			0, 0, mWidth, mHeight, 0, 0, mhInstance, 0);
 
-		switch (type){
-		case RS_D3D:
-			//renderSystem = RenderSystem_ptr(new D3D9RenderSystem(hWnd,width,height));
-			renderSystem = IRenderSystem_ptr(new D3D11RenderSystem(hWnd, width, height));
-			break;
-		case RS_OGL:
-			renderSystem = IRenderSystem_ptr(new GLRenderSystem(hWnd, width, height));
-			break;
-		case RS_RT:
-			renderSystem = IRenderSystem_ptr(new RenderSystemRayTrace(hWnd, width, height));
-			break;
-		}
-	}
-	void WindowController::SetWindowsTitle(const wstring& title){
-		
-		SetWindowText(hWnd, title.c_str());
 	}
 
-	bool WindowController::HandleWndMessage(HWND _hWnd, UINT msg, WPARAM wParam, LPARAM lParam, LRESULT& result){
-		switch (msg)
-		{
-		case WM_CREATE:
-			return true;
-			break;
-		case WM_LBUTTONDOWN:
-		case WM_LBUTTONUP:
-		case WM_RBUTTONDOWN:
-		case WM_RBUTTONUP:
-			MouseController.SetMouseXPos(LOWORD(lParam));
-			MouseController.SetMouseYPos(HIWORD(lParam));
-			switch (msg){
-			case WM_LBUTTONDOWN:
-				MouseController.SetLeftButtonDownTrue();
-				break;
-			case WM_LBUTTONUP:
-				MouseController.SetLeftButtonDownFalse();
-				break;
-			case WM_RBUTTONDOWN:
-				MouseController.SetRightButtonDownTrue();
-				break;
-			case WM_RBUTTONUP:
-				MouseController.SetRightButtonDownFalse();
-				break;
-			}
-			break;
+	void D3D9RenderWindow::_Initialize(bool fullScreen){
 
-		case WM_SIZE:
-			renderSystem->Resize(LOWORD(lParam),HIWORD(lParam));
-			break;
-		case WM_DESTROY:
-			PostQuitMessage(0);
-			return 0;
-		default:
-			result = DefWindowProc(hWnd, msg, wParam, lParam);
-		}
-		return true;
+	}
+	
+	void D3D9RenderWindow::Resize(uint width, uint height){
+
+	}
+
+	void D3D9RenderWindow::Reposition(int left, int top){
+
 	}
 }

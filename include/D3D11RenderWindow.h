@@ -13,7 +13,7 @@ namespace space{
 			D3D11RenderWindow(HINSTANCE,D3D11Device &);
 			~D3D11RenderWindow();
 
-			virtual void Create(const string& name, uint width, uint height, bool fullScreen);
+			virtual void Create(const String& name, uint width, uint height, bool fullScreen);
 			virtual void _Initialize(bool fullScreen);
 
 			virtual void SetFullScreen(bool fullScreen, uint width, uint height);
@@ -30,10 +30,14 @@ namespace space{
 			DXGI_SWAP_CHAIN_DESC md3dpp;
 			D3D11_TEXTURE2D_DESC descDepth;
 
-			pSwapChain;
-			ID3D11RenderTargetView*		mRenderTargetView;
-			ID3D11DepthStencilView*		mDepthStencilView;
-			ID3D11Texture2D*			mpBackBuffer;
+			IDXGISwapChain*				mpSwapChain;
+			ID3D11RenderTargetView*		mpRenderTargetView;
+			ID3D11DepthStencilView*		mpDepthStencilView;
+			ID3D11Texture2D*			mpDepthStencil;
+		
+			bool isSwapChain;
+
+			void CreateD3DResourse();
 		};
 	}
 }

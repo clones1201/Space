@@ -18,9 +18,9 @@ namespace space {
 	public:
 		void StartToRendering(void);
 
-		bool RenderOneFrame(void);
+		void RenderOneFrame(void);
 
-		bool RenderOneFrame(float timeSinceLastFrame);
+		void RenderOneFrame(float timeSinceLastFrame);
 
 		void ShutDown(void);
 		// maintain multiple rendersystem is not what i should do at the beginning
@@ -33,13 +33,13 @@ namespace space {
 
 		IRenderSystem* GetRenderSystem(void);
 
-		IRenderSystem* Initialize(bool autoCreteWindow, const string& windowTitle = "Space Render Window");
+		IRenderSystem* Initialize(bool autoCreteWindow, const String& windowTitle = L"Space Render Window");
 
-		IRenderSystem* CreateRenderWindow();
+		IRenderWindow* CreateRenderWindow();
 
-		SceneManager* GetSceneManager(const string& name);
+		SceneManager* GetSceneManager(const String& name);
 
-		SceneManager* CreateSceneManager(const string& name);
+		SceneManager* CreateSceneManager(const String& name);
 
 		void DestorySceneManager(SceneManager* sm);
 

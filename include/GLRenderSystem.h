@@ -1,49 +1,45 @@
 #ifndef __SPACE_GL_RENDERSYSTEM_H__
 #define __SPACE_GL_RENDERSYSTEM_H__
 
+#include "GLPrerequisites.h"
 #include "RenderSystem.h"
 
 namespace space{
 	namespace graphic{
-		class GLRenderSystem : public IRenderSystem {
-		private:
-			HDC						hDC;
-			HGLRC					hGLRC;
-			HPALETTE				hPalette;
-			void Init(HWND hWnd, uint width, uint height);
+
+		class GLDevice{
 		public:
-			GLRenderSystem(HWND hWnd, uint width, uint height);
+			HDC						mhDC;
+			HGLRC					mhGLRC;
+			HPALETTE				mhPalette;
+		};
+
+		class GLRenderSystem : public IRenderSystem {
+		public:
+			GLRenderSystem();
 			~GLRenderSystem();
 
-			void BeginScene();
-			void EndScene();
+			virtual IRenderWindow* _createRenderWindow(const string &name, unsigned int width, unsigned int height,
+				bool fullScreen) = 0;
 
-			void Resize(int width, int height);
+			//virtual void AttachRenderTarget(IRenderTarget &rt) = 0;
+			//virtual void DetachRenderTarget(const string &name) = 0;
 
-			void LookAt(float eyex, float eyey, float eyez,
-				float centrex, float centrey, float centrez,
-				float upx, float upy, float upz);
-			void Perspective(float fovy, float aspect, float zNear, float zFar);
-			void RotateEye(float x, float y);
-			void RotateLook(float x, float y);
-			void SetView(const PerspectiveCamera &camera);
+			virtual void InitRenderSystem();
 
+			virtual IRenderWindow* _Initialize(bool autoCreateWindow){ IRenderWindow* autoWin = nullptr; return autoWin; }
 
-			//template <TransformType t>
-			void SetTransform(TransformType type, const math::Matrix &matWorld);
+			virtual void _Render() = 0;
 
-			virtual void SetTexture(Texture*);
-			virtual void SetColor(const Color&);
-			virtual void SetMaterial(const Material&);
-			//first, we try some inmidiate command
-			//late, we may add handler and vbo management
-			virtual void DrawMesh(const Mesh& mesh);
-			virtual void DrawSolidMesh(const Mesh& mesh);
-			virtual void DrawWiredMesh(const Mesh& mesh);
-			virtual void DrawScene(Scene&);
-			virtual void DrawSphere(float r);
-			virtual void DrawCube(float a, float b, float c);
-			virtual void DrawPlane(math::Vector3 normal);
+			virtual void _BeginScene() = 0;
+
+			virtual void _EndScene() = 0;
+
+			virtual void ShutDown(void) = 0;
+
+			virtual void SetAmbientLight(float r, float g, float b) = 0;
+		private:
+
 		};
 	}
 }

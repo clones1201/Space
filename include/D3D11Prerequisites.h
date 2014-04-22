@@ -11,7 +11,7 @@
 #pragma comment(lib, "d3dx11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 #else
-#pragma comment(lib,"d3d11d.lib")
+#pragma comment(lib,"d3d11.lib")
 #pragma comment(lib, "d3dx11d.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 #endif

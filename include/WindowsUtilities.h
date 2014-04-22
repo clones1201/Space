@@ -11,7 +11,7 @@ namespace space{
 		static LRESULT WINAPI _WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 		void Loop(){
-			ShowWindow(hWnd, SW_SHOWDEFAULT);
+			/*ShowWindow(hWnd, SW_SHOWDEFAULT);
 			UpdateWindow(hWnd);
 
 			MSG msg;
@@ -24,13 +24,10 @@ namespace space{
 				else{
 				}
 			}
-			UnregisterClass(L"Space", hInstance);
+			UnregisterClass(L"Space", hInstance);*/
 		}
 	
 	};
-
-
-
 }
 
 #endif

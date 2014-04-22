@@ -8,31 +8,10 @@ namespace space{
 	namespace graphic{
 		namespace raytrace{
 
-			class RenderSystemRayTrace : public GLRenderSystem{
+			class RenderSystemRayTrace : public IRenderSystem{
 			public:
 				RenderSystemRayTrace(HWND hWnd, uint width, uint height);
 				~RenderSystemRayTrace();
-
-				void BeginScene();
-				void EndScene();
-
-				void Resize(int width, int height);
-
-				void SetView(const PerspectiveCamera &);
-				//template <TransformType t>
-				void SetTransform(TransformType type, const math::Matrix &matWorld);
-				
-				void SetColor(const Color& color);
-				void SetMaterial(const Material &m);
-				void SetTexture(Texture*  tex);
-
-				virtual void DrawMesh(const Mesh& mesh);
-				virtual void DrawSolidMesh(const Mesh& mesh);
-				virtual void DrawWiredMesh(const Mesh& mesh);
-				virtual void DrawScene(Scene&);
-				virtual void DrawSphere(float r);
-				virtual void DrawCube(float a, float b, float c);
-				virtual void DrawPlane(math::Vector3 normal);
 			private:
 				class RayTracer;
 

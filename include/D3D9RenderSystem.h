@@ -37,7 +37,7 @@ namespace space{
 			virtual void InitRenderSystem();
 			//virtual void AttachRenderTarget(IRenderTarget &rt) = 0;
 			//virtual void DetachRenderTarget(const string &name) = 0;
-			virtual void _Initialize(bool autoCreateWindow){}
+			virtual IRenderWindow* _Initialize(bool autoCreateWindow);
 
 			virtual void _Render();
 
@@ -50,9 +50,10 @@ namespace space{
 			virtual void SetAmbientLight(float r, float g, float b);
 			
 		private:
-			HINSTANCE mhInstance;
-			D3D9Device mDevice;
-			IDirect3D9* pd3d;
+			HINSTANCE		mhInstance;
+			HWND			mhWnd;
+			D3D9Device		mDevice;
+			IDirect3D9*		pd3d;
 		};
 
 	}

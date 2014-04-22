@@ -1,23 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="源文件">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="头文件">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="资源文件">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="common">
       <UniqueIdentifier>{9d3ba2c1-31a5-4a1a-a09d-40bf5391c29a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="RayTrace">
-      <UniqueIdentifier>{44aff5bd-617d-4cd5-9b40-1b5c19df694b}</UniqueIdentifier>
     </Filter>
     <Filter Include="RenderSystem">
       <UniqueIdentifier>{bf9e3610-a063-4a59-9c56-cdf219d22410}</UniqueIdentifier>
@@ -46,55 +35,69 @@
     <Filter Include="RenderSystem\Include\GL">
       <UniqueIdentifier>{083302ef-b35e-4902-9928-c396668b3f7b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main">
+      <UniqueIdentifier>{b5015ea4-8394-4aee-8c3c-4b1423d8bf7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\RayTrace">
+      <UniqueIdentifier>{44aff5bd-617d-4cd5-9b40-1b5c19df694b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Include">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Main\src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Main\Radiosity">
+      <UniqueIdentifier>{95fec22d-41ae-4198-b5a4-6ddb9b8d19ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\basic.h">
-      <Filter>头文件</Filter>
+      <Filter>Main\Include</Filter>
     </ClInclude>
     <ClInclude Include="..\include\Camera.h">
-      <Filter>头文件</Filter>
+      <Filter>Main\Include</Filter>
     </ClInclude>
     <ClInclude Include="..\include\Entity.h">
-      <Filter>头文件</Filter>
+      <Filter>Main\Include</Filter>
     </ClInclude>
     <ClInclude Include="..\include\Light.h">
-      <Filter>头文件</Filter>
+      <Filter>Main\Include</Filter>
     </ClInclude>
     <ClInclude Include="..\include\Mesh.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Radiosity.h">
-      <Filter>头文件</Filter>
+      <Filter>Main\Include</Filter>
     </ClInclude>
     <ClInclude Include="..\include\RenderSystem.h">
-      <Filter>头文件</Filter>
+      <Filter>Main\Include</Filter>
     </ClInclude>
     <ClInclude Include="..\include\Space.h">
-      <Filter>头文件</Filter>
+      <Filter>Main\Include</Filter>
     </ClInclude>
     <ClInclude Include="..\common\lodepng\lodepng.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="..\include\RayTracing.h">
-      <Filter>RayTrace</Filter>
+      <Filter>Main\RayTrace</Filter>
     </ClInclude>
     <ClInclude Include="..\include\SceneManager.h">
-      <Filter>头文件</Filter>
+      <Filter>Main\Include</Filter>
     </ClInclude>
     <ClInclude Include="..\include\Prerequisites.h">
-      <Filter>头文件</Filter>
+      <Filter>Main\Include</Filter>
     </ClInclude>
     <ClInclude Include="..\include\Renderable.h">
-      <Filter>头文件</Filter>
+      <Filter>Main\Include</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\RenderTarget.h">
-      <Filter>头文件</Filter>
+      <Filter>Main\Include</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\ViewPort.h">
-      <Filter>头文件</Filter>
+      <Filter>Main\Include</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\D3D9RenderSystem.h">
       <Filter>RenderSystem\Include\D3D9</Filter>
@@ -109,19 +112,19 @@
       <Filter>RenderSystem\Include\D3D9</Filter>
     </ClInclude>
     <ClInclude Include="..\include\Core.h">
-      <Filter>头文件</Filter>
+      <Filter>Main\Include</Filter>
     </ClInclude>
     <ClInclude Include="..\include\RenderOperation.h">
-      <Filter>头文件</Filter>
+      <Filter>Main\Include</Filter>
     </ClInclude>
     <ClInclude Include="..\include\D3D11Prerequisites.h">
       <Filter>RenderSystem\Include\D3D11</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\RenderWindow.h">
-      <Filter>头文件</Filter>
+      <Filter>Main\Include</Filter>
     </ClInclude>
     <ClInclude Include="..\include\WindowsUtilities.h">
-      <Filter>头文件</Filter>
+      <Filter>Main\Include</Filter>
     </ClInclude>
     <ClInclude Include="..\include\D3D11RenderWindow.h">
       <Filter>RenderSystem\Include\D3D11</Filter>
@@ -132,40 +135,43 @@
     <ClInclude Include="..\include\D3D9Prerequisites.h">
       <Filter>RenderSystem\Include\D3D9</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\GLPrerequisites.h">
+      <Filter>RenderSystem\Include\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Radiosity.h">
+      <Filter>Main\Radiosity</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Camera.cpp">
-      <Filter>源文件</Filter>
+      <Filter>Main\src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Entity.cpp">
-      <Filter>源文件</Filter>
+      <Filter>Main\src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Light.cpp">
-      <Filter>源文件</Filter>
+      <Filter>Main\src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Mesh.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Radiosity.cpp">
-      <Filter>源文件</Filter>
+      <Filter>Main\src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\RenderSystem.cpp">
-      <Filter>源文件</Filter>
+      <Filter>Main\src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Space.cpp">
-      <Filter>源文件</Filter>
+      <Filter>Main\src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\utility.cpp">
-      <Filter>源文件</Filter>
+      <Filter>Main\src</Filter>
     </ClCompile>
     <ClCompile Include="..\common\lodepng\lodepng.cpp">
       <Filter>common</Filter>
     </ClCompile>
     <ClCompile Include="..\src\RayTracing.cpp">
-      <Filter>RayTrace</Filter>
+      <Filter>Main\RayTrace</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Sampler.cpp">
-      <Filter>源文件</Filter>
+      <Filter>Main\src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\D3D9RenderSystem.cpp">
       <Filter>RenderSystem\src\D3D9</Filter>
@@ -181,6 +187,18 @@
     </ClCompile>
     <ClCompile Include="..\src\D3D11RenderWindow.cpp">
       <Filter>RenderSystem\src\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\GLRenderWindow.cpp">
+      <Filter>RenderSystem\src\GL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Core.cpp">
+      <Filter>Main\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Radiosity.cpp">
+      <Filter>Main\Radiosity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\RenderTarget.cpp">
+      <Filter>Main\src</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

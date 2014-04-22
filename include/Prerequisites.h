@@ -44,14 +44,27 @@ namespace space{
 	typedef unsigned int uint;
 	typedef unsigned long ulong;
 
+#ifdef UNICODE
+	typedef std::wstring String;
+#else
+	typedef std::string String
+#endif
+
 	namespace graphic{
 		
+		class Camera;
 		class Renderable;
+		class Entity;
+		class SceneManager;
 		class IRenderSystem;
 		class IRenderTarget;
+		class RenderOperation;
 		class ViewPort;
 		class IRenderWindow;
+
 	}
+	class Core;
+	class WindowsUtilities;
 }
 
 #endif

@@ -6,6 +6,7 @@
 
 namespace space{
 	namespace graphic{
+
 		class IRenderTarget : public virtual Interface{
 		public:
 			struct FrameStats

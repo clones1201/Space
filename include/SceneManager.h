@@ -14,7 +14,7 @@ namespace space{
 		class SceneManager : public Uncopyable{
 		protected:
 			SceneNode* root;
-			Camera camera;
+			Camera *camera;
 		public:
 			
 		};

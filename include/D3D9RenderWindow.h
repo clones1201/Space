@@ -1,7 +1,8 @@
-#ifndef __WINDOWCONTROLLER_H__
-#define __WINDOWCONTROLLER_H__
+#ifndef __SPACE_D3D9_RENDERWINDOW_H__
+#define __SPACE_D3D9_RENDERWINDOW_H__
 
-#include "RenderSystem.h"
+#include "D3D9Prerequisites.h"
+#include "D3D9RenderSystem.h"
 #include "RenderWindow.h"
 
 namespace space{
@@ -15,7 +16,7 @@ namespace space{
 		~D3D9RenderWindow();
 
 	public:
-		virtual void Create(const string& name, uint width, uint height, bool fullScreen);
+		virtual void Create(const String& name, uint width, uint height, bool fullScreen);
 		virtual void _Initialize(bool fullScreen);
 
 		virtual void SetFullScreen(bool fullScreen, uint width, uint height){}

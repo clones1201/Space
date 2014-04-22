@@ -1,6 +1,6 @@
 #include "D3D11RenderSystem.h"
 #include "D3D11RenderWindow.h"
-
+#include "WindowsUtilities.h"
 
 namespace space{
 	namespace graphic{
@@ -8,19 +8,48 @@ namespace space{
 		D3D11RenderWindow::D3D11RenderWindow(HINSTANCE inst, D3D11Device & device):
 			mhInstance(inst),
 			mhWnd(nullptr),
-			mDevice(device){
+			mDevice(device),
+			mpSwapChain(nullptr),
+			mpRenderTargetView(nullptr),
+			mpDepthStencil(nullptr),
+			mpDepthStencilView(nullptr){
+
 			mIsFullScreen = false;
+			isSwapChain = false;
+
 		}
 
 		D3D11RenderWindow::~D3D11RenderWindow(){
 			
 		}
 
-		void D3D11RenderWindow::Create(const string&name, uint width, uint height, bool fullScreen){
+		void D3D11RenderWindow::Create(const String & name, uint width, uint height, bool fullScreen){
+			mIsFullScreen = fullScreen;
+
+			mWidth = width; mHeight = height;
+
+			//hInstance = (HINSTANCE)GetModuleHandle(NULL);
+			WNDCLASSEX windowClass;
+			windowClass.cbSize = sizeof(WNDCLASSEX);
+			windowClass.style = CS_CLASSDC;
+			windowClass.lpfnWndProc = WindowsUtilities::_WndProc;
+			windowClass.cbClsExtra = 0;
+			windowClass.cbWndExtra = 0;
+			windowClass.hInstance = mhInstance;
+			windowClass.hIcon = NULL;
+			windowClass.hCursor = NULL;
+			windowClass.hbrBackground = NULL;
+			windowClass.lpszMenuName = 0;
+			windowClass.lpszClassName = name.c_str();
+			windowClass.hIconSm = NULL;
+			RegisterClassEx(&windowClass);
+			mhWnd = CreateWindow(windowClass.lpszClassName, name.c_str(),
+				WS_OVERLAPPEDWINDOW,
+				0, 0, mWidth, mHeight, 0, 0, mhInstance, 0);
 
 		}
 
-		void D3D11RenderWindow::_Initialize(bool fullScreen){
+		void D3D11RenderWindow::CreateD3DResourse(){
 
 			HRESULT hr = S_OK;
 
@@ -56,27 +85,30 @@ namespace space{
 			md3dpp.OutputWindow = mhWnd;
 			md3dpp.SampleDesc.Count = 1;
 			md3dpp.SampleDesc.Quality = 0;
-			md3dpp.Windowed = !fullScreen;
+			md3dpp.Windowed = !mIsFullScreen;
 
 			D3D_FEATURE_LEVEL FeatureLevels = D3D_FEATURE_LEVEL_11_0;
-
-			for (UINT driverTypeIndex = 0; driverTypeIndex < numDriverTypes; driverTypeIndex++)
-			{
-				if (SUCCEEDED(hr))
-					break;
+			if (isSwapChain){
+				for (UINT driverTypeIndex = 0; driverTypeIndex < numDriverTypes; driverTypeIndex++)
+				{
+			//		hr = mDevice->CreateSwa
+						if (SUCCEEDED(hr))
+							break;
+				}
+				if (FAILED(hr))
+					return;
 			}
-			if (FAILED(hr))
-				return;
+			ID3D11Texture2D *mBackBuffer;
+			if (isSwapChain){
+				hr = mpSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&mBackBuffer);
+				if (FAILED(hr))
+					return;
 
-			hr = mDevice->pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&mpBackBuffer);
-			if (FAILED(hr))
-				return;
-
-			hr = mDevice->CreateRenderTargetView(mpBackBuffer, NULL, &mRenderTargetView);
-			mpBackBuffer->Release();
-			if (FAILED(hr))
-				return;
-
+				hr = mDevice->CreateRenderTargetView(mBackBuffer, NULL, &mpRenderTargetView);
+				mBackBuffer->Release();
+				if (FAILED(hr))
+					return;
+			}
 			// Create depth stencil texture
 			ZeroMemory(&descDepth, sizeof(descDepth));
 			descDepth.Width = mWidth;
@@ -90,7 +122,7 @@ namespace space{
 			descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 			descDepth.CPUAccessFlags = 0;
 			descDepth.MiscFlags = 0;
-			hr = mDevice->CreateTexture2D(&descDepth, NULL, &d3d->pDepthStencil);
+			hr = mDevice->CreateTexture2D(&descDepth, NULL, &mpDepthStencil);
 			if (FAILED(hr))
 				return;
 
@@ -100,11 +132,11 @@ namespace space{
 			descDSV.Format = descDepth.Format;
 			descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 			descDSV.Texture2D.MipSlice = 0;
-			hr = d3d->pd3dDevice->CreateDepthStencilView(d3d->pDepthStencil, &descDSV, &d3d->pDepthStencilView);
+			hr = mDevice->CreateDepthStencilView(mpDepthStencil, &descDSV, &mpDepthStencilView);
 			if (FAILED(hr))
 				return;
 
-			d3d->pImmediateContext->OMSetRenderTargets(1, &d3d->pRenderTargetView, d3d->pDepthStencilView);
+			mDevice.GetImmediateContext()->OMSetRenderTargets(1, &mpRenderTargetView, mpDepthStencilView);
 
 			// Setup the viewport
 			D3D11_VIEWPORT vp;
@@ -114,11 +146,19 @@ namespace space{
 			vp.MaxDepth = 1.0f;
 			vp.TopLeftX = 0;
 			vp.TopLeftY = 0;
-			d3d->pImmediateContext->RSSetViewports(1, &vp);
+			mDevice.GetImmediateContext()->RSSetViewports(1, &vp);
 		}
 
+		void D3D11RenderWindow::_Initialize(bool fullScreen){
+		}
 
+		void D3D11RenderWindow::SetFullScreen(bool fullScreen, uint width, uint height){
+		}
 		
+		void D3D11RenderWindow::Resize(uint width, uint height){
+		}
+		void D3D11RenderWindow::Reposition(int left, int top){
+		}
 		
 	}
 }

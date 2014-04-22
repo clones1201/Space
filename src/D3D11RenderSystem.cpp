@@ -1,3 +1,5 @@
+
+#include "D3D11Prerequisites.h"
 #include "D3D11RenderSystem.h"
 #include "D3D11RenderWindow.h"
 
@@ -37,7 +39,7 @@ namespace space{
 		D3D11RenderSystem::D3D11RenderSystem(HINSTANCE hInst):
 			mhInstance(hInst){
 
-			initRenderSystem();			
+			InitRenderSystem();			
 		}
 
 		D3D11RenderSystem::~D3D11RenderSystem(){
@@ -63,7 +65,7 @@ namespace space{
 			mDevice = D3D11Device(device);
 		}
 
-		IRenderWindow* D3D11RenderSystem::_createRenderWindow(const string &name, uint width, uint height, bool fullScreen){
+		IRenderWindow* D3D11RenderSystem::_createRenderWindow(const String &name, uint width, uint height, bool fullScreen){
 
 			IRenderWindow * win = new D3D11RenderWindow(mhInstance,mDevice);
 
@@ -74,7 +76,7 @@ namespace space{
 			return win;
 		}
 
-		void D3D11RenderSystem::_Initialize(bool autoCreateWindow){
+		IRenderWindow* D3D11RenderSystem::_Initialize(bool autoCreateWindow){
 			
 			if (!mDevice.isNull()){
 				mDevice.Release();
@@ -88,16 +90,17 @@ namespace space{
 
 			if (FAILED(hr))
 			{
-				return;
+				return nullptr;
 			}
 
 			mDevice = D3D11Device(device);
-
+			IRenderWindow* autoWin = nullptr;
 			if (autoCreateWindow){
 				bool fullScreen = false;
-				IRenderWindow *win = new D3D11RenderWindow(mhInstance, mDevice);
-
+				autoWin = new D3D11RenderWindow(mhInstance, mDevice);
+				
 			}
+			return autoWin;
 		}
 
 		void D3D11RenderSystem::_Render(){

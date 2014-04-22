@@ -21,15 +21,13 @@ namespace space{
 			IRenderSystem(){}
 			~IRenderSystem(){}
 
-			virtual IRenderWindow* _createRenderWindow(const string &name, unsigned int width, unsigned int height,
+			virtual IRenderWindow* _createRenderWindow(const String &name, unsigned int width, unsigned int height,
 				bool fullScreen) = 0;
 
 			//virtual void AttachRenderTarget(IRenderTarget &rt) = 0;
 			//virtual void DetachRenderTarget(const string &name) = 0;
-
-			virtual void InitRenderSystem();
-
-			virtual void _Initialize(bool autoCreateWindow){}
+			
+			virtual IRenderWindow* _Initialize(bool autoCreateWindow) = 0;
 
 			virtual void _Render() = 0;
 

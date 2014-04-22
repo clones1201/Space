@@ -96,7 +96,7 @@ namespace space{
 	//	return true;
 	//}
 
-	void Entity::SetTexture(const _Texture2D& tex){
+	/*void Entity::SetTexture(const _Texture2D& tex){
 		Entity::tex = tex;
-	}
+	}*/
 }

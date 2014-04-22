@@ -29,7 +29,7 @@ namespace space{
 	namespace Pattern{
 
 		template< typename T>
-		class Singleton : private Uncopyble{
+		class Singleton : private Uncopyable{
 		protected:
 			static unique_ptr<T> instance;
 			Singleton(){}
