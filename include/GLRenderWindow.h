@@ -8,7 +8,7 @@
 namespace space{
 	namespace graphic{		
 
-		class GLRenderWindow : virtual public IRenderWindow{
+		class GLRenderWindow : virtual public RenderWindow{
 		public:
 			GLRenderWindow(HINSTANCE hInst,GLDevice& device);
 			~GLRenderWindow();

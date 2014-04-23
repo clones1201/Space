@@ -25,27 +25,40 @@ namespace space{
 
 		void D3D11RenderWindow::Create(const String & name, uint width, uint height, bool fullScreen){
 			mIsFullScreen = fullScreen;
-
+			RenderTarget::name = name;
 			mWidth = width; mHeight = height;
 
 			//hInstance = (HINSTANCE)GetModuleHandle(NULL);
-			WNDCLASSEX windowClass;
-			windowClass.cbSize = sizeof(WNDCLASSEX);
+			WNDCLASS windowClass;
+			//windowClass.cbSize = sizeof(WNDCLASSEX);
 			windowClass.style = CS_CLASSDC;
 			windowClass.lpfnWndProc = WindowsUtilities::_WndProc;
 			windowClass.cbClsExtra = 0;
 			windowClass.cbWndExtra = 0;
 			windowClass.hInstance = mhInstance;
-			windowClass.hIcon = NULL;
-			windowClass.hCursor = NULL;
-			windowClass.hbrBackground = NULL;
+			windowClass.hIcon = LoadIcon(0, IDI_APPLICATION);
+			windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);
+			windowClass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
 			windowClass.lpszMenuName = 0;
 			windowClass.lpszClassName = name.c_str();
-			windowClass.hIconSm = NULL;
-			RegisterClassEx(&windowClass);
-			mhWnd = CreateWindow(windowClass.lpszClassName, name.c_str(),
+			//windowClass.hIconSm = NULL;
+			RegisterClass(&windowClass);
+			HWND hWnd = CreateWindow(windowClass.lpszClassName, name.c_str(),
 				WS_OVERLAPPEDWINDOW,
-				0, 0, mWidth, mHeight, 0, 0, mhInstance, 0);
+				0, 0, mWidth, mHeight, nullptr, nullptr, mhInstance, this);
+			mhWnd = hWnd;
+			HRESULT err = GetLastError();
+
+			RECT rc; 
+			GetWindowRect(mhWnd, &rc);
+			mTop = rc.top;
+			mLeft = rc.left;
+			// width and height represent interior drawable area
+			GetClientRect(mhWnd, &rc);
+			mWidth = rc.right;
+			mHeight = rc.bottom;
+
+			CreateD3DResourse();
 
 		}
 
@@ -76,8 +89,8 @@ namespace space{
 
 			ZeroMemory(&md3dpp, sizeof(md3dpp));
 			md3dpp.BufferCount = 1;
-			md3dpp.BufferDesc.Width = IRenderTarget::mWidth;
-			md3dpp.BufferDesc.Height = IRenderTarget::mHeight;
+			md3dpp.BufferDesc.Width = mWidth;
+			md3dpp.BufferDesc.Height = mHeight;
 			md3dpp.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 			md3dpp.BufferDesc.RefreshRate.Numerator = 60;
 			md3dpp.BufferDesc.RefreshRate.Denominator = 1;

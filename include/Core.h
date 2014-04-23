@@ -11,7 +11,7 @@ namespace space {
 	typedef map<string, SceneManager> SceneManagerMap;
 	
 	class Core : public Pattern::Singleton<Core>{
-		friend class IRenderSystem;
+		friend class RenderSystem;
 	protected:
 		//RenderSystemList mRenderSystemList;
 		SceneManagerMap mSceneManagerMap;
@@ -29,13 +29,13 @@ namespace space {
 		//IRenderSystem* GetRenderSystemByName(const string& name);
 
 		//Set the RenderSystem to be used
-		void SetRenderSystem(IRenderSystem* system);
+		void SetRenderSystem(RenderSystem* system);
 
-		IRenderSystem* GetRenderSystem(void);
+		RenderSystem* GetRenderSystem(void);
 
-		IRenderSystem* Initialize(bool autoCreteWindow, const String& windowTitle = L"Space Render Window");
+		RenderSystem* Initialize(bool autoCreteWindow, const String& windowTitle = L"Space Render Window");
 
-		IRenderWindow* CreateRenderWindow();
+		RenderWindow* CreateRenderWindow();
 
 		SceneManager* GetSceneManager(const String& name);
 
@@ -47,7 +47,7 @@ namespace space {
 		~Core();
 	private:
 
-		IRenderSystem* mActiveRenderSystem;
+		RenderSystem* mActiveRenderSystem;
 	};
 }
 

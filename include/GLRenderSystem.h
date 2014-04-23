@@ -14,12 +14,12 @@ namespace space{
 			HPALETTE				mhPalette;
 		};
 
-		class GLRenderSystem : public IRenderSystem {
+		class GLRenderSystem : public RenderSystem {
 		public:
 			GLRenderSystem();
 			~GLRenderSystem();
 
-			virtual IRenderWindow* _createRenderWindow(const string &name, unsigned int width, unsigned int height,
+			virtual RenderWindow* _createRenderWindow(const string &name, unsigned int width, unsigned int height,
 				bool fullScreen) = 0;
 
 			//virtual void AttachRenderTarget(IRenderTarget &rt) = 0;
@@ -27,7 +27,7 @@ namespace space{
 
 			virtual void InitRenderSystem();
 
-			virtual IRenderWindow* _Initialize(bool autoCreateWindow){ IRenderWindow* autoWin = nullptr; return autoWin; }
+			virtual RenderWindow* _Initialize(bool autoCreateWindow){ RenderWindow* autoWin = nullptr; return autoWin; }
 
 			virtual void _Render() = 0;
 

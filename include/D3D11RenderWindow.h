@@ -7,7 +7,7 @@
 namespace space{
 	namespace graphic{	
 
-		class D3D11RenderWindow : public virtual IRenderWindow{
+		class D3D11RenderWindow : public virtual RenderWindow{
 
 		public:
 			D3D11RenderWindow(HINSTANCE,D3D11Device &);

@@ -65,9 +65,9 @@ namespace space{
 			mDevice = D3D11Device(device);
 		}
 
-		IRenderWindow* D3D11RenderSystem::_createRenderWindow(const String &name, uint width, uint height, bool fullScreen){
+		RenderWindow* D3D11RenderSystem::_createRenderWindow(const String &name, uint width, uint height, bool fullScreen){
 
-			IRenderWindow * win = new D3D11RenderWindow(mhInstance,mDevice);
+			RenderWindow * win = new D3D11RenderWindow(mhInstance,mDevice);
 
 			win->Create(name,width,height,fullScreen);
 
@@ -76,7 +76,7 @@ namespace space{
 			return win;
 		}
 
-		IRenderWindow* D3D11RenderSystem::_Initialize(bool autoCreateWindow){
+		RenderWindow* D3D11RenderSystem::_Initialize(bool autoCreateWindow){
 			
 			if (!mDevice.isNull()){
 				mDevice.Release();
@@ -94,7 +94,7 @@ namespace space{
 			}
 
 			mDevice = D3D11Device(device);
-			IRenderWindow* autoWin = nullptr;
+			RenderWindow* autoWin = nullptr;
 			if (autoCreateWindow){
 				bool fullScreen = false;
 				autoWin = new D3D11RenderWindow(mhInstance, mDevice);

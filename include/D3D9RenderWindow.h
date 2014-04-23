@@ -7,7 +7,7 @@
 
 namespace space{
 	
-	class D3D9RenderWindow : virtual public IRenderWindow {
+	class D3D9RenderWindow : virtual public RenderWindow {
 	private:
 		HWND					mhWnd;
 		HINSTANCE				mhInstance;

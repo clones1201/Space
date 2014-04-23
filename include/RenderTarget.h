@@ -7,7 +7,7 @@
 namespace space{
 	namespace graphic{
 
-		class IRenderTarget : public virtual Interface{
+		class RenderTarget : public virtual Interface{
 		public:
 			struct FrameStats
 			{
@@ -21,10 +21,10 @@ namespace space{
 				size_t batchCount;
 			};
 
-			IRenderTarget();
-			~IRenderTarget();
+			RenderTarget();
+			~RenderTarget();
 
-			virtual const string& GetName(void) const;
+			virtual const String& GetName(void) const;
 
 			virtual uint GetWidth(void) const;
 			virtual uint GetHeight(void) const;
@@ -38,7 +38,7 @@ namespace space{
 			virtual void _EndUpdate();
 
 		protected:
-			string name;
+			String name;
 
 			uint mWidth;
 			uint mHeight;

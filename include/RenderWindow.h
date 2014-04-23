@@ -6,7 +6,7 @@
 
 namespace space{
 	namespace graphic{
-		class IRenderWindow : virtual public IRenderTarget{
+		class RenderWindow : virtual public RenderTarget{
 		public:
 			virtual void Create(const String & name, uint width, uint height, bool fullScreen) = 0;
 			virtual void _Initialize(bool fullScreen) = 0;

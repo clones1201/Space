@@ -10,24 +10,24 @@
 namespace space{
 	namespace graphic{
 
-		typedef map<string, IRenderTarget*> RenderTargetMap;
+		typedef map<string, RenderTarget*> RenderTargetMap;
 
 
-		class IRenderSystem : public  Interface{
+		class RenderSystem : public  Interface{
 		protected:
 			RenderTargetMap mRenderTargets;
-			IRenderTarget * mActiveRenderTarget;
+			RenderTarget * mActiveRenderTarget;
 		public:
-			IRenderSystem(){}
-			~IRenderSystem(){}
+			RenderSystem(){}
+			~RenderSystem(){}
 
-			virtual IRenderWindow* _createRenderWindow(const String &name, unsigned int width, unsigned int height,
+			virtual RenderWindow* _createRenderWindow(const String &name, unsigned int width, unsigned int height,
 				bool fullScreen) = 0;
 
 			//virtual void AttachRenderTarget(IRenderTarget &rt) = 0;
 			//virtual void DetachRenderTarget(const string &name) = 0;
 			
-			virtual IRenderWindow* _Initialize(bool autoCreateWindow) = 0;
+			virtual RenderWindow* _Initialize(bool autoCreateWindow) = 0;
 
 			virtual void _Render() = 0;
 
@@ -44,7 +44,7 @@ namespace space{
 		// RenderSystem
 		// Packed Graphic API
 		//============================
-		typedef shared_ptr<IRenderSystem> IRenderSystem_ptr;
+		typedef shared_ptr<RenderSystem> RenderSystem_ptr;
 		
 	}
 }

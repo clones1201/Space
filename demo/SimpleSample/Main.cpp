@@ -4,7 +4,7 @@
 
 int main(){
 	HINSTANCE hInst = (HINSTANCE)GetModuleHandle(NULL);
-	space::IRenderSystem* renderer = new space::D3D11RenderSystem(hInst);
+	space::RenderSystem* renderer = new space::D3D11RenderSystem(hInst);
 
 	space::Core::Instance()->SetRenderSystem(renderer);
 	
@@ -12,7 +12,7 @@ int main(){
 
 	space::SceneManager* sceneMgr = space::Core::Instance()->CreateSceneManager(L"Sample SceneManager");
 
-	space::IRenderWindow* win = space::Core::Instance()->CreateRenderWindow();
+	space::RenderWindow* win = space::Core::Instance()->CreateRenderWindow();
 
 	space::Core::Instance()->StartToRendering();
 

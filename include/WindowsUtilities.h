@@ -8,7 +8,9 @@ namespace space{
 	class WindowsUtilities{
 	public:
 
-		static LRESULT WINAPI _WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+		static LRESULT WINAPI _WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
+			return S_OK;
+		}
 
 		void Loop(){
 			/*ShowWindow(hWnd, SW_SHOWDEFAULT);

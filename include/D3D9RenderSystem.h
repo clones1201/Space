@@ -26,18 +26,18 @@ namespace space{
 			}
 		};
 
-		class D3D9RenderSystem : virtual public IRenderSystem{
+		class D3D9RenderSystem : virtual public RenderSystem{
 		public:
 			D3D9RenderSystem(HINSTANCE hInst);
 			~D3D9RenderSystem();
 
-			virtual IRenderWindow* _createRenderWindow(const string &name, unsigned int width, unsigned int height,
+			virtual RenderWindow* _createRenderWindow(const string &name, unsigned int width, unsigned int height,
 				bool fullScreen);
 
 			virtual void InitRenderSystem();
 			//virtual void AttachRenderTarget(IRenderTarget &rt) = 0;
 			//virtual void DetachRenderTarget(const string &name) = 0;
-			virtual IRenderWindow* _Initialize(bool autoCreateWindow);
+			virtual RenderWindow* _Initialize(bool autoCreateWindow);
 
 			virtual void _Render();
 

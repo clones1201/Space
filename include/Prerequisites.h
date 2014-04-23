@@ -56,11 +56,11 @@ namespace space{
 		class Renderable;
 		class Entity;
 		class SceneManager;
-		class IRenderSystem;
-		class IRenderTarget;
+		class RenderSystem;
+		class RenderTarget;
 		class RenderOperation;
 		class ViewPort;
-		class IRenderWindow;
+		class RenderWindow;
 
 	}
 	class Core;

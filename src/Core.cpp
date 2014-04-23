@@ -30,22 +30,24 @@ namespace space{
 	//IRenderSystem* GetRenderSystemByName(const string& name);
 
 	//Set the RenderSystem to be used
-	void Core::SetRenderSystem(IRenderSystem* system){}
+	void Core::SetRenderSystem(RenderSystem* system){
+		mActiveRenderSystem = system;
+	}
 
-	IRenderSystem* Core::GetRenderSystem(void){
+	RenderSystem* Core::GetRenderSystem(void){
 		return mActiveRenderSystem;
 	}
 
-	IRenderSystem* Core::Initialize(bool autoCreteWindow, const String& windowTitle){
+	RenderSystem* Core::Initialize(bool autoCreteWindow, const String& windowTitle){
 		auto autoWin = mActiveRenderSystem->_Initialize(autoCreteWindow);
 		return mActiveRenderSystem;
 	}
 
-	IRenderWindow* Core::CreateRenderWindow(){
+	RenderWindow* Core::CreateRenderWindow(){
 		if (!mActiveRenderSystem){
 			//no renderer
 		}
-		IRenderWindow* win = mActiveRenderSystem->_createRenderWindow(L"Space Window", 500, 500, false);
+		RenderWindow* win = mActiveRenderSystem->_createRenderWindow(L"Space Window", 500, 500, false);
 
 		return win;
 	}
