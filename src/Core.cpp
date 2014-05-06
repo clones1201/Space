@@ -17,7 +17,10 @@ namespace space{
 
 	}
 
-	void Core::StartToRendering(void){}
+	void Core::StartToRendering(void){
+	
+
+	}
 
 	void Core::RenderOneFrame(void){}
 
