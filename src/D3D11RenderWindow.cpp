@@ -28,9 +28,8 @@ namespace space{
 			RenderTarget::name = name;
 			mWidth = width; mHeight = height;
 
-			//hInstance = (HINSTANCE)GetModuleHandle(NULL);
-			WNDCLASS windowClass;
-			//windowClass.cbSize = sizeof(WNDCLASSEX);
+			WNDCLASSEX windowClass;
+			windowClass.cbSize = sizeof(WNDCLASSEX);
 			windowClass.style = CS_CLASSDC;
 			windowClass.lpfnWndProc = WindowsUtilities::_WndProc;
 			windowClass.cbClsExtra = 0;
@@ -41,14 +40,12 @@ namespace space{
 			windowClass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
 			windowClass.lpszMenuName = 0;
 			windowClass.lpszClassName = name.c_str();
-			//windowClass.hIconSm = NULL;
-			RegisterClass(&windowClass);
-			HWND hWnd = CreateWindow(windowClass.lpszClassName, name.c_str(),
+			windowClass.hIconSm = NULL;
+			RegisterClassEx(&windowClass);
+			mhWnd = CreateWindow(windowClass.lpszClassName, name.c_str(),
 				WS_OVERLAPPEDWINDOW,
 				0, 0, mWidth, mHeight, nullptr, nullptr, mhInstance, this);
-			mhWnd = hWnd;
-			HRESULT err = GetLastError();
-
+			
 			RECT rc; 
 			GetWindowRect(mhWnd, &rc);
 			mTop = rc.top;

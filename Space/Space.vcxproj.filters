@@ -200,5 +200,8 @@
     <ClCompile Include="..\src\RenderTarget.cpp">
       <Filter>Main\src</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\WindowsUtilities.cpp">
+      <Filter>Main\src</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

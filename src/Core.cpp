@@ -3,6 +3,7 @@
 #include "RenderTarget.h"
 #include "RenderWindow.h"
 #include "RenderSystem.h"
+#include "WindowsUtilities.h"
 
 namespace space{
 	using namespace graphic;
@@ -17,14 +18,20 @@ namespace space{
 
 	}
 
-	void Core::StartToRendering(void){
-	
+	void Core::StartRendering(void){
+		
+		while (true /*mQueuedEnd*/){
+			WindowsUtilities::MessagePump();
+
+			if (!RenderOneFrame())
+				break;
+		}
 
 	}
 
-	void Core::RenderOneFrame(void){}
+	bool Core::RenderOneFrame(void){}
 
-	void Core::RenderOneFrame(float timeSinceLastFrame){}
+	bool Core::RenderOneFrame(float timeSinceLastFrame){}
 
 	void Core::ShutDown(void){}
 	// maintain multiple rendersystem is not what i should do at the beginning

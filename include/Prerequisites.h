@@ -44,10 +44,19 @@ namespace space{
 	typedef unsigned int uint;
 	typedef unsigned long ulong;
 
-#ifdef UNICODE
+#if defined (UNICODE) || defined (_UNICODE)
 	typedef std::wstring String;
 #else
 	typedef std::string String
+#endif
+
+#define SPACE_PLATFORM_WINDOWS	1
+#define SPACE_PLATFORM_OTHER	2
+
+#if defined ( WIN32 ) || defined (_WIN32)
+#	define SPACE_PLATFORM SPACE_PLATFORM_WINDOWS
+#else
+#	error No other platforms are supported (Space only works on Windows)
 #endif
 
 	namespace graphic{

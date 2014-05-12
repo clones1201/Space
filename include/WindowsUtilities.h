@@ -8,10 +8,11 @@ namespace space{
 	class WindowsUtilities{
 	public:
 
+#if (SPACE_PLATFORM == SPACE_PLATFORM_WINDOWS)
 		static LRESULT WINAPI _WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam){
 			return DefWindowProc(hWnd, msg, wParam, lParam);
 		}
-
+#endif
 		static void Loop(HINSTANCE hInst,HWND hWnd){
 			ShowWindow(hWnd, SW_SHOWDEFAULT);
 			UpdateWindow(hWnd);
@@ -26,8 +27,10 @@ namespace space{
 				else{
 				}
 			}
-			UnregisterClass(L"Space", hInst);
 		}
+
+
+		static int MessagePump(void);
 	
 	};
 }

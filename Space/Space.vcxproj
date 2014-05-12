@@ -145,6 +145,7 @@
     <ClCompile Include="..\src\Space.cpp" />
     <ClCompile Include="..\src\utility.cpp" />
     <ClCompile Include="..\src\D3D9RenderWindow.cpp" />
+    <ClCompile Include="..\src\WindowsUtilities.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

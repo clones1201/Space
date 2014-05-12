@@ -16,11 +16,11 @@ namespace space {
 		//RenderSystemList mRenderSystemList;
 		SceneManagerMap mSceneManagerMap;
 	public:
-		void StartToRendering(void);
+		void StartRendering(void);
 
-		void RenderOneFrame(void);
+		bool RenderOneFrame(void);
 
-		void RenderOneFrame(float timeSinceLastFrame);
+		bool RenderOneFrame(float timeSinceLastFrame);
 
 		void ShutDown(void);
 		// maintain multiple rendersystem is not what i should do at the beginning
@@ -46,7 +46,7 @@ namespace space {
 		Core();
 		~Core();
 	private:
-
+		bool mQueuedEnd;
 		RenderSystem* mActiveRenderSystem;
 	};
 }
