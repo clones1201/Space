@@ -17,6 +17,7 @@ namespace space{
 			virtual void Resize(uint width, uint height) = 0;
 			virtual void Reposition(int left, int top) = 0;
 
+			virtual void ShutDown() = 0;
 		protected:
 			bool mIsFullScreen;
 			bool mIsPrimary;

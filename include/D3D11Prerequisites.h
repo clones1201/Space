@@ -6,7 +6,7 @@
 #include <D3DX11.h>
 #include <D3D11Shader.h>
 
-#ifndef _DEBUG
+#ifdef _DEBUG
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dx11.lib")
 #pragma comment(lib, "d3dcompiler.lib")

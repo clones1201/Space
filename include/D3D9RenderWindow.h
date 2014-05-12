@@ -24,6 +24,8 @@ namespace space{
 
 		virtual void Resize(uint width, uint height);
 		virtual void Reposition(int left, int top);
+
+		virtual void ShutDown();
 	};
 }
 

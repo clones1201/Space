@@ -8,7 +8,8 @@
 namespace space{
 	namespace graphic{		
 
-		class GLRenderWindow : virtual public RenderWindow{
+		class GLRenderWindow : virtual public 
+			RenderWindow{
 		public:
 			GLRenderWindow(HINSTANCE hInst,GLDevice& device);
 			~GLRenderWindow();
@@ -20,6 +21,8 @@ namespace space{
 			
 			virtual void Resize(uint width, uint height) = 0;
 			virtual void Reposition(int left, int top) = 0;
+			
+			virtual void ShutDown();
 		private:
 			HINSTANCE		mhInstance;
 			HWND			mhWnd;

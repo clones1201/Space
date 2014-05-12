@@ -101,9 +101,22 @@ namespace space{
 			if (isSwapChain){
 				for (UINT driverTypeIndex = 0; driverTypeIndex < numDriverTypes; driverTypeIndex++)
 				{
-			//		hr = mDevice->CreateSwa
-						if (SUCCEEDED(hr))
-							break;
+					IDXGIDevice * pDXGIDevice;
+					hr = mDevice->QueryInterface(__uuidof(IDXGIDevice), (void **)&pDXGIDevice);
+					if (SUCCEEDED(hr))
+						break;
+					IDXGIAdapter * pDXGIAdapter;
+					hr = pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), (void **)&pDXGIAdapter);
+					if (SUCCEEDED(hr))
+						break;
+					IDXGIFactory * pIDXGIFactory;
+					hr = pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), (void **)&pIDXGIFactory);
+					if (SUCCEEDED(hr))
+						break;
+
+					hr = pIDXGIFactory->CreateSwapChain(mDevice.Get(), &md3dpp, &mpSwapChain);
+					if (SUCCEEDED(hr))
+						break;
 				}
 				if (FAILED(hr))
 					return;
@@ -170,5 +183,8 @@ namespace space{
 		void D3D11RenderWindow::Reposition(int left, int top){
 		}
 		
+		void D3D11RenderWindow::ShutDown(){
+			UnregisterClass(NULL, mhInstance);
+		}
 	}
 }

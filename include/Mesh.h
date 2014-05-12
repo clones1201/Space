@@ -3,81 +3,20 @@
 
 #include "basic.h"
 #include "Prerequisites.h"
+#include "Renderable.h"
 
 namespace space{
 
 	namespace graphic{
 
-		//=========================
-		// Based on NVIDIA SDK SAMPLE
-		// nvModel.h nvModel.cpp nvModelObj.cpp nvModelQuery.cpp
-		//
-		// I don't know whether it's illegal to use the SDK code...please don't sue me...
-		//=========================
+		static const int NumPrimTypes = 3;
+
 		typedef enum _PrimitiveType{
-			SP_POINTS = 0x0000, SP_LINES = 0x0001, 
+			SP_POINTS = 0x0000, SP_LINES = 0x0001,
 			SP_TRIANGLES = 0x0004, SP_TRIANGLES_STRIP = 0x0005, SP_TRIANGLES_FAN = 0x0006
 		}PrimitiveType;
 
-		static const int NumPrimTypes = 3;
-
-		class IMesh : public Interface{
-		public:
-			virtual bool LoadFromFile(const string &filename) = 0;
-			virtual bool CompileModel(PrimitiveType) = 0;
-			virtual void Rescale(float scale) = 0;
-
-			virtual void ComputeBoundingBox(math::Vector3 &min, math::Vector3 &max) = 0;
-			virtual void ComputeNormals() = 0;
-			virtual void ComputeTexCoords() = 0;
-
-			virtual bool hasNormals() const = 0;
-			virtual bool hasTexCoords() const = 0;
-
-			virtual uint GetPositionSize()const = 0;
-			virtual uint GetNormalSize() const = 0;
-			virtual uint GetTexCoordSize() const = 0;
-
-			// Intersect( in , out, out );
-			// in model coords
-			virtual bool Intersect(const Ray &ray, math::Vector3 &normal, math::Vector3 &position) = 0;
-			virtual bool IntersectBBox(const Ray &ray) = 0;
-
-			//=================
-			// raw data access functions
-			//=================
-
-			virtual const float* GetPositions() const = 0;
-			virtual const float* GetNormals() const = 0;
-			virtual const float* GetTexCoords() const = 0;
-
-			virtual const uint* GetPositionIndices() const = 0;
-			virtual const uint* GetNormalIndices() const = 0;
-			virtual const uint* GetTexCoordIndices() const = 0;
-
-			virtual uint GetPositionCount() const = 0;
-			virtual uint GetNormalCount() const = 0;
-			virtual uint GetTexCoordCount() const = 0;
-
-			virtual uint GetIndexCount() const = 0;
-
-			//=================
-			// compiled data access functions
-			//=================
-
-			virtual const float* GetCompiledVertices() const = 0;
-			virtual const uint* GetCompiledIndices(PrimitiveType type = SP_TRIANGLES) const = 0;
-
-			virtual uint GetCompiledVertexSize() const = 0;
-			virtual uint GetCompiledVertexCount() const = 0;
-			virtual uint GetCompiledIndexCount(PrimitiveType type = SP_TRIANGLES) const = 0;
-
-			virtual uint GetCompiledPositionOffset() const = 0;
-			virtual uint GetCompiledNormalOffset() const = 0;
-			virtual uint GetCompiledTexCoordOffset() const = 0;
-		};
-
-		class Mesh : public IMesh{
+		class Mesh {
 		private:
 			std::vector<float> _positions;
 			std::vector<float> _normals;
@@ -99,14 +38,14 @@ namespace space{
 
 			math::Vector3 bmax, bmin;
 			bool isBoundingBoxComputed;
-			
+
 			class IModelLoader :public Interface{
 			public:
 				virtual bool Load(Mesh& mesh) = 0;
 			};
 			class ModelLoader : public Interface{
 			public:
-				virtual bool Load(Mesh& mesh){ return false; }
+				bool Load(Mesh& mesh){ return false; }
 			};
 			ModelLoader* Loader;
 
@@ -120,70 +59,70 @@ namespace space{
 				}
 				~ObjFileLoader(){}
 
-				bool Load(Mesh& mesh) final;
+				bool Load(Mesh& mesh);
 			};
 
 		public:
 			Mesh(){ isBoundingBoxComputed = false; }
 			~Mesh(){}
 
-			virtual bool LoadFromFile(const string& filename){
+			bool LoadFromFile(const string& filename){
 
 				Loader = new ObjFileLoader(filename);
 				return Loader->Load(*this);
 			}
 
-			virtual bool CompileModel(PrimitiveType) final;
-			virtual void Rescale(float radius)final;
+			bool CompileModel(PrimitiveType);
+			void Rescale(float radius);
 
-			virtual void ComputeBoundingBox(math::Vector3 &min, math::Vector3 &max) final;
-			virtual void ComputeNormals()final;
-			virtual void ComputeTexCoords()final;
+			void ComputeBoundingBox(math::Vector3 &min, math::Vector3 &max);
+			void ComputeNormals();
+			void ComputeTexCoords();
 
-			virtual bool hasNormals()const final;
-			virtual bool hasTexCoords()const final;
+			bool hasNormals()const;
+			bool hasTexCoords()const;
 
-			virtual uint GetPositionSize()const;
-			virtual uint GetNormalSize() const;
-			virtual uint GetTexCoordSize() const;
+			uint GetPositionSize()const;
+			uint GetNormalSize() const;
+			uint GetTexCoordSize() const;
 
 			// Intersect( in , out, out );
 			// in model coords
-			virtual bool Intersect(const Ray &ray, math::Vector3 &normal, math::Vector3 &position);
-			virtual bool IntersectBBox(const Ray &ray);
+			bool Intersect(const Ray &ray, math::Vector3 &normal, math::Vector3 &position);
+			bool IntersectBBox(const Ray &ray);
 			Triangle GetTriangle(uint i0, uint i1, uint i2) const;
 			//=================
 			// raw data access functions
 			//=================
 
-			virtual const float* GetPositions() const final;
-			virtual const float* GetNormals() const final;
-			virtual const float* GetTexCoords() const final;
+			const float* GetPositions() const;
+			const float* GetNormals() const;
+			const float* GetTexCoords() const;
 
-			virtual const uint* GetPositionIndices() const final;
-			virtual const uint* GetNormalIndices() const final;
-			virtual const uint* GetTexCoordIndices() const final;
+			const uint* GetPositionIndices() const;
+			const uint* GetNormalIndices() const;
+			const uint* GetTexCoordIndices() const;
 
-			virtual uint GetPositionCount() const final;
-			virtual uint GetNormalCount() const final;
-			virtual uint GetTexCoordCount() const final;
+			uint GetPositionCount() const;
+			uint GetNormalCount() const;
+			uint GetTexCoordCount() const;
 
-			virtual uint GetIndexCount() const final;
+			uint GetIndexCount() const;
 
 			//=================
 			// compiled data access functions
 			//=================
 
-			virtual const float* GetCompiledVertices() const final;
-			virtual const uint* GetCompiledIndices(PrimitiveType type = SP_TRIANGLES) const final;
+			const float* GetCompiledVertices() const;
+			const uint* GetCompiledIndices(PrimitiveType type = SP_TRIANGLES) const;
 
-			virtual uint GetCompiledVertexSize() const final;
-			virtual uint GetCompiledVertexCount() const final;
-			virtual uint GetCompiledIndexCount(PrimitiveType type = SP_TRIANGLES) const final;
+			uint GetCompiledVertexSize() const;
+			uint GetCompiledVertexCount() const;
+			uint GetCompiledIndexCount(PrimitiveType type = SP_TRIANGLES) const;
 
-			virtual uint GetCompiledPositionOffset() const final;
-			virtual uint GetCompiledNormalOffset() const final;
-			virtual uint GetCompiledTexCoordOffset() const final;
+			uint GetCompiledPositionOffset() const;
+			uint GetCompiledNormalOffset() const;
+			uint GetCompiledTexCoordOffset() const;
 		};
 	}
 }

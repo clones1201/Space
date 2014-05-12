@@ -22,6 +22,7 @@ namespace space{
 			virtual void Resize(uint width, uint height);
 			virtual void Reposition(int left, int top);
 
+			virtual void ShutDown();
 		private:
 			HINSTANCE mhInstance;
 			HWND mhWnd;
@@ -34,7 +35,8 @@ namespace space{
 			ID3D11RenderTargetView*		mpRenderTargetView;
 			ID3D11DepthStencilView*		mpDepthStencilView;
 			ID3D11Texture2D*			mpDepthStencil;
-		
+			//IDXGIFactory*				mpDXGIFactory;
+
 			bool isSwapChain;
 
 			void CreateD3DResourse();

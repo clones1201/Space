@@ -5,12 +5,15 @@
 
 namespace space{
 
-	class Renderable {
-	public:
-		
-
-	};
-
+	namespace graphic{
+		class Renderable {
+		public:
+			virtual void GetRenderOperation(RenderOperation& op) const = 0;
+			virtual Material_ptr GetMaterial(void) const = 0;
+			virtual math::Matrix4 GetWorldTransforms(void) const = 0;
+			virtual
+		};
+	}
 }
 
 

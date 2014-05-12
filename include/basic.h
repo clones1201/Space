@@ -837,6 +837,13 @@ namespace space{
 			return result;
 		}
 
+
+		class Light{
+
+		};
+
+		typedef std::vector<Light*> LightList;
+
 		class Material{
 		public:
 			Color ambient;
