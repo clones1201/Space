@@ -4,8 +4,8 @@
 
 namespace space{
 	namespace graphic{
-	
-		D3D11RenderWindow::D3D11RenderWindow(HINSTANCE inst, D3D11Device & device):
+
+		D3D11RenderWindow::D3D11RenderWindow(HINSTANCE inst, D3D11Device & device) :
 			mhInstance(inst),
 			mhWnd(nullptr),
 			mDevice(device),
@@ -15,12 +15,12 @@ namespace space{
 			mpDepthStencilView(nullptr){
 
 			mIsFullScreen = false;
-			isSwapChain = false;
+			isSwapChain = true;
 
 		}
 
 		D3D11RenderWindow::~D3D11RenderWindow(){
-			
+
 		}
 
 		void D3D11RenderWindow::Create(const String & name, uint width, uint height, bool fullScreen){
@@ -45,8 +45,8 @@ namespace space{
 			mhWnd = CreateWindow(windowClass.lpszClassName, name.c_str(),
 				WS_OVERLAPPEDWINDOW,
 				0, 0, mWidth, mHeight, nullptr, nullptr, mhInstance, this);
-			
-			RECT rc; 
+
+			RECT rc;
 			GetWindowRect(mhWnd, &rc);
 			mTop = rc.top;
 			mLeft = rc.left;
@@ -56,6 +56,8 @@ namespace space{
 			mHeight = rc.bottom;
 
 			CreateD3DResourse();
+
+			ShowWindow(mhWnd, SW_NORMAL);
 
 		}
 
@@ -103,25 +105,30 @@ namespace space{
 				{
 					IDXGIDevice * pDXGIDevice;
 					hr = mDevice->QueryInterface(__uuidof(IDXGIDevice), (void **)&pDXGIDevice);
-					if (SUCCEEDED(hr))
-						break;
+					if (FAILED(hr))
+						return;
 					IDXGIAdapter * pDXGIAdapter;
 					hr = pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), (void **)&pDXGIAdapter);
-					if (SUCCEEDED(hr))
-						break;
+					if (FAILED(hr))
+						return;
 					IDXGIFactory * pIDXGIFactory;
 					hr = pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), (void **)&pIDXGIFactory);
-					if (SUCCEEDED(hr))
-						break;
+					if (FAILED(hr))
+						return;
 
-					hr = pIDXGIFactory->CreateSwapChain(mDevice.Get(), &md3dpp, &mpSwapChain);
+					hr = pIDXGIFactory->CreateSwapChain(mDevice.Get(), &md3dpp, &mpSwapChain); 
+					if (FAILED(hr)){
+						// Try a second time, may fail the first time due to back buffer count,
+						// which will be corrected by the runtime
+						hr = pIDXGIFactory->CreateSwapChain(pDXGIDevice, &md3dpp, &mpSwapChain);
+					}
 					if (SUCCEEDED(hr))
 						break;
 				}
 				if (FAILED(hr))
 					return;
 			}
-			ID3D11Texture2D *mBackBuffer;
+			ID3D11Texture2D *mBackBuffer = nullptr;
 			if (isSwapChain){
 				hr = mpSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&mBackBuffer);
 				if (FAILED(hr))
@@ -131,7 +138,8 @@ namespace space{
 				mBackBuffer->Release();
 				if (FAILED(hr))
 					return;
-			}
+			}			
+
 			// Create depth stencil texture
 			ZeroMemory(&descDepth, sizeof(descDepth));
 			descDepth.Width = mWidth;
@@ -177,14 +185,19 @@ namespace space{
 
 		void D3D11RenderWindow::SetFullScreen(bool fullScreen, uint width, uint height){
 		}
-		
+
 		void D3D11RenderWindow::Resize(uint width, uint height){
 		}
 		void D3D11RenderWindow::Reposition(int left, int top){
 		}
-		
+
 		void D3D11RenderWindow::ShutDown(){
 			UnregisterClass(NULL, mhInstance);
 		}
+
+		void D3D11RenderWindow::ClearRenderTargetView(){
+			mDevice.GetImmediateContext()->ClearRenderTargetView(mpRenderTargetView, (float*)&blue);
+		}
+
 	}
 }

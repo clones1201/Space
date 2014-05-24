@@ -2,6 +2,7 @@
 #include "D3D11Prerequisites.h"
 #include "D3D11RenderSystem.h"
 #include "D3D11RenderWindow.h"
+#include "WindowsUtilities.h"
 
 namespace space{
 	namespace graphic{
@@ -44,7 +45,7 @@ namespace space{
 
 		D3D11RenderSystem::~D3D11RenderSystem(){
 
-			mDevice.Release();
+			ShutDown();
 		}	
 
 		//virtual void AttachRenderTarget(IRenderTarget &rt) = 0;
@@ -98,17 +99,18 @@ namespace space{
 			if (autoCreateWindow){
 				bool fullScreen = false;
 				autoWin = new D3D11RenderWindow(mhInstance, mDevice);
+				WindowsUtilities::AddRenderWindow(autoWin);
 				
 			}
 			return autoWin;
 		}
 
 		void D3D11RenderSystem::_Render(){
-
+			mActiveRenderTarget->ClearRenderTargetView();
 		}
 
 		void D3D11RenderSystem::_BeginScene(){
-
+			_Render();
 		}
 
 		void D3D11RenderSystem::_EndScene(){
@@ -116,7 +118,7 @@ namespace space{
 		}
 
 		void D3D11RenderSystem::ShutDown(void){
-
+			mDevice.Release();
 		}
 
 		void D3D11RenderSystem::SetAmbientLight(float r, float g, float b){

@@ -10,7 +10,11 @@ namespace space{
 			POINTS = 1, SPOT = 2, DIRECTIONAL = 3
 		}LightType;
 
-		struct Light{
+		class Light{
+		public:
+			template <LightType T = POINTS>
+			LightPtr Create();
+		protected:
 			LightType    Type;            /* Type of light source */
 			Color   Diffuse;         /* Diffuse color of light */
 			Color   Specular;        /* Specular color of light */
@@ -27,70 +31,63 @@ namespace space{
 			Light(LightType type = POINTS);
 		};
 
-		template <LightType T = POINTS>
 		inline Light CreateLights();
 
 		template <>
-		inline Light CreateLights<POINTS>(){
-			Light result;
-			result.Type = POINTS;
-			result.Position = math::Vector3(0, 0, 0);
-			result.Range = 1000;
-			result.Attenuation0 = 1;
-			result.Attenuation1 = 0;
-			result.Attenuation2 = 0;
-			result.Specular = Color(1.0f, 1.0f, 1.0f, 1.0f);
-			result.Diffuse = Color(1.0f, 1.0f, 1.0f, 1.0f);
-			result.Ambient = Color(0.1f, 0.1f, 0.1f, 1.0f);
-			result.Direction = math::Vector3(1, 0, 0);
-			result.Falloff = 1;
-			result.Phi = 0;
-			result.Theta = 0;
-			return result;
+		inline LightPtr Light::Create<POINTS>(){
+			auto ret = LightPtr(new Light);
+			ret->Type = POINTS;
+			ret->Position = math::Vector3(0, 0, 0);
+			ret->Range = 1000;
+			ret->Attenuation0 = 1;
+			ret->Attenuation1 = 0;
+			ret->Attenuation2 = 0;
+			ret->Specular = Color(1.0f, 1.0f, 1.0f, 1.0f);
+			ret->Diffuse = Color(1.0f, 1.0f, 1.0f, 1.0f);
+			ret->Ambient = Color(0.1f, 0.1f, 0.1f, 1.0f);
+			ret->Direction = math::Vector3(1, 0, 0);
+			ret->Falloff = 1;
+			ret->Phi = 0;
+			ret->Theta = 0;
+			return ret;
 		}
 		template <>
-		inline Light CreateLights<SPOT>(){
-			Light result;
-			result.Type = SPOT;
-			result.Position = math::Vector3(0, 0, 0);
-			result.Range = 1000;
-			result.Attenuation0 = 1;
-			result.Attenuation1 = 0;
-			result.Attenuation2 = 0;
-			result.Specular = Color(1.0f, 1.0f, 1.0f, 1.0f);
-			result.Diffuse = Color(1.0f, 1.0f, 1.0f, 1.0f);
-			result.Ambient = Color(0.1f, 0.1f, 0.1f, 1.0f);
-			result.Direction = math::Vector3(1, 0, 0);
-			result.Falloff = 1;
-			result.Phi = 0;
-			result.Theta = 0;
-			return result;
+		inline LightPtr Light::Create<SPOT>(){
+			auto ret = LightPtr(new Light);
+			ret->Type = SPOT;
+			ret->Position = math::Vector3(0, 0, 0);
+			ret->Range = 1000;
+			ret->Attenuation0 = 1;
+			ret->Attenuation1 = 0;
+			ret->Attenuation2 = 0;
+			ret->Specular = Color(1.0f, 1.0f, 1.0f, 1.0f);
+			ret->Diffuse = Color(1.0f, 1.0f, 1.0f, 1.0f);
+			ret->Ambient = Color(0.1f, 0.1f, 0.1f, 1.0f);
+			ret->Direction = math::Vector3(1, 0, 0);
+			ret->Falloff = 1;
+			ret->Phi = 0;
+			ret->Theta = 0;
+			return ret;
 		}
 		template <>
-		inline Light CreateLights<DIRECTIONAL>(){
-			Light result;
-			result.Type = DIRECTIONAL;
-			result.Position = math::Vector3(0, 0, 0);
-			result.Range = 1000;
-			result.Attenuation0 = 1;
-			result.Attenuation1 = 0;
-			result.Attenuation2 = 0;
-			result.Specular = Color(1.0f, 1.0f, 1.0f, 1.0f);
-			result.Diffuse = Color(1.0f, 1.0f, 1.0f, 1.0f);
-			result.Ambient = Color(0.1f, 0.1f, 0.1f, 1.0f);
-			result.Direction = math::Vector3(1, 0, 0);
-			result.Falloff = 1;
-			result.Phi = 0;
-			result.Theta = 0;
-			return result;
+		inline LightPtr Light::Create<DIRECTIONAL>(){
+			auto ret = LightPtr(new Light);
+			ret->Type = DIRECTIONAL;
+			ret->Position = math::Vector3(0, 0, 0);
+			ret->Range = 1000;
+			ret->Attenuation0 = 1;
+			ret->Attenuation1 = 0;
+			ret->Attenuation2 = 0;
+			ret->Specular = Color(1.0f, 1.0f, 1.0f, 1.0f);
+			ret->Diffuse = Color(1.0f, 1.0f, 1.0f, 1.0f);
+			ret->Ambient = Color(0.1f, 0.1f, 0.1f, 1.0f);
+			ret->Direction = math::Vector3(1, 0, 0);
+			ret->Falloff = 1;
+			ret->Phi = 0;
+			ret->Theta = 0;
+			return ret;
 		}
 
-		class ILight :public Interface{
-		public:
-			int SetLight(int,const Light&);
-			int TurnOn(int);
-			int TurnOff(int);
-		};
 		
 	}
 }

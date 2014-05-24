@@ -70,7 +70,9 @@ namespace space{
 		class RenderOperation;
 		class ViewPort;
 		class RenderWindow;
-
+		class Movable;
+		class Light;
+		class Material;
 	}
 	class Core;
 	class WindowsUtilities;

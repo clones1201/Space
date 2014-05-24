@@ -12,7 +12,7 @@ namespace space{
 			void Init(){
 				srand(clock());
 				for (uint i = 0; i < samples.size(); i++){
-					samples[i] = Vector2(rand() / double(RAND_MAX), rand() / double(RAND_MAX));
+					samples[i] = Vector2((float)rand() / double(RAND_MAX), (float)rand() / double(RAND_MAX));
 				}
 			}
 		public:
@@ -32,7 +32,7 @@ namespace space{
 		};
 
 		Sample::Sample(){
-			sampler = Sampler_ptr(new Sampler(1000));
+			sampler = SamplerPtr(new Sampler(1000));
 		}
 
 		Matrix GetTransformMatrix(Vector3 normal, Vector3 pos, float a, float b, float c){
@@ -60,10 +60,10 @@ namespace space{
 
 		Vector3 Sample::HemiSphere(Vector3 normal, Vector3 pos, float r, uint exp){
 			Vector2 pt = sampler->GetSample();
-			float cosPhi = cosf(pt.x * 2.0 * Pi);
-			float sinPhi = sinf(pt.x * 2.0 * Pi);
-			float cosTheta = powf((1.0 - pt.y), 1.0 / (exp + 1));
-			float sinTheta = sqrtf(1.0 - cosTheta * cosTheta);
+			float cosPhi = cosf(pt.x * 2.0f * Pi);
+			float sinPhi = sinf(pt.x * 2.0f * Pi);
+			float cosTheta = powf((1.0f - pt.y), 1.0f / (exp + 1));
+			float sinTheta = sqrtf(1.0f - cosTheta * cosTheta);
 			float pu = sinTheta * cosPhi;
 			float pv = sinTheta * sinPhi;
 			float pw = cosTheta;
@@ -72,10 +72,10 @@ namespace space{
 
 		Vector3 Sample::Sphere(Vector3 normal, Vector3 pos, float r){
 			Vector2 pt = sampler->GetSample();
-			float cosPhi = cosf(pt.x * 2.0 * Pi);
-			float sinPhi = sinf(pt.x * 2.0 * Pi);
-			float cosTheta = cosf( (1- pt.y) * Pi);
-			float sinTheta = sqrtf(1.0 - cosTheta * cosTheta);
+			float cosPhi = cosf(pt.x * 2.0f * Pi);
+			float sinPhi = sinf(pt.x * 2.0f * Pi);
+			float cosTheta = cosf( (1.0f- pt.y) * Pi);
+			float sinTheta = sqrtf(1.0f - cosTheta * cosTheta);
 			float pu = sinTheta * cosPhi;
 			float pv = sinTheta * sinPhi;
 			float pw = cosTheta;
@@ -84,10 +84,10 @@ namespace space{
 
 		Vector3 Sample::Square(Vector3 normal, Vector3 pos, float a, float b){
 			Vector2 pt = sampler->GetSample(); 
-			float pu = -1 + 2 * pt.x;
-			float pv = -1 + 2 * pt.y;
+			float pu = -1.0f + 2.0f * pt.x;
+			float pv = -1.0f + 2.0f * pt.y;
 			float pw = 0;
-			return  Vec3Transform(GetTransformMatrix(normal, pos, a, b, 1), Vector4(pu, pv, pw));
+			return  Vec3Transform(GetTransformMatrix(normal, pos, a, b, 1.0f), Vector4(pu, pv, pw));
 		}
 	}
 }

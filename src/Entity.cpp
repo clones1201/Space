@@ -12,7 +12,7 @@ namespace space{
 	void Texture::Load(vector<float>& image, uint w, uint h){
 		for (vector<float>::iterator pIter = image.begin();
 			pIter < image.end(); pIter++){
-			Texture::image.push_back(*pIter * 255);
+			Texture::image.push_back((uchar)*pIter * 255);
 		}
 		width = w; height = h;
 	}
@@ -32,19 +32,19 @@ namespace space{
 
 	Color Texture::GetTextureColor(float u, float v)const{
 		/* Texture Wrap Repeat */
-		
-		u = fmod(u, 1);
-		if (u < 0){
-			u = 1+u;
-		}
-		
-		v = fmod(v, 1);
-		if (v < 0){
-			v = 1+v;
+
+		u = (float)fmod(u, 1);
+		if (u < 0.0f){
+			u = 1.0f + u;
 		}
 
-		uint w = u * width == width ? ( u * width -1 ):u*width;
-		uint h = v * height == height ?(v* height - 1):v*width;
+		v = (float)fmod(v, 1);
+		if (v < 0.0f){
+			v = 1.0f + v;
+		}
+
+		uint w = u * width == width ? (uint)(u * width - 1) : (uint)u*width;
+		uint h = v * height == height ? (uint)(v* height - 1) : (uint)v*width;
 
 		Color result;
 		if (4 == image.size() / (width*height)){
@@ -98,5 +98,5 @@ namespace space{
 
 	/*void Entity::SetTexture(const _Texture2D& tex){
 		Entity::tex = tex;
-	}*/
+		}*/
 }

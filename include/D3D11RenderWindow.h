@@ -23,6 +23,8 @@ namespace space{
 			virtual void Reposition(int left, int top);
 
 			virtual void ShutDown();
+
+			virtual void ClearRenderTargetView();
 		private:
 			HINSTANCE mhInstance;
 			HWND mhWnd;

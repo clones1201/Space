@@ -14,7 +14,7 @@ int main(){
 
 	space::RenderWindow* win = space::Core::Instance()->CreateRenderWindow();
 
-	space::Core::Instance()->StartToRendering();
+	space::Core::Instance()->StartRendering();
 
 	return 0;
 }

@@ -37,6 +37,7 @@ namespace space{
 
 			virtual void _EndUpdate();
 
+			virtual void ClearRenderTargetView() = 0;
 		protected:
 			String name;
 

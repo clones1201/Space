@@ -4,6 +4,8 @@
 namespace space{
 	using namespace graphic;
 
+	WindowsUtilities::Windows WindowsUtilities::windows;
+
 	int WindowsUtilities::MessagePump(){
 #if (SPACE_PLATFORM == SPACE_PLATFORM_WINDOWS)
 		MSG msg;
@@ -13,6 +15,7 @@ namespace space{
 			DispatchMessage(&msg);
 		}
 #endif
+		return 0;
 	}
 
 	void WindowsUtilities::AddRenderWindow(RenderWindow* win){

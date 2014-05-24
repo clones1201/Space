@@ -19,8 +19,6 @@ namespace space{
 		virtual ~Interface(){}
 	};
 
-#define __INTERFACE(i) virtual public i
-
 	class Object{
 	public:
 		virtual ~Object(){}
@@ -46,7 +44,7 @@ namespace space{
 	}
 
 	namespace util{
-		
+
 		//anyway, it sucks. I should re-write it later...
 		template< typename T>
 		class BinaryTreeNode{
@@ -59,9 +57,9 @@ namespace space{
 
 			BinaryTreeNode(){}
 			BinaryTreeNode(const T &elem){ BinaryTreeNode::elem = T(elem); }
-			BinaryTreeNode(Ptr left,Ptr right, const T &elem);
+			BinaryTreeNode(Ptr left, Ptr right, const T &elem);
 
-			virtual void SetChildren(Ptr left,Ptr right);
+			virtual void SetChildren(Ptr left, Ptr right);
 
 			void SetElem(const T &elem){
 				BinaryTreeNode::elem = T(elem);
@@ -100,7 +98,7 @@ namespace space{
 		};
 
 		template< typename T>
-		BinaryTreeNode<T>::BinaryTreeNode(Ptr left,Ptr right, const T &elem){
+		BinaryTreeNode<T>::BinaryTreeNode(Ptr left, Ptr right, const T &elem){
 			leftChild = left; rightChild = right;
 			BinaryTreeNode::elem = T(elem);
 		}
@@ -190,7 +188,7 @@ namespace space{
 
 		inline float2 operator+=(float2& p1, const float2& p2){
 			float2 result;
-			result.x = p1.x + p2.x; result.y = p1.y + p2.y; 
+			result.x = p1.x + p2.x; result.y = p1.y + p2.y;
 			return result;
 		}
 		inline float2 operator-=(float2& p1, const float2& p2){
@@ -209,7 +207,7 @@ namespace space{
 			return result;
 		}
 
-		inline bool operator== (const float2 &p1,const float2&p2){
+		inline bool operator== (const float2 &p1, const float2&p2){
 			return (p1.x == p2.x && p1.y == p2.y);
 		}
 		inline bool operator!=(const float2 &p1, const float2 &p2){
@@ -352,7 +350,7 @@ namespace space{
 			return p1;
 		}
 
-		inline bool operator== (const float3 &p1,const float3&p2){
+		inline bool operator== (const float3 &p1, const float3&p2){
 			return (p1.x == p2.x && p1.y == p2.y && p1.z == p2.z);
 		}
 
@@ -692,9 +690,9 @@ namespace space{
 		public:
 			uchar r, g, b;
 			explicit RGBColor(Color &c){
-				r = c.r > 1.0f ? 255 : c.r * 255;
-				g = c.g > 1.0f ? 255 : c.g * 255;
-				b = c.b > 1.0f ? 255 : c.b * 255;
+				r = c.r > 1.0f ? (uchar)255 : (uchar)c.r * 255;
+				g = c.g > 1.0f ? (uchar)255 : (uchar)c.g * 255;
+				b = c.b > 1.0f ? (uchar)255 : (uchar)c.b * 255;
 			}
 		};
 		typedef shared_ptr<RGBColor> RGBColor_ptr;
@@ -702,10 +700,10 @@ namespace space{
 		public:
 			uchar r, g, b, a;
 			explicit RGBAColor(Color &c){
-				r = c.r > 1.0f ? 255 : c.r * 255;
-				g = c.g > 1.0f ? 255 : c.g * 255;
-				b = c.b > 1.0f ? 255 : c.b * 255;
-				a = c.a > 1.0f ? 255 : c.a * 255;
+				r = c.r > 1.0f ? (uchar)255 : (uchar)c.r * 255;
+				g = c.g > 1.0f ? (uchar)255 : (uchar)c.g * 255;
+				b = c.b > 1.0f ? (uchar)255 : (uchar)c.b * 255;
+				a = c.a > 1.0f ? (uchar)255 : (uchar)c.a * 255;
 			}
 		};
 		typedef shared_ptr<RGBAColor> RGBAColor_ptr;
@@ -713,10 +711,10 @@ namespace space{
 		public:
 			uchar a, r, g, b;
 			explicit ARGBColor(Color &c){
-				r = c.r > 1.0f ? 255 : c.r * 255;
-				g = c.g > 1.0f ? 255 : c.g * 255;
-				b = c.b > 1.0f ? 255 : c.b * 255;
-				a = c.a > 1.0f ? 255 : c.a * 255;
+				r = c.r > 1.0f ? (uchar)255 : (uchar)c.r * 255;
+				g = c.g > 1.0f ? (uchar)255 : (uchar)c.g * 255;
+				b = c.b > 1.0f ? (uchar)255 : (uchar)c.b * 255;
+				a = c.a > 1.0f ? (uchar)255 : (uchar)c.a * 255;
 			}
 		};
 		typedef shared_ptr<ARGBColor> ARGBColor_ptr;
@@ -724,10 +722,10 @@ namespace space{
 		public:
 			uchar a, b, g, r;
 			explicit ABGRColor(Color &c){
-				r = c.r > 1.0f ? 255 : c.r * 255;
-				g = c.g > 1.0f ? 255 : c.g * 255;
-				b = c.b > 1.0f ? 255 : c.b * 255;
-				a = c.a > 1.0f ? 255 : c.a * 255;
+				r = c.r > 1.0f ? (uchar)255 : (uchar)c.r * 255;
+				g = c.g > 1.0f ? (uchar)255 : (uchar)c.g * 255;
+				b = c.b > 1.0f ? (uchar)255 : (uchar)c.b * 255;
+				a = c.a > 1.0f ? (uchar)255 : (uchar)c.a * 255;
 			}
 		};
 		typedef shared_ptr<ABGRColor> ABGRColor_ptr;
@@ -800,15 +798,15 @@ namespace space{
 				float tx_min, ty_min, tz_min;
 				float tx_max, ty_max, tz_max;
 
-				float a = 1.0 / dx;
+				float a = 1.0f / dx;
 				if (a >= 0){ tx_min = (bmin.x - ox) * a;	tx_max = (bmax.x - ox) * a; }
 				else{ tx_min = (bmax.x - ox) * a;	tx_max = (bmin.x - ox) * a; }
 
-				float b = 1.0 / dy;
+				float b = 1.0f / dy;
 				if (b >= 0){ ty_min = (bmin.y - oy) * b;	ty_max = (bmax.y - oy) * b; }
 				else{ ty_min = (bmax.y - oy) * b;	ty_max = (bmin.y - oy) * b; }
 
-				float c = 1.0 / dz;
+				float c = 1.0f / dz;
 				if (c >= 0){ tz_min = (bmin.z - oz) * c;	tz_max = (bmax.z - oz) * c; }
 				else{ tz_min = (bmax.z - oz) * c;	tz_max = (bmin.z - oz) * c; }
 
@@ -837,11 +835,7 @@ namespace space{
 			return result;
 		}
 
-
-		class Light{
-
-		};
-
+		typedef shared_ptr<Light> LightPtr;
 		typedef std::vector<Light*> LightList;
 
 		class Material{
@@ -851,17 +845,17 @@ namespace space{
 			Color specular;
 			float ka, kd, ks;
 			uint n;
-			float reflect,refract,greflect;
+			float reflect, refract, greflect;
 			Material() :ka(0), kd(0), ks(0), n(1), reflect(0){}
 		};
-		typedef shared_ptr<Material> Material_ptr;
+		typedef shared_ptr<Material> MaterialPtr;
 
 		class Sampler;
-		typedef shared_ptr<Sampler> Sampler_ptr;
+		typedef shared_ptr<Sampler> SamplerPtr;
 
 		class Sample : public Pattern::Singleton<Sample>{
 		private:
-			Sampler_ptr sampler;
+			SamplerPtr sampler;
 		protected:
 			Sample();
 			friend class Pattern::Singleton<Sample>;

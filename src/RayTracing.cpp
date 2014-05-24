@@ -221,7 +221,6 @@ namespace space{
 				float tl = INFINITY, tr = INFINITY;
 				Shader sdl, sdr;
 
-				/* got some big problem here. */
 				if (result = elem.Intersect(ray, tmin, tmax)){
 					Axis axis = GetLongestAxis(elem);
 					float ta_max, ta_min;

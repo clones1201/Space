@@ -2,6 +2,7 @@
 #define __ENTITY_H__
 
 #include "Renderable.h"
+#include "Movable.h"
 #include "Mesh.h"
 #include "Light.h"
 #include "Camera.h"
@@ -30,9 +31,12 @@ namespace space{
 		}Texture2D, Texture;
 		typedef shared_ptr<Texture> Texture_ptr;
 
-		class Entity : public Renderable{
+		class Entity : public Renderable , public Movable{
+		private:
+			Entity();
 		public:
-			Entity(const graphic::Mesh*);
+			//Entity(const graphic::Mesh*);
+			static void Create(const String &filename);
 
 			math::Vector3 GetPosition()const;
 

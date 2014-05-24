@@ -141,6 +141,9 @@
     <ClInclude Include="..\include\Radiosity.h">
       <Filter>Main\Radiosity</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\Movable.h">
+      <Filter>Main\Include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Camera.cpp">

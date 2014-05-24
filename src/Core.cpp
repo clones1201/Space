@@ -29,9 +29,17 @@ namespace space{
 
 	}
 
-	bool Core::RenderOneFrame(void){}
+	bool Core::RenderOneFrame(void){
+		mActiveRenderSystem->_BeginScene();
 
-	bool Core::RenderOneFrame(float timeSinceLastFrame){}
+
+		mActiveRenderSystem->_EndScene();
+		return true;
+	}
+
+	bool Core::RenderOneFrame(float timeSinceLastFrame){
+		return true;
+	}
 
 	void Core::ShutDown(void){}
 	// maintain multiple rendersystem is not what i should do at the beginning
