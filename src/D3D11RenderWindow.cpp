@@ -181,22 +181,41 @@ namespace space{
 		}
 
 		void D3D11RenderWindow::_Initialize(bool fullScreen){
+
 		}
 
 		void D3D11RenderWindow::SetFullScreen(bool fullScreen, uint width, uint height){
+
 		}
 
 		void D3D11RenderWindow::Resize(uint width, uint height){
+
 		}
+
 		void D3D11RenderWindow::Reposition(int left, int top){
+
 		}
 
 		void D3D11RenderWindow::ShutDown(){
 			UnregisterClass(NULL, mhInstance);
 		}
 
+		void D3D11RenderWindow::SwapBuffers(){
+			
+			if (!mDevice.isNull()){
+				HRESULT hr;
+				if (isSwapChain){
+					hr = mpSwapChain->Present(0, 0);
+				}
+				else{
+				
+				}
+			}
+		}
+
 		void D3D11RenderWindow::ClearRenderTargetView(){
-			mDevice.GetImmediateContext()->ClearRenderTargetView(mpRenderTargetView, (float*)&blue);
+			Color color = blue;
+			mDevice.GetImmediateContext()->ClearRenderTargetView(mpRenderTargetView, (float*)&color);
 		}
 
 	}

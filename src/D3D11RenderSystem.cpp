@@ -107,6 +107,7 @@ namespace space{
 
 		void D3D11RenderSystem::_Render(){
 			mActiveRenderTarget->ClearRenderTargetView();
+			
 		}
 
 		void D3D11RenderSystem::_BeginScene(){
@@ -114,7 +115,7 @@ namespace space{
 		}
 
 		void D3D11RenderSystem::_EndScene(){
-
+			mActiveRenderTarget->SwapBuffers();
 		}
 
 		void D3D11RenderSystem::ShutDown(void){

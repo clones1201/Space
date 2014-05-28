@@ -24,6 +24,7 @@ namespace space{
 
 			virtual void ShutDown();
 
+			virtual void SwapBuffers();
 			virtual void ClearRenderTargetView();
 		private:
 			HINSTANCE mhInstance;
