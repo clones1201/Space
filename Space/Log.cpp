@@ -40,14 +40,14 @@ namespace Space
 		writer->Printf(format, args);
 		va_end(args);
 	}
-	void Logger::DebugPrintf(int line, const char* filename, const char* format, ...)
+	void Logger::DebugPrintf(int32 line, const char* filename, const char* format, ...)
 	{
 		va_list args;
 		va_start(args, format);
 		writer->DebugPrintf(line, filename, format, args);
 		va_end(args);
 	}
-	void Logger::DebugPrintf(int line, const wchar_t* filename, const wchar_t* format, ...)
+	void Logger::DebugPrintf(int32 line, const wchar_t* filename, const wchar_t* format, ...)
 	{
 		va_list args;
 		va_start(args, format);
@@ -67,7 +67,7 @@ namespace Space
 	{
 		log += toTs(StringFormatA(format, args));
 	}
-	void FileLogWriter::DebugPrintf(int line, const char* filename, const char* format, va_list args)
+	void FileLogWriter::DebugPrintf(int32 line, const char* filename, const char* format, va_list args)
 	{
 #if defined _DEBUG || defined DEBUG
 		char buffer[1024];
@@ -76,7 +76,7 @@ namespace Space
 #else
 #endif
 	}
-	void FileLogWriter::DebugPrintf(int line, const wchar_t* filename, const wchar_t* format, va_list args)
+	void FileLogWriter::DebugPrintf(int32 line, const wchar_t* filename, const wchar_t* format, va_list args)
 	{
 #if defined _DEBUG || defined DEBUG
 		wchar_t buffer[1024];
@@ -109,7 +109,7 @@ namespace Space
 	{
 		vprintf_s(format, args);
 	}
-	void StdLogWriter::DebugPrintf(int line, const char* filename, const char* format, va_list args)
+	void StdLogWriter::DebugPrintf(int32 line, const char* filename, const char* format, va_list args)
 	{
 #if defined _DEBUG || defined DEBUG
 		char buffer[1024];
@@ -118,7 +118,7 @@ namespace Space
 #else
 #endif
 	}
-	void StdLogWriter::DebugPrintf(int line, const wchar_t* filename, const wchar_t* format, va_list args)
+	void StdLogWriter::DebugPrintf(int32 line, const wchar_t* filename, const wchar_t* format, va_list args)
 	{
 #if defined _DEBUG || defined DEBUG
 		char buffer[1024];

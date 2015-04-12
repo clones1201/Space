@@ -8,15 +8,15 @@
 
 namespace Space
 {
-	class D3D11DepthStencilView : virtual public DepthStencilView
+	class D3D11DepthStencilView : public DepthStencilView
 	{
 	protected:
 		D3D11DepthStencilView();
-					 
+		
 	public:
 		virtual ~D3D11DepthStencilView();		
 
-		static D3D11DepthStencilView* Create(D3D11Device& device, ID3D11Texture2D* pBuffer);
+		static D3D11DepthStencilView* Create(D3D11Device& device, DeviceTexture2D* pTexture);
 		virtual ID3D11DepthStencilView* GetDepthStencilView() const = 0;
 	};
 }

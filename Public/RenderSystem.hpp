@@ -9,33 +9,27 @@ namespace Space
 	class RenderSystem : virtual public Interface
 	{
 	public:
-		void Render(RenderTarget* target, SceneManager* scene);
-
 		virtual ~RenderSystem();
 	protected:
-		void Prerender();
-		void Postrender();
-		void FireOneFrame();
-
-		virtual bool _Prerender() = 0;
-		virtual void _Postrender() = 0;
-		virtual void _FireOneFrame() = 0;
-
-		RenderTarget* mActiveRenderTarget = nullptr;
+		RenderSystem();		 
 
 	public:
-		virtual RenderWindow* CreateRenderWindow(std::string const& name, int width, int height, bool isFullScreen) = 0;
+		virtual RenderWindow* CreateRenderWindow(std::string const& name, int32 width, int32 height, bool isFullScreen) = 0;
 		virtual DeviceBuffer* CreateBuffer(BufferType type, ResourceUsage usage, byte const* initialData, size_t lengthInBytes) = 0;
 
-		virtual DeviceTexture1D* CreateTexture1D(int X, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, byte const* initialData) = 0;
-		virtual DeviceTexture1D* CreateTexture1DArray(int X, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, int arraySize, byte const* initialData) = 0;
-		virtual DeviceTexture2D* CreateTexture2D(int X, int Y, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, byte const* initialData) = 0;
-		virtual DeviceTexture2D* CreateTexture2DArray(int X, int Y, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, int arraySize, byte const* initialData) = 0;
+		virtual DeviceTexture1D* CreateTexture1D(int32 X, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, byte const* initialData) = 0;
+		virtual DeviceTexture1D* CreateTexture1DArray(int32 X, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, int32 arraySize, byte const* initialData) = 0;
+		virtual DeviceTexture2D* CreateTexture2D(int32 X, int32 Y, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, byte const* initialData) = 0;
+		virtual DeviceTexture2D* CreateTexture2DArray(int32 X, int32 Y, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, int32 arraySize, byte const* initialData) = 0;
 		virtual DeviceTexture2D* CreateTexture2DFromFile(std::string const& filename);
-		virtual DeviceTexture3D* CreateTexture3D(int X, int Y, int Z, DataFormat format, ResourceUsage usage, ResourceBindFlag flag,byte const* initialData) = 0;
-		/*virtual DeviceTexture3D* CreateTexture3DArray(int X, int Y, int Z, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, int arraySize, byte const* initialData) = 0;*/
+		virtual DeviceTexture3D* CreateTexture3D(int32 X, int32 Y, int32 Z, DataFormat format, ResourceUsage usage, ResourceBindFlag flag,byte const* initialData) = 0;
+		/*virtual DeviceTexture3D* CreateTexture3DArray(int32 X, int32 Y, int32 Z, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, int32 arraySize, byte const* initialData) = 0;*/
+
+		virtual VertexShader* LoadVertexShaderFromMemory(byte const* byteCodes, uint32 sizeInBytes) = 0;
+		virtual PixelShader* LoadPixelShaderFromMemory(byte const* byteCodes, uint32 sizeInBytes) = 0;
 		
-		RenderSystem();
+		virtual DepthStencilView* CreateDepthStencilView(DeviceTexture2D* pTexture) = 0;
+		virtual RenderTarget* CreateRenderTarget(DeviceTexture2D* pTexture) = 0;
 	};
 }
 

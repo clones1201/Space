@@ -9,13 +9,10 @@ namespace Space
 
 	class DepthStencilView : virtual public Interface
 	{
-	protected:
-		DepthStencilView();
-
-		virtual ~DepthStencilView();
 	public:
-
-		friend class DeviceTexture;
+		static DepthStencilView* Create(
+			RenderSystem* pRenderSys, DeviceTexture2D* pTexture);
+		virtual ~DepthStencilView();
 	};
 }
 

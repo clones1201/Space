@@ -10,12 +10,9 @@ namespace Space
 		CComPtr<ID3D11Buffer> m_pBuffer = nullptr;
 
 		D3D11Device& mDevice;
-		BufferType m_Type;
-		ResourceUsage m_Usage;
-		size_t m_LengthInBytes;
 	public:
 		D3D11DeviceBufferImpl(D3D11Device& device, BufferType type, ResourceUsage usage, byte const* initialData, size_t lengthInBytes)
-			:mDevice(device), m_Type(type), m_Usage(usage), m_LengthInBytes(lengthInBytes)
+			:mDevice(device), D3D11DeviceBuffer(type,usage,lengthInBytes)
 		{
 			D3D11_BUFFER_DESC desc;
 			ZeroMemory(&desc, sizeof(desc));
@@ -38,7 +35,7 @@ namespace Space
 			}
 		}
 
-		bool Update(uint startOffset, uint lengthInBytes, byte const* pData)
+		bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData)
 		{
 			bool isSuccess = false;;
 			switch (m_Usage)
@@ -75,7 +72,11 @@ namespace Space
 			}
 			return isSuccess;
 		}
-		 
+		
+		ID3D11Buffer* GetRawBuffer() const
+		{
+			return m_pBuffer.p;
+		}		 
 	};
 
 	D3D11DeviceBuffer* D3D11DeviceBuffer::Create(D3D11Device& device, BufferType type, ResourceUsage usage, byte const* initialData, size_t lengthInBytes)
@@ -90,5 +91,9 @@ namespace Space
 			return nullptr;
 		}
 	}
+
+	D3D11DeviceBuffer::D3D11DeviceBuffer(BufferType type, ResourceUsage usage, uint32 lengthInBytes)
+		:DeviceBuffer(type,usage,lengthInBytes)
+	{}
 
 }

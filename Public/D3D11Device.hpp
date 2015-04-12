@@ -7,7 +7,7 @@
 
 namespace Space
 {
-	class D3D11Device : private Uncopyable
+	class D3D11Device : public Uncopyable
 	{
 	public:
 		D3D11Device(D3D11Device &&param);

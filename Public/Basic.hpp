@@ -6,7 +6,7 @@
 namespace Space
 {
 	template <typename _Type>
-	class TypeTrait
+	class TypeTraitBase
 	{
 	public:
 		typedef typename std::remove_reference<_Type>::type*	RawPtr;
@@ -16,6 +16,8 @@ namespace Space
 		typedef std::shared_ptr<typename std::remove_reference<_Type>::type> Ptr;
 		typedef std::shared_ptr<typename std::remove_reference<_Type>::type const> ConstPtr;
 	};
+
+	template <typename _Type> class TypeTrait : public TypeTraitBase < _Type > {};
 
 	class Object
 	{

@@ -15,16 +15,15 @@ namespace Space
 		public RenderWindow
 	{
 	public:
-		virtual RenderTarget* CreateRenderTarget() throw()= 0;
-		
+		virtual DeviceTexture2D* GetBackBuffer() throw() = 0;
 		virtual bool _Initialize() = 0;
 
 		friend class D3D11RenderSystem;
 		friend class D3D11RenderWindow;
 	
-		static D3D11RenderWindow* Create(D3D11Device& device, const std::string& name, int width, int height, bool fullscreen) throw();
+		static D3D11RenderWindow* Create(D3D11Device& device, const std::string& name, int32 width, int32 height, bool fullscreen) throw();
 	protected:
-		D3D11RenderWindow(const std::string& name, int width, int height, bool fullscreen);
+		D3D11RenderWindow(const std::string& name, int32 width, int32 height, bool fullscreen);
 	};
 
 

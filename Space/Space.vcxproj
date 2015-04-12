@@ -44,11 +44,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Public\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Public\;$(VCInstallDir)UnitTest\include;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_UNICODE;UNICODE;SPACE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -77,14 +78,19 @@
     <ClInclude Include="..\Public\D3D11RenderTarget.hpp" />
     <ClInclude Include="..\Public\D3D11RenderWindow.hpp" />
     <ClInclude Include="..\Public\D3D11Shader.hpp" />
+    <ClInclude Include="..\Public\D3D11ShaderReflection.hpp" />
     <ClInclude Include="..\Public\D3D11ShaderResource.hpp" />
     <ClInclude Include="..\Public\DepthStencilView.hpp" />
     <ClInclude Include="..\Public\DeviceBuffer.hpp" />
+    <ClInclude Include="..\Public\InputLayout.hpp" />
+    <ClInclude Include="..\Public\Mesh.hpp" />
     <ClInclude Include="..\Public\Renderable.hpp" />
     <ClInclude Include="..\Public\DeviceTexture.hpp" />
+    <ClInclude Include="..\Public\Renderer.hpp" />
+    <ClInclude Include="..\Public\ShaderCommon.hpp" />
+    <ClInclude Include="..\Public\ShaderReflection.hpp" />
+    <ClInclude Include="..\Public\ShaderResourcePool.hpp" />
     <ClInclude Include="..\Public\SharedUtility.hpp" />
-    <ClInclude Include="D3D11RenderSystemImpl.hpp" />
-    <ClInclude Include="D3D11ShaderImpl.hpp" />
     <ClInclude Include="D3D11Shared.hpp" />
     <ClInclude Include="WindowImpl.hpp" />
     <FxCompile Include="..\Shaders\Basic.hlsl">
@@ -117,6 +123,8 @@
     <ClCompile Include="D3D11RenderSystem.cpp" />
     <ClCompile Include="D3D11RenderTarget.cpp" />
     <ClCompile Include="D3D11RenderWindow.cpp" />
+    <ClCompile Include="D3D11Shader.cpp" />
+    <ClCompile Include="D3D11ShaderReflection.cpp" />
     <ClCompile Include="D3D11ShaderResource.cpp" />
     <ClCompile Include="D3D11Shared.cpp" />
     <ClCompile Include="DepthStencilView.cpp" />
@@ -128,9 +136,15 @@
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="RenderWindow.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShaderResourcePool.cpp" />
     <ClCompile Include="SharedUtility.cpp" />
+    <ClCompile Include="Test\UtilityTest.cpp" />
     <ClCompile Include="Utility.cpp" />
     <ClCompile Include="Window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Shaders\SampleShader.ssf" />
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

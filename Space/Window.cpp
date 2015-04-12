@@ -3,7 +3,7 @@
 
 namespace Space
 {
-	Window::Window(const std::string& winName, int width, int height, bool fullscreen)
+	Window::Window(const std::string& winName, int32 width, int32 height, bool fullscreen)
 		:
 #if SPACE_PLATFORM == SPACE_WIN32
 		impl(new Window::Win32Window(winName, width, height, fullscreen))
@@ -20,11 +20,11 @@ namespace Space
 		impl->Show();
 	}
 	
-	int Window::Width() const
+	int32 Window::Width() const
 	{
 		return impl->Width();
 	}
-	int Window::Height() const
+	int32 Window::Height() const
 	{
 		return impl->Height();
 	}
@@ -33,11 +33,11 @@ namespace Space
 		return impl->IsFullscreen();
 	}
 	
-	int Window::Impl::Width() const
+	int32 Window::Impl::Width() const
 	{
 		return _width;
 	}
-	int Window::Impl::Height() const
+	int32 Window::Impl::Height() const
 	{
 		return _height;
 	}
@@ -72,7 +72,7 @@ namespace Space
 		return 0;
 	}
 
-	Window::Win32Window::Win32Window(const std::string& winName,int width,int height,bool fullscreen)
+	Window::Win32Window::Win32Window(const std::string& winName,int32 width,int32 height,bool fullscreen)
 		:Window::Impl(winName,width,height,fullscreen)
 	{
 		hInstance = (HINSTANCE)GetModuleHandle(NULL);
@@ -108,7 +108,7 @@ namespace Space
 		}
 		hDC = GetDC(hWnd);
 	}
-	Window* Window::Create(const std::string& winName, int width, int height, bool fullscreen) throw()
+	Window* Window::Create(const std::string& winName, int32 width, int32 height, bool fullscreen) throw()
 	{
 		try
 		{

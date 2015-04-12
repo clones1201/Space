@@ -16,7 +16,7 @@ namespace Space
 	typedef std::vector<MaterialParameter> MaterialParameterSet;
 
 
-	class Pass : virtual public Object<Pass>
+	class Pass
 	{
 	public:
 		void Apply();
@@ -25,21 +25,21 @@ namespace Space
 		Shader* pixel;
 	};
 
-	class Technique : virtual public Object<Technique>
+	class Technique
 	{
 	public:
-		int GetPassCount() const;
-		Pass* GetPassByIndex(int index)const;
+		int32 GetPassCount() const;
+		Pass* GetPassByIndex(int32 index)const;
 	private:
-		std::vector<Pass::Ptr> Passes;
+		std::vector<TypeTrait<Pass>::Ptr> Passes;
 	};
 
-	class MaterialSelector : virtual public Object<Material>
+	class MaterialSelector
 	{
 
 	};
 
-	class Material : virtual public Object<Material>
+	class Material
 	{
 	public:
 

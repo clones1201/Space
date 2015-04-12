@@ -12,17 +12,17 @@ namespace Space
 		class Impl;
 		std::unique_ptr<Impl> impl;
 
-		Window(const std::string& winName, int width, int height, bool fullscreen);
+		Window(const std::string& winName, int32 width, int32 height, bool fullscreen);
 	public:
-		static Window* Create(const std::string& winName, int width, int height, bool fullscreen);
+		static Window* Create(const std::string& winName, int32 width, int32 height, bool fullscreen);
 		~Window();
 
 #if SPACE_PLATFORM == SPACE_WIN32
 		class Win32Window;
 #endif
 		void Show();
-		int Width() const;
-		int Height() const;
+		int32 Width() const;
+		int32 Height() const;
 		bool IsFullscreen() const;
 
 	protected:

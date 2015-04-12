@@ -12,38 +12,15 @@ namespace Space
 {
 	class D3D11DeviceBuffer : public DeviceBuffer
 	{
+	protected:
+		D3D11DeviceBuffer(BufferType type, ResourceUsage usage, uint32 lengthInBytes);
 	public:
 		static D3D11DeviceBuffer* Create(D3D11Device& device, BufferType type, ResourceUsage usage, byte const* initialData, size_t lengthInBytes);
 		
-		ID3D11Buffer* GetRawBuffer() const;
+		virtual ID3D11Buffer* GetRawBuffer() const = 0;
 
 		friend class DeviceBuffer;
 	};
-/*
-	class D3D11VertexBuffer : public VertexBuffer
-	{
-
-	public:
-		ID3D11Buffer* GetRawBuffer() const;
-	};
-	
-	class D3D11IndexBuffer : public IndexBuffer
-	{
-
-		ID3D11Buffer* GetRawBuffer() const;
-	};
-
-	class D3D11ConstantBuffer : public ConstantBuffer
-	{
-
-		ID3D11Buffer* GetRawBuffer() const;
-	};
-
-	class D3D11TextureBuffer : public TextureBuffer
-	{
-
-		ID3D11Buffer* GetRawBuffer() const;
-	};*/
 }
 
 #endif

@@ -9,6 +9,9 @@ namespace Space
 		CComPtr<ID3D11Device> m_pDevice;
 		CComPtr<ID3D11DeviceContext> m_pImmediateContext;
 		CComPtr<IDXGIFactory> m_pDXGIFactory;
+
+		D3D_DRIVER_TYPE m_DriverType = D3D_DRIVER_TYPE_UNKNOWN;
+		D3D_FEATURE_LEVEL m_FeatureLevel = D3D_FEATURE_LEVEL_11_0;
 	public:
 		Impl()
 		{
@@ -20,8 +23,6 @@ namespace Space
 #ifdef _DEBUG
 			createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
-			D3D_DRIVER_TYPE		driverType = D3D_DRIVER_TYPE_NULL;
-			D3D_FEATURE_LEVEL	featureLevel = D3D_FEATURE_LEVEL_11_0;
 
 			D3D_DRIVER_TYPE driverTypes[] =
 			{
@@ -33,16 +34,21 @@ namespace Space
 
 			D3D_FEATURE_LEVEL featureLevels[] =
 			{
-				featureLevel
+				m_FeatureLevel
 			};
 			UINT numFeatureLevels = ARRAYSIZE(featureLevels);
 
 			CComPtr<IDXGIFactory> pFactory = nullptr;
 			hr = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)(&pFactory));
+			if (FAILED(hr))
+			{
+				throw std::exception("CreateDXGIFactory failed");
+			}
+			m_pDXGIFactory = pFactory;
 
 			CComPtr<IDXGIAdapter> pAdapter = nullptr;
 			std::vector<CComPtr<IDXGIAdapter>> pAdapters;
-			uint i = 0;
+			uint32 i = 0;
 			while (pFactory->EnumAdapters(i, &pAdapter) != DXGI_ERROR_NOT_FOUND)
 			{
 				pAdapters.push_back(pAdapter);
@@ -50,23 +56,23 @@ namespace Space
 				pAdapter = nullptr;
 			}
 
-			for (uint i = 0; i < pAdapters.size(); ++i)
+			for (uint32 i = 0; i < pAdapters.size(); ++i)
 			{
 				for (UINT driverTypeIndex = 0; driverTypeIndex < numDriverTypes; driverTypeIndex++)
 				{
-					driverType = driverTypes[driverTypeIndex];
+					m_DriverType = driverTypes[driverTypeIndex];
 					pDevice = nullptr;
 					pDeviceContext = nullptr;
 					hr = D3D11CreateDevice(
 						pAdapters.at(i),
-						driverType,
+						m_DriverType,
 						NULL,
 						createDeviceFlags,
 						featureLevels,
 						numFeatureLevels,
 						D3D11_SDK_VERSION,
 						&pDevice,
-						&featureLevel,
+						&m_FeatureLevel,
 						&pDeviceContext);
 
 					if (SUCCEEDED(hr))
@@ -79,20 +85,15 @@ namespace Space
 			{
 				throw std::exception("D3D11CreateDevice failed");
 			}
-			if (featureLevel != D3D_FEATURE_LEVEL_11_0)
+			if (m_FeatureLevel != D3D_FEATURE_LEVEL_11_0)
 			{
 				throw std::exception("FeatureLevel Not Supported");
 			}
-			Log("D3D11 Device Create Success. feature level:%d\n", featureLevel);
+
+			Log("D3D11 Device Create Success. feature level:%d\n", m_FeatureLevel);
 			m_pDevice = pDevice;
 			m_pImmediateContext = pDeviceContext;
 
-			CComPtr<IDXGIFactory> pDXGIFactory = nullptr;
-			hr = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&(pDXGIFactory));
-			if (FAILED(hr)){
-				throw std::exception("CreateDXGIFactory failed"); 
-			}
-			m_pDXGIFactory = pDXGIFactory;
 		}
 		~Impl()
 		{

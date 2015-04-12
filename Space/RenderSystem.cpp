@@ -13,18 +13,4 @@ namespace Space
 
 	RenderSystem::~RenderSystem(){}
 
-	void RenderSystem::Render(RenderTarget* target, SceneManager* scene)
-	{
-		mActiveRenderTarget = target;
-		Prerender();
-		FireOneFrame();
-		Postrender();
-	}
-
-	void RenderSystem::Prerender()
-	{}
-	void RenderSystem::Postrender()
-	{}
-	void RenderSystem::FireOneFrame()
-	{}
 }

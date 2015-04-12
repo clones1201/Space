@@ -1,6 +1,7 @@
 #include "Log.h"
 #include "D3D11Prerequisites.hpp"
 #include "D3D11Device.hpp"
+#include "D3D11DeviceTexture.hpp"
 #include "D3D11RenderTarget.hpp"
 #include "D3D11RenderWindow.hpp"
 #include "D3D11DepthStencilView.hpp"
@@ -15,13 +16,19 @@ namespace Space
 		D3D11_RENDER_TARGET_VIEW_DESC m_RTVDesc;
 
 		CComPtr<ID3D11RenderTargetView> m_pRenderTargetView = nullptr;
-		CComPtr<ID3D11Texture2D> m_pBackBuffer = nullptr;
+		CComPtr<ID3D11Texture2D> m_pBackBuffer = nullptr; 
 
-		D3D11_VIEWPORT m_ViewPort;
 	public:
-		D3D11RenderTargetImpl(D3D11Device& device,ID3D11Texture2D* pBackBuffer)
-			:mDevice(device),m_pBackBuffer(pBackBuffer)
+		D3D11RenderTargetImpl(D3D11Device& device, DeviceTexture2D* pBackBuffer)
+			:D3D11RenderTarget(pBackBuffer->GetWidth(),pBackBuffer->GetHeight()),mDevice(device)
 		{
+			auto pD3DDeviceTexture2D = dynamic_cast<D3D11DeviceTexture2D*>(pBackBuffer);
+
+			if (pD3DDeviceTexture2D == nullptr)
+				throw std::exception("Wrong DeviceTexture2D pointer type");
+
+			m_pBackBuffer = pD3DDeviceTexture2D->GetD3DTexture2D();
+
 			D3D11_TEXTURE2D_DESC texDesc;
 			m_pBackBuffer->GetDesc(&texDesc);
 			
@@ -69,14 +76,15 @@ namespace Space
 			{
 				m_pRenderTargetView
 			};
-			uint targetCount = ARRAYSIZE(targets);
+			uint32 targetCount = ARRAYSIZE(targets);
 
 			mDevice.GetImmediateContext()->OMSetRenderTargets(targetCount,targets,pDSV);
 		}
 		
 		virtual void Clear(float clearColor[4])
 		{
-			mDevice.GetImmediateContext()->ClearRenderTargetView(m_pRenderTargetView, clearColor);
+			if (m_pRenderTargetView != nullptr)
+				mDevice.GetImmediateContext()->ClearRenderTargetView(m_pRenderTargetView, clearColor);
 		}
 
 		virtual void Deactivate()
@@ -89,17 +97,15 @@ namespace Space
 			return (m_pRenderTargetView.p);
 		}
 
-	//	virtual int GetArraySize() const
-	//	{
-	//		return 1;
-	//	} 
-
 	};
 
-	D3D11RenderTarget* D3D11RenderTarget::Create(D3D11Device& device,ID3D11Texture2D* pBackBuffer)
+	D3D11RenderTarget* D3D11RenderTarget::Create(D3D11Device& device,DeviceTexture2D* pBackBuffer)
 	{
 		try
 		{
+			if (pBackBuffer == nullptr)
+				throw std::exception("Null DeviceTexture2D pointer");
+
 			return new D3D11RenderTargetImpl(device, pBackBuffer);
 		}
 		catch (std::exception &e)
@@ -108,4 +114,8 @@ namespace Space
 			return nullptr;
 		}
 	}
+
+	D3D11RenderTarget::D3D11RenderTarget(int32 width,int32 height)
+		:RenderTarget(width,height)
+	{}
 }

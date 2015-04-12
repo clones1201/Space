@@ -1,9 +1,10 @@
-#include "D3D11Device.hpp"
-#include "D3D11RenderTarget.hpp"
-#include "D3D11RenderWindow.hpp"
+#include "Log.h"
 #include "Window.hpp"
 #include "WindowImpl.hpp"
-#include "Log.h"
+#include "D3D11Device.hpp"
+#include "D3D11DeviceTexture.hpp"
+#include "D3D11RenderTarget.hpp"
+#include "D3D11RenderWindow.hpp"
 
 namespace Space
 {
@@ -15,22 +16,14 @@ namespace Space
 		CComPtr<ID3D11Texture2D> m_pBackBuffer = nullptr;
 		CComPtr<IDXGISwapChain> m_pSwapChain = nullptr;
 	public:
-		D3D11RenderWindowImpl(D3D11Device& device,const std::string& name,int width,int height,bool fullscreen)
+		D3D11RenderWindowImpl(D3D11Device& device,const std::string& name,int32 width,int32 height,bool fullscreen)
 			:mDevice(device),D3D11RenderWindow(name, width, height, fullscreen) 
 		{
 		} 
 
-		RenderTarget* CreateRenderTarget() throw()
+		DeviceTexture2D* GetBackBuffer()
 		{
-			/*ID3D11RenderTargetView* pRenderTargetView = nullptr;
-			
-			HRESULT hr = mDevice->CreateRenderTargetView(m_pBackBuffer, NULL, &(pRenderTargetView));
-			if (FAILED(hr))
-			{
-				Log("ID3D11Device::CreateRenderTargetView Failed\n");
-				return nullptr;
-			}*/
-			return D3D11RenderTarget::Create(mDevice, m_pBackBuffer);
+			return D3D11DeviceTexture2D::Create(mDevice,m_pBackBuffer);
 		}
 
 		virtual bool _Initialize()
@@ -74,7 +67,7 @@ namespace Space
 			return true;
 		}
 
-		virtual void Resize(int width, int height)
+		virtual void Resize(int32 width, int32 height)
 		{ 
 			m_pSwapChain->ResizeBuffers(1, width, height, DXGI_FORMAT_UNKNOWN, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH); 
 
@@ -89,7 +82,7 @@ namespace Space
 		}
 	};
 
-	D3D11RenderWindow* D3D11RenderWindow::Create(D3D11Device& mDevice, const std::string& name, int width, int height, bool fullscreen)
+	D3D11RenderWindow* D3D11RenderWindow::Create(D3D11Device& mDevice, const std::string& name, int32 width, int32 height, bool fullscreen)
 	{
 		try
 		{
@@ -102,7 +95,7 @@ namespace Space
 		}
 	}
 
-	D3D11RenderWindow::D3D11RenderWindow(const std::string& name, int width, int height, bool fullscreen)
+	D3D11RenderWindow::D3D11RenderWindow(const std::string& name, int32 width, int32 height, bool fullscreen)
 		:RenderWindow(name, width, height,fullscreen)
 	{
 	}

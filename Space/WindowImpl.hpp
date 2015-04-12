@@ -9,15 +9,15 @@ namespace Space
 	{
 	protected:
 		std::string name;
-		int _width, _height;
+		int32 _width, _height;
 		bool _fullscreen;
 	public:
-		Impl(const std::string& name, int width, int height, bool fullscreen);
+		Impl(const std::string& name, int32 width, int32 height, bool fullscreen);
 		virtual ~Impl();
 
 		virtual void Show();
-		virtual int Width() const;
-		virtual int Height() const;
+		virtual int32 Width() const;
+		virtual int32 Height() const;
 		virtual bool IsFullscreen() const;
 
 	};
@@ -31,7 +31,7 @@ namespace Space
 		HDC hDC;
 
 	public:
-		Win32Window(const std::string& winName, int width, int height, bool fullscreen);
+		Win32Window(const std::string& winName, int32 width, int32 height, bool fullscreen);
 		~Win32Window();
 		static LRESULT CALLBACK MessageRouter(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -41,8 +41,8 @@ namespace Space
 		LRESULT _WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 		virtual void Show();
-		virtual int Width() const;
-		virtual int Height() const;
+		virtual int32 Width() const;
+		virtual int32 Height() const;
 		virtual bool IsFullscreen() const;
 	};
 #endif

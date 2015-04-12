@@ -75,7 +75,7 @@ namespace Space
 	{
 		return m_impl > param.m_impl;
 	}
-	int Name::GetHashCode() const
+	int32 Name::GetHashCode() const
 	{
 		std::hash<TypeTrait<Name::Impl>::Ptr> hasher;
 		return hasher(m_impl);
@@ -93,9 +93,53 @@ namespace Space
 		(*this) = Name(name);
 		return archiver;
 	}
+
+	UidGenerator::UidGenerator()
+	{
+		m_UidList.push_back(std::pair<uint, uint>(0, ((uint)-1) - 1));
+	}
+	uint32 UidGenerator::GetNextValidId()
+	{
+		auto region = m_UidList.begin();
+		uint32 ret = region->first;
+		if (region->first == region->second){
+			m_UidList.erase(region);
+		}
+		else{
+			region->first++;
+		}
+		return ret;
+	}
+	void UidGenerator::RevokeId(uint32 id)
+	{
+		auto i1 = m_UidList.begin();
+		auto i2 = m_UidList.begin(); ++i2;
+		for (; i1 != m_UidList.end(); ++i1, ++i2)
+		{
+			if (id < i1->first && id != i1->first - 1)
+			{
+				m_UidList.insert(i1, std::pair<uint, uint>(id, id));
+				return;
+			}
+			else if (id == i1->first - 1)
+			{
+				i1->first--;
+				return;
+			}
+			else if (id == i1->second + 1 && i2 != m_UidList.end() && id != i2->first)
+			{
+				i1->second++;
+				return;
+			}
+			else// if (id >= i1->first && id <= i1->second)
+			{
+				assert(0);
+			}
+		}
+	}
 }
 
-int std::hash<Space::Name>::operator()(Space::Name const& param) const
+Space::int32 std::hash<Space::Name>::operator()(Space::Name const& param) const
 {
 	return param.GetHashCode();
 }

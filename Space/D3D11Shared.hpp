@@ -18,7 +18,11 @@ namespace Space
 
 	DXGI_FORMAT GetDXGIFormat(DataFormat format);
 
-	D3D11_BIND_FLAG GetD3D11BindFlag(ResourceBindFlag flag);
+	DataFormat GetDataFormat(DXGI_FORMAT format);
+
+	D3D11_BIND_FLAG GetD3D11BindFlag(ResourceBindFlag flags);
+	
+	ResourceBindFlag GetBindFlag(UINT flags);
 }
 
 #endif

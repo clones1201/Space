@@ -4,47 +4,69 @@
 #include "Prerequisites.hpp"
 #include "Basic.hpp"
 
+#include "ShaderCommon.hpp"
+#include "ShaderReflection.hpp"
 
 namespace Space
 {
 	class VertexShader : virtual public Interface
-	{
+	{  
 	public:
-		static VertexShader* LoadSourceFromFile();
-		static VertexShader* LoadSourceFromMemory();
-		static VertexShader* LoadBinaryFromFile();
-		static VertexShader* LoadBinaryFromMemory();
+		static VertexShader* LoadBinaryFromMemory(RenderSystem* pRenderSys, byte const* byteCodes, uint32 sizeInBytes);
+		
+		ShaderResourcePool* ResourcePool = nullptr;
 
-		virtual bool Compile() = 0;
-				
-		void SetShaderResource(std::vector<TypeTrait<ShaderResource>::Ptr>& resources);
+		std::vector<uint> ShaderResourceTable;
+		std::vector<uint> SamplerTable; 
+
+		virtual void Apply() = 0;
 
 		virtual ~VertexShader();
-	private:		
-		VertexShader();
-		
-		bool isInMemory;
-		bool isBinaryAvailable;
+	protected:		
+		VertexShader(); 
+
+		bool m_IsBinaryAvailable; 
 	};
 
-	class GeometryShader : virtual public Interface
+	/*class GeometryShader : virtual public Interface
 	{
 	public:
 
 		virtual ~GeometryShader();
 	protected:
 		GeometryShader();
-	};
+	};*/
 
 	class PixelShader : virtual public Interface
 	{
 	public:
+		static PixelShader* LoadBinaryFromMemory(RenderSystem* pRenderSys, byte const* byteCodes, uint32 sizeInBytes);
+
+		ShaderResourcePool* ResourcePool = nullptr;
+
+		std::vector<uint> ShaderResourceTable;
+		std::vector<uint> SamplerTable;
+
+		virtual void Apply() = 0;
 
 		virtual ~PixelShader();
 	protected:
 		PixelShader();
 	};
 
+
+	class Shader : virtual public Interface
+	{
+	protected:
+		std::unique_ptr<VertexShader> m_pVS = nullptr;
+		std::unique_ptr<PixelShader> m_pPS = nullptr;
+		
+
+	public: 
+
+
+
+	};
 }
 
 #endif

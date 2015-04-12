@@ -6,11 +6,25 @@
 
 namespace Space
 { 
-	DeviceBuffer::DeviceBuffer()
+	DeviceBuffer::DeviceBuffer(BufferType type, ResourceUsage usage, uint32 lengthInBytes)
+		:m_Type(type), m_Usage(usage), m_LengthInBytes(lengthInBytes)
 	{}
 
 	DeviceBuffer::~DeviceBuffer()
 	{}
+	
+	uint32 DeviceBuffer::GetLengthInBytes() const
+	{
+		return m_LengthInBytes;
+	}
+	ResourceUsage DeviceBuffer::GetUsage() const
+	{
+		return m_Usage;
+	}
+	BufferType DeviceBuffer::GetBufferType() const
+	{
+		return m_Type;
+	}
 
 	DeviceBuffer* DeviceBuffer::Create(RenderSystem* pRenderSys, BufferType type, ResourceUsage usage, byte const* initialData, size_t lengthInBytes)
 	{
@@ -45,7 +59,7 @@ namespace Space
 	VertexBuffer::~VertexBuffer()
 	{}
 
-	bool VertexBuffer::Update(uint startOffset, uint lengthInBytes, byte const* pData)
+	bool VertexBuffer::Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData)
 	{
 		return m_pBuffer->Update(startOffset, lengthInBytes, pData);
 	}
@@ -70,7 +84,7 @@ namespace Space
 	IndexBuffer::~IndexBuffer()
 	{}
 
-	bool IndexBuffer::Update(uint startOffset, uint lengthInBytes, byte const* pData)
+	bool IndexBuffer::Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData)
 	{
 		return m_pBuffer->Update(startOffset, lengthInBytes, pData);
 	}
@@ -89,15 +103,28 @@ namespace Space
 	}
 
 	ConstantBuffer::ConstantBuffer(DeviceBuffer* pBuffer)
-		:m_pBuffer(pBuffer)
+		:m_pBuffer(pBuffer), m_Size(pBuffer->GetLengthInBytes())
 	{
+		m_pShadowData = new byte[m_Size];
 	}
 	ConstantBuffer::~ConstantBuffer()
-	{}
-
-	bool ConstantBuffer::Update(uint lengthInBytes, byte const* pData)
 	{
-		return m_pBuffer->Update(0, lengthInBytes, pData);
+		if (m_pShadowData != nullptr)
+			delete [] m_pShadowData;
+	}
+
+	void ConstantBuffer::UpdateToDevice()
+	{
+		m_pBuffer->Update(0, m_Size, m_pShadowData);
+	}
+
+	bool ConstantBuffer::Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData)
+	{
+		auto error = memcpy_s(m_pShadowData + startOffset, m_Size - startOffset, pData, lengthInBytes);
+
+		if (error == 0)
+			return true;
+		return false;
 	}
 
 	TextureBuffer* TextureBuffer::Create(RenderSystem* pRenderSys, byte const* initialData, size_t lengthInBytes)
@@ -120,7 +147,7 @@ namespace Space
 	TextureBuffer::~TextureBuffer()
 	{}
 
-	bool TextureBuffer::Update(uint startOffset, uint lengthInBytes, byte const* pData)
+	bool TextureBuffer::Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData)
 	{
 		return m_pBuffer->Update(startOffset, lengthInBytes, pData);
 	}

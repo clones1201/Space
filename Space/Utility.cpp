@@ -48,15 +48,15 @@ namespace Space
 		return in;
 	}
 
-	int GetVarArgsW(wchar_t* dest, size_t size, const wchar_t* fmt, va_list args){
-		int result = _vsnwprintf_s(dest, size, size - 1, fmt, args);
+	int32 GetVarArgsW(wchar_t* dest, size_t size, const wchar_t* fmt, va_list args){
+		int32 result = _vsnwprintf_s(dest, size, size - 1, fmt, args);
 		va_end(args);
 		return result;
 	}
 
-	int GetVarArgsA(char* dest, size_t size, const char* fmt, va_list args)
+	int32 GetVarArgsA(char* dest, size_t size, const char* fmt, va_list args)
 	{
-		int result = _vsnprintf_s(dest, size, size - 1, fmt, args);
+		int32 result = _vsnprintf_s(dest, size, size - 1, fmt, args);
 		va_end(args);
 		return result;
 	}
@@ -92,7 +92,7 @@ namespace Space
 	std::wstring FtoW(float f)
 	{
 		return StringFormatW(TEXT("%f"), f);
-	}	
+	}
 	std::ostream& Write(std::ostream& archiver, std::string const& str)
 	{
 		std::string::size_type size = str.size();
@@ -117,7 +117,71 @@ namespace Space
 #	define ALIGNMENT 16
 #endif
 
-	int Alignment(int n){
+	int32 Alignment(int32 n){
 		return (ALIGNMENT * (1 + (n - 1) / ALIGNMENT));
+	}
+
+	int32 GetFormatSize(DataFormat format)
+	{
+		switch (format)
+		{
+		default:
+		case DF_UNKNOWN:
+			return 0;
+			//half2, short2
+		case DF_R16G16_TYPELESS:
+		case DF_R16G16_FLOAT:
+		case DF_R16G16_UNORM:
+		case DF_R16G16_UINT:
+		case DF_R16G16_SNORM:
+		case DF_R16G16_SINT:
+			return 4;
+			//hafl4: short4
+		case DF_R16G16B16A16_TYPELESS:
+		case DF_R16G16B16A16_FLOAT:
+		case DF_R16G16B16A16_UNORM:
+		case DF_R16G16B16A16_UINT:
+		case DF_R16G16B16A16_SNORM:
+		case DF_R16G16B16A16_SINT:
+			return 8;
+			//float1: uint1: int1
+		case DF_R32_TYPELESS:
+		case DF_R32_FLOAT:
+		case DF_R32_UINT:
+		case DF_R32_SINT:
+			return 4;
+			//float2: uint2: int2
+		case DF_R32G32_TYPELESS:
+		case DF_R32G32_FLOAT:
+		case DF_R32G32_UINT:
+		case DF_R32G32_SINT:
+			return 8;
+			//float3: uint3: int3
+		case DF_R32G32B32_TYPELESS:
+		case DF_R32G32B32_FLOAT:
+		case DF_R32G32B32_UINT:
+		case DF_R32G32B32_SINT:
+			return 12;
+			//float4: uint4: int4
+		case DF_R32G32B32A32_TYPELESS:
+		case DF_R32G32B32A32_FLOAT:
+		case DF_R32G32B32A32_UINT:
+		case DF_R32G32B32A32_SINT:
+			return 16;
+			//UByte4: 
+		case DF_B8G8R8A8_TYPELESS:
+		case DF_B8G8R8A8_UNORM:
+		case DF_B8G8R8A8_UNORM_SRGB:
+		case DF_B8G8R8X8_TYPELESS:
+		case DF_B8G8R8X8_UNORM:
+		case DF_B8G8R8X8_UNORM_SRGB:
+			return 4;
+			//depth: stencil
+		case DF_D16_UNORM:
+			return 2;
+		case DF_D24_UNORM_S8_UINT:
+		case DF_D32_FLOAT:
+			return 4;
+		}
 	}
 }

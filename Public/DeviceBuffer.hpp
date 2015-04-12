@@ -10,13 +10,20 @@ namespace Space
 	class DeviceBuffer : virtual public Interface 
 	{
 	protected:
-		DeviceBuffer();
+		DeviceBuffer(BufferType type, ResourceUsage usage, uint32 lengthInBytes);
+
+		BufferType m_Type;
+		ResourceUsage m_Usage;
+		uint32 m_LengthInBytes;
 	public:
 		virtual ~DeviceBuffer();
 
-		static DeviceBuffer* Create(RenderSystem* pRenderSys,BufferType type,ResourceUsage usage, byte const* initialData, uint lengthInBytes);
+		static DeviceBuffer* Create(RenderSystem* pRenderSys,BufferType type,ResourceUsage usage, byte const* initialData, uint32 lengthInBytes);
 
-		virtual bool Update(uint startOffset, uint lengthInBytes, byte const* pData) = 0;
+		uint32 GetLengthInBytes() const;
+		ResourceUsage GetUsage() const;
+		BufferType GetBufferType() const;
+		virtual bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData) = 0;
 	}; 
 
 	class VertexBuffer
@@ -28,16 +35,9 @@ namespace Space
 	public:
 		virtual ~VertexBuffer();
 
-		typedef struct _VertexBufferDesc
-		{
-			uint32 Length	  :28;
-			int8  numUVs	   :3;
-			bool   withTangent :1;
-		}Description;
+		static VertexBuffer* Create(RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes);
 
-		static VertexBuffer* Create(RenderSystem* pRenderSys, byte const* initialData, uint lengthInBytes);
-
-		bool Update(uint startOffset, uint lengthInBytes, byte const* pData);
+		bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData);
 	};
 
 	class IndexBuffer
@@ -49,23 +49,26 @@ namespace Space
 	public:
 		virtual ~IndexBuffer();
 
-		static IndexBuffer* Create(RenderSystem* pRenderSys, byte const* initialData, uint lengthInBytes);
+		static IndexBuffer* Create(RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes);
 
-		bool Update(uint startOffset, uint lengthInBytes, byte const* pData);
+		bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData);
 	};
 
 	class ConstantBuffer
 	{ 
 	protected:
 		std::unique_ptr<DeviceBuffer> m_pBuffer = nullptr;
-
+		byte *m_pShadowData = nullptr;
+		uint32 m_Size;
+		
 		ConstantBuffer(DeviceBuffer* pBuffer);
 	public:
 		virtual ~ConstantBuffer();
 
-		static ConstantBuffer* Create(RenderSystem* pRenderSys, byte const* initialData, uint lengthInBytes);
+		static ConstantBuffer* Create(RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes);
 
-		bool Update(uint lengthInBytes, byte const* pData);
+		void UpdateToDevice();
+		bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData);
 	};
 
 	class TextureBuffer
@@ -77,9 +80,9 @@ namespace Space
 	public:
 		virtual ~TextureBuffer();
 
-		static TextureBuffer* Create(RenderSystem* pRenderSys, byte const* initialData, uint lengthInBytes);
+		static TextureBuffer* Create(RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes);
 
-		bool Update(uint startOffset, uint lengthInBytes, byte const* pData);
+		bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData);
 
 		ShaderResource* GetShaderResource();
 

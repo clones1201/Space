@@ -10,14 +10,15 @@ namespace Space
 	{
 	protected:
 		TypeTrait<Window>::Ptr m_pWindow;
-		RenderWindow(const std::string& name, int width, int height, bool fullscreen) throw();
+		RenderWindow(const std::string& name, int32 width, int32 height, bool fullscreen) throw();
 
 		std::string m_strName;
-		int m_iWidth, m_iHeight;
+		int32 m_iWidth, m_iHeight;
 		bool m_bFullscreen;
 	public:
 		virtual bool _Initialize() = 0;
-		virtual RenderTarget* CreateRenderTarget() throw() = 0;
+
+		virtual DeviceTexture2D* GetBackBuffer() throw() = 0; 
 	};
 }
 

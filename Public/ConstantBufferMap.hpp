@@ -4,36 +4,44 @@
 #include "Prerequisites.hpp"
 #include "basic.hpp"
 
+#include "ShaderCommon.hpp"
+
 namespace Space
 {
 
-	class ConstantBufferMap : virtual public Interface
+	class ConstantBufferMap
 	{
 	public:
-		struct FieldDesc
-		{
-			wchar_t const* name;
-			int size;
-			int offset;
-		};
+		
 		static ConstantBufferMap* Create(RenderSystem* pRenderSys,std::string const& name);
 
-		virtual void AddField(std::string const& name, uint size) = 0;
-		virtual FieldDesc GetFieldDescByIndex(uint index) const = 0;
-		virtual FieldDesc GetFieldDescByName(std::string const& name) const = 0;
-		virtual bool SetFieldValue(std::string const& name, byte const* pData) = 0;
-		virtual uint GetFiledsCount() const = 0;
+		void AddVariable(std::string const& name, uint32 size, uint32 offset);
+		ShaderVariableDesc GetVariableDescByIndex(uint32 index) const;
+		ShaderVariableDesc GetVariableDescByName(std::string const& name) const;
+		bool SetVariableValue(std::string const& name, byte const* pData);
+		uint32 GetVariablesCount() const;
 
-		virtual void Complete() = 0;
-		virtual void Update() = 0;
+		void Complete();
+		void Update();
 
-		virtual std::string GetName() const = 0;
-		virtual bool IsComplete() const = 0;
-		virtual uint GetBufferSize() const = 0;
+		std::string GetName() const;
+		bool IsComplete() const;
+		uint32 GetBufferSize() const;
 
-		virtual ~ConstantBufferMap();
+		~ConstantBufferMap();
 	protected:
-		ConstantBufferMap();
+		ConstantBufferMap(RenderSystem* pRenderSys, std::string const& name);
+
+		std::unique_ptr<ConstantBuffer> m_pBuffer;
+
+		std::unordered_map<Name, ShaderVariableDesc> m_vLayout;
+		std::string m_Name;
+		uint32 m_Size = 0;
+		std::vector<byte> m_pRaw;
+
+		bool m_IsComplete = false;
+
+		RenderSystem* m_pRenderSystem = nullptr;
 	};
 
 }

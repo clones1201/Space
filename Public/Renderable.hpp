@@ -6,23 +6,29 @@
 
 namespace Space
 {
-
-	class Renderable : public Interface 
+	class InputLayout
 	{
-	private:
-		
-	public:
 
 	};
 
-	class RenderOperation
+	class Mesh : public Uncopyable
 	{
+	protected:
+		std::unique_ptr<VertexBuffer> m_pVertexBuffer;
+		std::unique_ptr<IndexBuffer> m_pIndexBuffer;
+		InputLayout m_InputLayout;
+
+		RenderSystem* m_pRenderSys;
+
+		Mesh(RenderSystem* pRenderSys);
 	public:
-		VertexBuffer* GetVertexBuffer();
-		IndexBuffer* GetIndexBuffer();
+		static Mesh* CreateFromFile(RenderSystem* pRenderSys, std::string const& filename);
+
+		virtual ~Mesh();
+		VertexBuffer const* GetVertexBuffer() const;
+		IndexBuffer const* GetIndexBuffer() const;
 
 	};
-
 }
 
 #endif

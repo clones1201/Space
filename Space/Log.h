@@ -10,8 +10,8 @@ namespace Space
 	public:
 		virtual void Printf(const wchar_t* format, va_list args) = 0;
 		virtual void Printf(const char* format, va_list args) = 0;
-		virtual void DebugPrintf(int line, const char* filename, const char* format, va_list args) = 0;
-		virtual void DebugPrintf(int line, const wchar_t* filename, const wchar_t* format,va_list args) = 0;
+		virtual void DebugPrintf(int32 line, const char* filename, const char* format, va_list args) = 0;
+		virtual void DebugPrintf(int32 line, const wchar_t* filename, const wchar_t* format,va_list args) = 0;
 		virtual void Flush() = 0;
 	};
 
@@ -23,8 +23,8 @@ namespace Space
 	public:
 		virtual void Printf(const wchar_t* format, va_list args);
 		virtual void Printf(const char* format, va_list args);
-		virtual void DebugPrintf(int line, const char* filename, const char* format, va_list args);
-		virtual void DebugPrintf(int line, const wchar_t* filename, const wchar_t* format, va_list args);
+		virtual void DebugPrintf(int32 line, const char* filename, const char* format, va_list args);
+		virtual void DebugPrintf(int32 line, const wchar_t* filename, const wchar_t* format, va_list args);
 		virtual void Flush();
 	};
 
@@ -33,8 +33,8 @@ namespace Space
 	public:
 		virtual void Printf(const wchar_t* format, va_list args);
 		virtual void Printf(const char* format, va_list args);
-		virtual void DebugPrintf(int line, const char* filename, const char* format, va_list args);
-		virtual void DebugPrintf(int line, const wchar_t* filename, const wchar_t* format, va_list args);
+		virtual void DebugPrintf(int32 line, const char* filename, const char* format, va_list args);
+		virtual void DebugPrintf(int32 line, const wchar_t* filename, const wchar_t* format, va_list args);
 		virtual void Flush();
 	};
 
@@ -57,8 +57,8 @@ namespace Space
 
 		void Printf(const wchar_t* format, ...);
 		void Printf(const char* format, ...);
-		void DebugPrintf(int line, const char* filename, const char* format, ...);
-		void DebugPrintf(int line, const wchar_t* filename, const wchar_t* format, ...);
+		void DebugPrintf(int32 line, const char* filename, const char* format, ...);
+		void DebugPrintf(int32 line, const wchar_t* filename, const wchar_t* format, ...);
 		void Flush();
 	};
 

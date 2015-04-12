@@ -15,11 +15,11 @@ namespace Space
 		virtual void Clear(float clearColor[4]) = 0;
 		virtual void Deactivate() = 0;
 		
-		//virtual int GetArraySize() const;
-
 		virtual ID3D11RenderTargetView* GetRenderTargetView() const throw() = 0;
 		
-		static D3D11RenderTarget* Create(D3D11Device& mDevice, ID3D11Texture2D* pBackBuffer);
+		static D3D11RenderTarget* Create(D3D11Device& mDevice, DeviceTexture2D* pBackBuffer);
+	protected:
+		D3D11RenderTarget(int32 width, int32 height);
 	};
 
 }

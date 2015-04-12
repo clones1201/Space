@@ -12,40 +12,71 @@ namespace Space
 	class D3D11DeviceTexture1D : public DeviceTexture1D
 	{
 	public:
-		static D3D11DeviceTexture1D* CreateArray(D3D11Device &device, int X, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, int arraySize, byte const* initialData);
-		static D3D11DeviceTexture1D* Create(D3D11Device &device, int X, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, byte const* initialData);
+		static D3D11DeviceTexture1D* CreateArray(
+			D3D11Device &device, 
+			int32 X, 
+			DataFormat format, ResourceUsage usage, ResourceBindFlag flag, 
+			int32 arraySize, byte const* initialData);
+		static D3D11DeviceTexture1D* Create(
+			D3D11Device &device,
+			int32 X, 
+			DataFormat format, ResourceUsage usage, ResourceBindFlag flag, 
+			byte const* initialData);
+		static D3D11DeviceTexture1D* Create(D3D11Device &device, ID3D11Texture1D* pTexture);
 
-		//static D3D11DeviceTexture1D* CreateFromFile(std::string const &filename);
-
-		virtual int GetArraySize() const = 0;
-		virtual TextureType GetType() const = 0;
+		virtual ID3D11Texture1D* GetD3DTexture1D() = 0;
+	protected:
+		D3D11DeviceTexture1D(int32 X,
+			DataFormat format,
+			ResourceUsage usage,
+			ResourceBindFlag flag,
+			int32 arraySize);
 	};
 
 	class D3D11DeviceTexture2D : public DeviceTexture2D
 	{
 	public:
-		static D3D11DeviceTexture2D* CreateArray(D3D11Device &device, int X, int Y, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, int arraySize, byte const* initialData);
-		static D3D11DeviceTexture2D* Create(D3D11Device &device, int X, int Y, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, byte const* initialData);
+		static D3D11DeviceTexture2D* CreateArray(
+			D3D11Device &device, 
+			int32 X, int32 Y, 
+			DataFormat format, ResourceUsage usage, ResourceBindFlag flag, 
+			int32 arraySize, byte const* initialData);
+		static D3D11DeviceTexture2D* Create(
+			D3D11Device &device, 
+			int32 X, int32 Y, 
+			DataFormat format, ResourceUsage usage, ResourceBindFlag flag, 
+			byte const* initialData);
+		static D3D11DeviceTexture2D* CreateFromFile(D3D11Device &device, std::string const &filename);
 
-		static D3D11DeviceTexture2D* CreateFromFile(std::string const &filename);
+		static D3D11DeviceTexture2D* Create(D3D11Device &device, ID3D11Texture2D* pTexture);
 
-		virtual RenderTarget* GetRenderTarget() const = 0;
-		virtual DepthStencilView* GetDepthStencil() const = 0;
-
-		virtual int GetArraySize() const = 0;
-		virtual TextureType GetType() const = 0;
+		virtual ID3D11Texture2D* GetD3DTexture2D() = 0;
+	protected:
+		D3D11DeviceTexture2D(int32 X,int32 Y,
+			DataFormat format,
+			ResourceUsage usage,
+			ResourceBindFlag flag,
+			int32 arraySize);
 	};
 
 	class D3D11DeviceTexture3D : public DeviceTexture3D
 	{
 	public:
-		/*static D3D11DeviceTexture3D* CreateArray(D3D11Device &device, int X, int Y, int Z, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, int arraySize, byte const* initialData);*/
-		static D3D11DeviceTexture3D* Create(D3D11Device &device, int X,int Y,int Z, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, byte const* initialData);
+		/*static D3D11DeviceTexture3D* CreateArray(D3D11Device &device, int32 X, int32 Y, int32 Z, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, int32 arraySize, byte const* initialData);*/
+		static D3D11DeviceTexture3D* Create(
+			D3D11Device &device, 
+			int32 X,int32 Y,int32 Z, 
+			DataFormat format, ResourceUsage usage, ResourceBindFlag flag, 
+			byte const* initialData);
+		 
+		static D3D11DeviceTexture3D* Create(D3D11Device &device, ID3D11Texture3D* pTexture);
 
-		//static D3D11DeviceTexture3D* CreateFromFile(std::string const &filename);
-
-		virtual int GetArraySize() const = 0;
-		virtual TextureType GetType() const = 0;
+		virtual ID3D11Texture3D* GetD3DTexture3D() = 0;
+	protected:
+		D3D11DeviceTexture3D(int32 X,int32 Y,int32 Z,
+			DataFormat format,
+			ResourceUsage usage,
+			ResourceBindFlag flag);
 	};
 
 }
