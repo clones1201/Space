@@ -41,13 +41,10 @@ namespace Space
 		}
 
 	};
-
-	/*D3D11VertexShader* D3D11VertexShader::LoadSourceFromFile(D3D11Device& device, std::string const& filename);
-	D3D11VertexShader* D3D11VertexShader::LoadSourceFromFile(D3D11Device& device, std::wstring const& filename);
-	D3D11VertexShader* D3D11VertexShader::LoadSourceFromMemory(D3D11Device& device, std::string const& codes);
-	D3D11VertexShader* D3D11VertexShader::LoadBinaryFromFile(D3D11Device& device, std::string const& filename);
-	D3D11VertexShader* D3D11VertexShader::LoadBinaryFromFile(D3D11Device& device, std::wstring const& filename);*/
-	D3D11VertexShader* D3D11VertexShader::LoadBinaryFromMemory(D3D11Device& device, byte const* byteCodes, uint32 sizeInBytes)
+ 
+	D3D11VertexShader* D3D11VertexShader::LoadBinaryFromMemory(
+		D3D11Device& device, 
+		byte const* byteCodes, uint32 sizeInBytes)
 	{
 		try
 		{
@@ -64,6 +61,63 @@ namespace Space
 	D3D11VertexShader::~D3D11VertexShader()
 	{}
 	D3D11VertexShader::D3D11VertexShader()
+	{}
+
+	class D3D11PixelShaderImpl : public D3D11PixelShader
+	{
+	private:
+		D3D11Device &mDevice;
+
+		CComPtr<ID3D11PixelShader> m_pShader = nullptr;
+	public:
+		D3D11PixelShaderImpl(D3D11Device &device, byte const* byteCodes, uint32 sizeInBytes)
+			: mDevice(device){
+
+			ID3D11PixelShader* pVS = nullptr;
+			HRESULT hr = mDevice->CreatePixelShader(byteCodes, sizeInBytes, nullptr, &pVS);
+			if (FAILED(hr))
+			{
+				throw std::exception("CreatePixelShader failed.");
+			}
+			m_pShader = pVS;
+
+		}
+
+		void D3D11PixelShader::SetConstantBuffers(std::vector<TypeTrait<ConstantBuffer>::Ptr>& vBuffers)
+		{
+
+		}
+		void D3D11PixelShader::SetShaderResources(std::vector<TypeTrait<ShaderResource>::Ptr>& vResources)
+		{
+
+		}
+
+		void D3D11PixelShader::Apply()
+		{
+
+		}
+
+	};
+
+	D3D11PixelShader* D3D11PixelShader::LoadBinaryFromMemory(
+		D3D11Device& device,
+		byte const* byteCodes, uint32 sizeInBytes)
+	{
+		try
+		{
+			return new D3D11PixelShaderImpl(device, byteCodes, sizeInBytes);
+		}
+		catch (std::exception &e)
+		{
+			Log(e.what());
+			return nullptr;
+		}
+	}
+
+
+	D3D11PixelShader::~D3D11PixelShader()
+	{}
+	D3D11PixelShader::D3D11PixelShader()
 	{}
 
 

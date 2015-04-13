@@ -19,7 +19,6 @@ namespace Space
 		
 		static D3D11RenderTarget* Create(D3D11Device& mDevice, DeviceTexture2D* pBackBuffer);
 	protected:
-		D3D11RenderTarget(int32 width, int32 height);
 	};
 
 }

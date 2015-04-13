@@ -1,6 +1,6 @@
 #include "Log.h"
 #include "Window.hpp"
-#include "WindowImpl.hpp"
+#include "Win32Window.hpp"
 #include "D3D11Device.hpp"
 #include "D3D11DeviceTexture.hpp"
 #include "D3D11RenderTarget.hpp"
@@ -13,7 +13,7 @@ namespace Space
 	private:
 		D3D11Device& mDevice;
 		
-		CComPtr<ID3D11Texture2D> m_pBackBuffer = nullptr;
+		TypeTrait<DeviceTexture2D>::Ptr m_pBackBuffer = nullptr;
 		CComPtr<IDXGISwapChain> m_pSwapChain = nullptr;
 	public:
 		D3D11RenderWindowImpl(D3D11Device& device,const std::string& name,int32 width,int32 height,bool fullscreen)
@@ -23,12 +23,12 @@ namespace Space
 
 		DeviceTexture2D* GetBackBuffer()
 		{
-			return D3D11DeviceTexture2D::Create(mDevice,m_pBackBuffer);
+			return m_pBackBuffer.get();
 		}
 
 		virtual bool _Initialize()
 		{
-			auto window = dynamic_cast<Window::Win32Window*>(m_pWindow.get());
+			auto window = dynamic_cast<Win32Window*>(m_pWindow.get());
 			if (window == nullptr)
 			{
 				throw std::exception("Window type error.");
@@ -46,7 +46,7 @@ namespace Space
 			sd.OutputWindow = window->GetHandle();
 			sd.SampleDesc.Count = 1;
 			sd.SampleDesc.Quality = 0;
-			sd.Windowed = RenderWindow::m_bFullscreen ? TRUE : FALSE;
+			sd.Windowed = RenderWindow::m_Fullscreen ? TRUE : FALSE;
 
 			IDXGISwapChain* pSwapChain = nullptr;
 			HRESULT hr = mDevice.GetDXGIFactory()->CreateSwapChain(mDevice.Get(), &sd, &(pSwapChain));
@@ -63,7 +63,7 @@ namespace Space
 				Log("Get Back Buffer Failed\n");
 				return false;
 			}
-			m_pBackBuffer = pBackBuffer;
+			m_pBackBuffer.reset(D3D11DeviceTexture2D::Create(mDevice, pBackBuffer));
 			return true;
 		}
 
@@ -78,7 +78,7 @@ namespace Space
 				Log("Get Back Buffer Failed\n");
 				return ;
 			}
-			m_pBackBuffer = pBackBuffer;
+			m_pBackBuffer.reset(D3D11DeviceTexture2D::Create(mDevice, pBackBuffer));
 		}
 	};
 

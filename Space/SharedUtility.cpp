@@ -21,6 +21,8 @@ namespace Space
 		} 
 	};
 
+	Name::Impl::NameMapType Name::Impl::g_NameMap;
+
 	Name::Name()
 	{
 		Name(TEXT(""));

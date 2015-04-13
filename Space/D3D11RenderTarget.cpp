@@ -20,7 +20,7 @@ namespace Space
 
 	public:
 		D3D11RenderTargetImpl(D3D11Device& device, DeviceTexture2D* pBackBuffer)
-			:D3D11RenderTarget(pBackBuffer->GetWidth(),pBackBuffer->GetHeight()),mDevice(device)
+			:mDevice(device)
 		{
 			auto pD3DDeviceTexture2D = dynamic_cast<D3D11DeviceTexture2D*>(pBackBuffer);
 
@@ -115,7 +115,4 @@ namespace Space
 		}
 	}
 
-	D3D11RenderTarget::D3D11RenderTarget(int32 width,int32 height)
-		:RenderTarget(width,height)
-	{}
 }

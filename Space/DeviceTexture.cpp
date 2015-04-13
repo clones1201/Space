@@ -16,6 +16,8 @@ namespace Space
 		m_Flag(flag)
 	{
 	}
+	DeviceTexture1D::~DeviceTexture1D()
+	{}
 
 	DeviceTexture1D* DeviceTexture1D::CreateArray(
 		RenderSystem* pRenderSys,
@@ -71,6 +73,8 @@ namespace Space
 		m_Flag(flag)
 	{
 	}
+	DeviceTexture2D::~DeviceTexture2D()
+	{}
 
 	DeviceTexture2D* DeviceTexture2D::CreateArray(
 		RenderSystem* pRenderSys,
@@ -94,9 +98,9 @@ namespace Space
 		return pRenderSys->CreateTexture2D(X, Y, format, usage, flag, initialData);
 	}
 	DeviceTexture2D* DeviceTexture2D::CreateFromFile(
-		RenderSystem* pRenderSys, std::string const &filename)
+		RenderSystem* pRenderSys, std::string const &filename, DataFormat format, ResourceUsage usage, ResourceBindFlag flag)
 	{
-		return pRenderSys->CreateTexture2DFromFile(filename);
+		return pRenderSys->CreateTexture2DFromFile(filename,format,usage,flag);
 	}
 
 	int32 DeviceTexture2D::GetArraySize() const
@@ -137,6 +141,8 @@ namespace Space
 		m_Flag(flag)
 	{
 	}
+	DeviceTexture3D::~DeviceTexture3D()
+	{}
 
 	/*DeviceTexture3D* DeviceTexture3D::CreateArray(RenderSystem* pRenderSys, int32 X, int32 Y, int32 Z, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, int32 arraySize, byte const* initialData);*/
 	DeviceTexture3D* DeviceTexture3D::Create(

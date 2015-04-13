@@ -19,7 +19,7 @@ namespace Space
 
 	public:
 		D3D11RenderSystemImpl();
-		~D3D11RenderSystemImpl();
+		~D3D11RenderSystemImpl(){}
 
 		D3D11Device* GetDevice() const throw();
 
@@ -29,15 +29,15 @@ namespace Space
 		virtual DeviceTexture1D* CreateTexture1DArray(int32 X, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, int32 arraySize, byte const* initialData) throw();
 		virtual DeviceTexture2D* CreateTexture2D(int32 X, int32 Y, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, byte const* initialData) throw();
 		virtual DeviceTexture2D* CreateTexture2DArray(int32 X, int32 Y, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, int32 arraySize, byte const* initialData) throw();
-		virtual DeviceTexture2D* CreateTexture2DFromFile(std::string const& filename) throw();
+		virtual DeviceTexture2D* CreateTexture2DFromFile(std::string const& filename, DataFormat format, ResourceUsage usage, ResourceBindFlag flag) throw();
 		virtual DeviceTexture3D* CreateTexture3D(int32 X, int32 Y, int32 Z, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, byte const* initialData) throw();
 
-		virtual VertexShader* LoadVertexShaderFromFile(std::string const& filename) throw();
-		virtual VertexShader* LoadVertexShaderFromFile(std::wstring const& filename) throw();
+		/*virtual VertexShader* LoadVertexShaderFromFile(std::string const& filename) throw();
+		virtual VertexShader* LoadVertexShaderFromFile(std::wstring const& filename) throw();*/
 		virtual VertexShader* LoadVertexShaderFromMemory(byte const* byteCodes, uint32 sizeInBytes) throw();
 
-		virtual PixelShader* LoadPixelShaderFromFile(std::string const& filename) throw();
-		virtual PixelShader* LoadPixelShaderFromFile(std::wstring const& filename) throw();
+		/*virtual PixelShader* LoadPixelShaderFromFile(std::string const& filename) throw();
+		virtual PixelShader* LoadPixelShaderFromFile(std::wstring const& filename) throw();*/
 		virtual PixelShader* LoadPixelShaderFromMemory(byte const* byteCodes, uint32 sizeInBytes) throw();
 
 		virtual DepthStencilView* CreateDepthStencilView(DeviceTexture2D* pTexture) throw();
@@ -110,9 +110,9 @@ namespace Space
 	{
 		return D3D11DeviceTexture2D::Create(mDevice, X, Y, format, usage, flag, initialData);
 	}
-	DeviceTexture2D* D3D11RenderSystemImpl::CreateTexture2DFromFile(std::string const& filename)
+	DeviceTexture2D* D3D11RenderSystemImpl::CreateTexture2DFromFile(std::string const& filename, DataFormat format, ResourceUsage usage, ResourceBindFlag flag)
 	{
-		return D3D11DeviceTexture2D::CreateFromFile(mDevice,filename);
+		return D3D11DeviceTexture2D::CreateFromFile(mDevice,filename, format, usage, flag);
 	}
 	DeviceTexture3D* D3D11RenderSystemImpl::CreateTexture3D(int32 X, int32 Y, int32 Z, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, byte const* initialData)
 	{

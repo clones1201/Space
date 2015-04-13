@@ -6,26 +6,25 @@
 
 namespace Space
 {
-	class Window : public Uncopyable
+	class Window : public Interface
 	{
-	private:
-		class Impl;
-		std::unique_ptr<Impl> impl;
-
-		Window(const std::string& winName, int32 width, int32 height, bool fullscreen);
 	public:
-		static Window* Create(const std::string& winName, int32 width, int32 height, bool fullscreen);
-		~Window();
+		static Window* Create(const std::string& name, int32 width, int32 height, bool fullscreen);
+		static Window* Create(const std::wstring& name, int32 width, int32 height, bool fullscerrn);
+		virtual ~Window();
 
-#if SPACE_PLATFORM == SPACE_WIN32
-		class Win32Window;
-#endif
-		void Show();
+		virtual void Show() = 0;
+		
 		int32 Width() const;
 		int32 Height() const;
 		bool IsFullscreen() const;
 
-	protected:
+	protected: 
+		Window(const std::wstring& name, int32 width, int32 height, bool fullscreen);
+
+		std::wstring m_Name;
+		int32 m_Width, m_Height;
+		bool m_Fullscreen;
 		//std::function<void(*)> Resize;
 	};
 }

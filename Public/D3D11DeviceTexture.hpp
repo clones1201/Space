@@ -46,7 +46,11 @@ namespace Space
 			int32 X, int32 Y, 
 			DataFormat format, ResourceUsage usage, ResourceBindFlag flag, 
 			byte const* initialData);
-		static D3D11DeviceTexture2D* CreateFromFile(D3D11Device &device, std::string const &filename);
+		static D3D11DeviceTexture2D* CreateFromFile(D3D11Device &device, std::string const &filename
+			,DataFormat format, ResourceUsage usage, ResourceBindFlag flag);
+
+		static D3D11DeviceTexture2D* CreateFromFile(D3D11Device &device, std::wstring const &filename
+			, DataFormat format, ResourceUsage usage, ResourceBindFlag flag);
 
 		static D3D11DeviceTexture2D* Create(D3D11Device &device, ID3D11Texture2D* pTexture);
 

@@ -31,9 +31,6 @@
     <Filter Include="Private\Shaders">
       <UniqueIdentifier>{a40fb895-9d5e-4152-9880-08b9b9eb10bc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ThirdParty">
-      <UniqueIdentifier>{7d452c0a-7597-4295-b9d8-ec9a87cd02b0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Public\RenderSystem">
       <UniqueIdentifier>{82622c70-4e78-4bbe-9a9e-cd8287d66f91}</UniqueIdentifier>
     </Filter>
@@ -68,9 +65,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Space.hpp">
       <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="WindowImpl.hpp">
-      <Filter>Private\Global\Header</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Window.hpp">
       <Filter>Public</Filter>
@@ -162,6 +156,9 @@
     <ClInclude Include="..\Public\Mesh.hpp">
       <Filter>Public</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Win32Window.hpp">
+      <Filter>Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Basic.cpp">
@@ -246,6 +243,12 @@
       <Filter>Private\RenderSystem</Filter>
     </ClCompile>
     <ClCompile Include="SharedUtility.cpp">
+      <Filter>Private\Global\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderResource.cpp">
+      <Filter>Private\RenderSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Win32Window.cpp">
       <Filter>Private\Global\Source</Filter>
     </ClCompile>
   </ItemGroup>

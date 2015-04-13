@@ -70,7 +70,8 @@ namespace Space
 			ResourceBindFlag flag,
 			byte const* initialData);
 		static DeviceTexture2D* CreateFromFile(
-			RenderSystem* pRenderSys, std::string const &filename);
+			RenderSystem* pRenderSys, std::string const &filename, 
+			DataFormat format, ResourceUsage usage, ResourceBindFlag flag);
 		 
 		virtual byte* Lock() = 0;
 		virtual void Unlock() = 0;

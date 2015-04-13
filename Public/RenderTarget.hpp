@@ -15,13 +15,7 @@ namespace Space
 		
 		virtual ~RenderTarget();
 
-		int32 GetWidth() const;
-		int32 GetHeight() const;
-
 	protected:
-		RenderTarget(int32 width, int32 height);
-		
-		int32 m_Width, m_Height;
 	};
 }
 

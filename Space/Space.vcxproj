@@ -44,12 +44,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Public\;$(VCInstallDir)UnitTest\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Public\;$(SolutionDir)ThirdParty\includes\;$(VCInstallDir)UnitTest\include;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_UNICODE;UNICODE;SPACE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;$(SolutionDir)ThirdParty\libs\x86\;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxgi.lib;DirectXTKd.lib;assimp.lib;archive.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -91,8 +92,8 @@
     <ClInclude Include="..\Public\ShaderReflection.hpp" />
     <ClInclude Include="..\Public\ShaderResourcePool.hpp" />
     <ClInclude Include="..\Public\SharedUtility.hpp" />
+    <ClInclude Include="..\Public\Win32Window.hpp" />
     <ClInclude Include="D3D11Shared.hpp" />
-    <ClInclude Include="WindowImpl.hpp" />
     <FxCompile Include="..\Shaders\Basic.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <FileType>CppHeader</FileType>
@@ -136,10 +137,12 @@
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="RenderWindow.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShaderResource.cpp" />
     <ClCompile Include="ShaderResourcePool.cpp" />
     <ClCompile Include="SharedUtility.cpp" />
     <ClCompile Include="Test\UtilityTest.cpp" />
     <ClCompile Include="Utility.cpp" />
+    <ClCompile Include="Win32Window.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>

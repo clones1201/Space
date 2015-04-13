@@ -6,6 +6,8 @@
 #include "D3D11RenderTarget.hpp"
 #include "D3D11DepthStencilView.hpp"
 
+#include "DirectXTK\DDSTextureLoader.h"
+
 namespace Space
 {
 	class D3D11DeviceTexture1DImpl : public D3D11DeviceTexture1D
@@ -439,6 +441,21 @@ namespace Space
 		}
 	}
 
+	D3D11DeviceTexture1D* D3D11DeviceTexture1D::Create(D3D11Device &device, ID3D11Texture1D* pTexture)
+	{
+		try
+		{
+			D3D11_TEXTURE1D_DESC desc;
+			pTexture->GetDesc(&desc);
+			return new D3D11DeviceTexture1DImpl(device, desc, pTexture);
+		}
+		catch (std::exception &e)
+		{
+			Log(e.what());
+			return nullptr;
+		}
+	}
+
 	D3D11DeviceTexture2D::D3D11DeviceTexture2D(
 		int32 X, int32 Y,
 		DataFormat format,
@@ -466,6 +483,49 @@ namespace Space
 		try
 		{
 			return new D3D11DeviceTexture2DImpl(device, X, Y, format, usage, flag, 1, initialData);
+		}
+		catch (std::exception &e)
+		{
+			Log(e.what());
+			return nullptr;
+		}
+	}
+
+	D3D11DeviceTexture2D* D3D11DeviceTexture2D::Create(D3D11Device &device, ID3D11Texture2D* pTexture)
+	{
+		try
+		{
+			D3D11_TEXTURE2D_DESC desc;
+			pTexture->GetDesc(&desc);
+			return new D3D11DeviceTexture2DImpl(device, desc, pTexture);
+		}
+		catch (std::exception &e)
+		{
+			Log(e.what());
+			return nullptr;
+		}
+	}
+
+	D3D11DeviceTexture2D* D3D11DeviceTexture2D::CreateFromFile(D3D11Device &device, std::string const& filename, DataFormat format, ResourceUsage usage, ResourceBindFlag flag)
+	{
+		return CreateFromFile(device, str2wstr(filename), format, usage, flag);
+	}
+
+	D3D11DeviceTexture2D* D3D11DeviceTexture2D::CreateFromFile(D3D11Device &device, std::wstring const& filename, DataFormat format, ResourceUsage usage, ResourceBindFlag flag)
+	{
+		ID3D11Texture2D* pTexture = nullptr;
+		auto hr = DirectX::CreateDDSTextureFromFileEx(device.Get(), filename.c_str(), filename.size(), (D3D11_USAGE)usage,
+			(UINT)GetD3D11BindFlag(flag), 0, 0, true, (ID3D11Resource**)&pTexture, nullptr);
+		if (FAILED(hr))
+		{
+			return nullptr;
+		}
+
+		try
+		{
+			D3D11_TEXTURE2D_DESC desc;
+			pTexture->GetDesc(&desc);
+			return new D3D11DeviceTexture2DImpl(device, desc, pTexture);
 		}
 		catch (std::exception &e)
 		{

@@ -93,11 +93,12 @@ namespace Space
 	{
 		return StringFormatW(TEXT("%f"), f);
 	}
+	
 	std::ostream& Write(std::ostream& archiver, std::string const& str)
 	{
 		std::string::size_type size = str.size();
 		archiver.write((sbyte*)&size, sizeof(std::string::size_type));
-		archiver.write((sbyte*)str.c_str(), 2 * (size + 1));
+		archiver.write((sbyte*)str.c_str(), sizeof(std::string::value_type) * (size + 1));
 		return archiver;
 	}
 	std::istream& Read(std::istream& archiver, std::string& str)
@@ -105,8 +106,26 @@ namespace Space
 		std::string::size_type size;
 		archiver.read((sbyte*)&size, sizeof(std::string::size_type));
 		char* buf = new char[size + 1];
-		archiver.read((sbyte*)buf, (size + 1));
+		archiver.read((sbyte*)buf, sizeof(std::string::value_type) * (size + 1));
 		str = std::string(buf);
+		delete buf;
+		return archiver;
+	}
+
+	std::ostream& Write(std::ostream& archiver, std::wstring const& str)
+	{
+		std::string::size_type size = str.size();
+		archiver.write((sbyte*)&size, sizeof(std::wstring::size_type));
+		archiver.write((sbyte*)str.c_str(), sizeof(std::wstring::value_type) * (size + 1));
+		return archiver;
+	}
+	std::istream& Read(std::istream& archiver, std::wstring& str)
+	{
+		std::wstring::size_type size;
+		archiver.read((sbyte*)&size, sizeof(std::wstring::size_type));
+		wchar_t* buf = new wchar_t[size + 1];
+		archiver.read((sbyte*)buf, sizeof(std::wstring::value_type) * (size + 1));
+		str = std::wstring(buf);
 		delete buf;
 		return archiver;
 	}
