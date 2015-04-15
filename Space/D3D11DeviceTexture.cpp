@@ -6,7 +6,7 @@
 #include "D3D11RenderTarget.hpp"
 #include "D3D11DepthStencilView.hpp"
 
-#include "DirectXTK\DDSTextureLoader.h"
+#include "DDSTextureLoader.h"
 
 namespace Space
 {

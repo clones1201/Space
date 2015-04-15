@@ -1,10 +1,14 @@
 #ifndef __SPACE_PREREQUISITES_HPP__
 #define __SPACE_PREREQUISITES_HPP__
 
+#ifndef SPACE_GAME
 #ifdef SPACE_EXPORTS
 #define SPACE_API __declspec(dllexport)
 #else
 #define SPACE_API __declspec(dllimport)
+#endif
+#else
+#define SPACE_API 
 #endif
 
 #define SPACE_WIN32 1
@@ -18,14 +22,10 @@
 #if (SPACE_PLATFORM == SPACE_WIN32)
 #include <Windows.h>
 #include <windowsx.h>
-
 #include <atlbase.h>
-
-#include <DirectXMath.h>
-#include <DirectXColors.h>
-#include <DirectXCollision.h>
-#include <DirectXPackedVector.h>
 #endif
+
+#include "Math.hpp"
 
 #include <algorithm>
 #include <functional>
@@ -92,7 +92,7 @@ namespace Space
 	class ShaderReflection;
 	class ShaderResource;
 	class ShaderResourcePool;
-
+	class InputLayout;
 	class Renderable;
 	class Mesh;
 	class Material;
@@ -187,27 +187,50 @@ namespace Space
 		VET_Float2,
 		VET_Float3,
 		VET_Float4,
-//		VET_PackedNormal,	// FPackedNormal
+		VET_Byte2,
+		VET_Byte4,
+		VET_ByteN2,
+		VET_ByteN4,
+		VET_UByte2,
 		VET_UByte4,
-//		VET_UByte4N,
-		VET_Color,
+		VET_UByteN2,
+		VET_UByteN4,
+		VET_UShort2,
+		VET_UShort4,
+		VET_UShortN2,		// 16 bit word normalized to (value/32767.0,value/32767.0,0,0,1)
+		VET_UShortN4,
 		VET_Short2,
 		VET_Short4,
-//		VET_Short2N,		// 16 bit word normalized to (value/32767.0,value/32767.0,0,0,1)
+		VET_ShortN2,		// 16 bit word normalized to (value/32767.0,value/32767.0,0,0,1)
+		VET_ShortN4,
 		VET_Half2,			// 16 bit float using 1 bit sign, 5 bit exponent, 10 bit mantissa 
 		VET_Half4,
+		VET_Color,          //A 32-bit Alpha Red Green Blue (ARGB) color vector, where each color channel is specified as an unsigned 8 bit integer.
 		VET_MAX
 	}VertexElemType;
 
 	typedef enum _ElemSemantic
 	{
-		ES_UNKNOWN = 0,
+		ES_Unknown = 0,
 		ES_Position,
 		ES_Normal,
 		ES_Texcoord,
 		ES_Tangent,
-		ES_Bitangent
-	}ElemSematic;
+	}ElemSemantic;
+
+	typedef enum _PrimitiveTopology
+	{
+		PT_Undefined,
+		PT_PointList,
+		PT_LineList,
+		PT_LineStripe,
+		PT_LineList_Adj,
+		PT_LineStripe_Adj,
+		PT_TriangleList,
+		PT_TriangleStrip,
+		PT_TriangleList_Adj,
+		PT_TriangleStrip_Adj,
+	};
 
 	typedef enum _ShaderModelLevel
 	{

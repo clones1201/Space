@@ -24,7 +24,7 @@ namespace Space
 		D3D11Device* GetDevice() const throw();
 
 		virtual RenderWindow* CreateRenderWindow(const std::string& title, int32 width, int32 height, bool fullscreen) throw();
-		virtual DeviceBuffer* CreateBuffer(BufferType type, ResourceUsage usage, byte const* initialData, size_t lengthInBytes) throw();
+		virtual DeviceBuffer* CreateBuffer(BufferType type, ResourceUsage usage, byte const* initialData, uint32 lengthInBytes) throw();
 		virtual DeviceTexture1D* CreateTexture1D(int32 X, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, byte const* initialData) throw();
 		virtual DeviceTexture1D* CreateTexture1DArray(int32 X, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, int32 arraySize, byte const* initialData) throw();
 		virtual DeviceTexture2D* CreateTexture2D(int32 X, int32 Y, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, byte const* initialData) throw();
@@ -89,7 +89,7 @@ namespace Space
 	{
 		return D3D11RenderWindow::Create(mDevice, title, width, height, fullscreen);
 	}
-	DeviceBuffer* D3D11RenderSystemImpl::CreateBuffer(BufferType type, ResourceUsage usage, byte const* initialData, size_t lengthInBytes)
+	DeviceBuffer* D3D11RenderSystemImpl::CreateBuffer(BufferType type, ResourceUsage usage, byte const* initialData, uint32 lengthInBytes)
 	{
 		return D3D11DeviceBuffer::Create(mDevice, type, usage, initialData, lengthInBytes);
 	}

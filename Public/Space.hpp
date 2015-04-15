@@ -9,4 +9,6 @@
 #include "Core.hpp"
 #include "Game.hpp"
 
+#include "Mesh.hpp"
+
 #endif

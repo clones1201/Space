@@ -2,6 +2,7 @@
 #define __SPACE_D3D11_RENDERSYSTEM_HPP__
 
 #include "RenderSystem.hpp"
+#include "Basic.hpp"
 #include "D3D11Prerequisites.hpp" 
 
 namespace Space

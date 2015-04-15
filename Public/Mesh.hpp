@@ -7,18 +7,32 @@
 namespace Space
 {
 
-	class Mesh
+	class MeshPart : public Uncopyable
 	{
 	public:
-		static Mesh* Create(RenderSystem* pRenderSys);
 
-
-	protected:
+	private:
 		TypeTrait<VertexBuffer>::Ptr m_pVertexBuffer;
 		TypeTrait<IndexBuffer>::Ptr m_pIndexBuffer;
 
 		TypeTrait<InputLayout>::Ptr m_pInputLayout;
 
+
+	};
+
+	class Mesh : public Uncopyable
+	{
+	public:
+		static Mesh* CreateFromFBX(
+			RenderSystem* pRenderSys,
+			std::wstring const& filename);
+
+		static Mesh* CreateFromFBX(
+			RenderSystem* pRenderSys,
+			std::string const& filename
+			);
+	protected:
+		
 	};
 
 }

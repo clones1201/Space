@@ -14,6 +14,4 @@ namespace Space
 	{
 		throw new std::exception("Not Implemented");
 	}
-
-
 }

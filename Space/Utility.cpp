@@ -1,6 +1,4 @@
-#include "Utility.h"
-//
-//#pragma comment(lib,"archive.lib")
+#include "Utility.h" 
 
 namespace Space
 {
@@ -24,7 +22,7 @@ namespace Space
 	std::wstring str2wstr(const std::string &in){
 		std::wstring out;
 		LPWSTR wstr = new WCHAR[in.size() + 1];
-		MultiByteToWideChar(CP_ACP, 0, in.c_str(), in.size(), wstr, in.size());
+		MultiByteToWideChar(CP_ACP, 0, in.c_str(), (int32)in.size(), wstr, (int32)in.size());
 		wstr[in.size()] = '\0';
 		out = wstr;
 		delete[] wstr;
@@ -37,7 +35,7 @@ namespace Space
 	std::string wstr2str(const std::wstring &in){
 		std::string out;
 		LPSTR str = new CHAR[in.size() + 1];
-		WideCharToMultiByte(CP_ACP, 0, in.c_str(), in.size(), str, in.size(), nullptr, nullptr);
+		WideCharToMultiByte(CP_ACP, 0, in.c_str(), (int32)in.size(), str, (int32)in.size(), nullptr, nullptr);
 		str[in.size()] = '\0';
 		out = str;
 		delete[] str;
@@ -48,13 +46,13 @@ namespace Space
 		return in;
 	}
 
-	int32 GetVarArgsW(wchar_t* dest, size_t size, const wchar_t* fmt, va_list args){
+	int32 GetVarArgsW(wchar_t* dest, uint32 size, const wchar_t* fmt, va_list args){
 		int32 result = _vsnwprintf_s(dest, size, size - 1, fmt, args);
 		va_end(args);
 		return result;
 	}
 
-	int32 GetVarArgsA(char* dest, size_t size, const char* fmt, va_list args)
+	int32 GetVarArgsA(char* dest, uint32 size, const char* fmt, va_list args)
 	{
 		int32 result = _vsnprintf_s(dest, size, size - 1, fmt, args);
 		va_end(args);
@@ -201,6 +199,63 @@ namespace Space
 		case DF_D24_UNORM_S8_UINT:
 		case DF_D32_FLOAT:
 			return 4;
+		} 
+	}
+
+	int32 GetElementSize(VertexElemType type)
+	{
+		switch (type)
+		{
+		case VET_Float1:
+			return sizeof(float);
+		case VET_Float2:
+			return sizeof(Float2);
+		case VET_Float3:
+			return sizeof(Float3);
+		case VET_Float4:
+			return sizeof(Float4);
+		case VET_Byte2:
+			return sizeof(Byte2);
+		case VET_Byte4:
+			return sizeof(Byte4);
+		case VET_ByteN2:
+			return sizeof(ByteN2);
+		case VET_ByteN4:
+			return sizeof(ByteN4);
+		case VET_UByte2:
+			return sizeof(UByte2);
+		case VET_UByte4:
+			return sizeof(UByte4);
+		case VET_UByteN2:
+			return sizeof(UByteN2);
+		case VET_UByteN4:
+			return sizeof(UByteN4);
+		case VET_UShort2:
+			return sizeof(UShort2);
+		case VET_UShort4:
+			return sizeof(UShort4);
+		case VET_UShortN2:		// 16 bit word normalized to (value/32767.0,value/32767.0,0,0,1)
+			return sizeof(UShortN2);
+		case VET_UShortN4:
+			return sizeof(UShortN4);
+		case VET_Short2:
+			return sizeof(Short2);
+		case VET_Short4:
+			return sizeof(Short4);
+		case VET_ShortN2:		// 16 bit word normalized to (value/32767.0,value/32767.0,0,0,1)
+			return sizeof(ShortN2);
+		case VET_ShortN4:
+			return sizeof(ShortN4);
+		case VET_Half2:
+			return sizeof(Half2);
+		case VET_Half4:
+			return sizeof(Half4);
+		case VET_Color:
+			return sizeof(Color);	
+		case VET_None:
+		case VET_MAX:
+		default:
+			return 0;
 		}
 	}
 }

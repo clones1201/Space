@@ -2,7 +2,7 @@
 #define __SPACE_DEVICETEXTURE_HPP__
 
 #include "Prerequisites.hpp"
-#include "Basic.hpp" 
+#include "Basic.hpp"
 
 namespace Space
 {

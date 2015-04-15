@@ -1,5 +1,7 @@
 #include <CppUnitTest.h>
+
 #include "SharedUtility.hpp"
+#include "Mesh.hpp"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -49,6 +51,13 @@ namespace UnitTest
 			delete name8;
 			name14 = name13;
 			Assert::AreEqual(TEXT("name 13"), name14.ToString().c_str());
+		}
+
+		TEST_METHOD(FBXMeshLoadTest)
+		{
+
+
+
 		}
 
 	};

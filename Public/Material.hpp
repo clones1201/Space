@@ -3,7 +3,6 @@
 
 #include "Prerequisites.hpp"
 #include "TemplateTrait.hpp"
-#include "Basic.hpp"
 #include "Shader.hpp"
 
 namespace Space

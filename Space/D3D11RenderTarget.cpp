@@ -79,6 +79,7 @@ namespace Space
 			uint32 targetCount = ARRAYSIZE(targets);
 
 			mDevice.GetImmediateContext()->OMSetRenderTargets(targetCount,targets,pDSV);
+			return true;
 		}
 		
 		virtual void Clear(float clearColor[4])

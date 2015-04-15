@@ -113,7 +113,7 @@ namespace Space
 			{
 				return DXGIFormatTable.at(format);
 			}
-			catch (std::out_of_range &e)
+			catch (std::out_of_range)
 			{
 				return DF_UNKNOWN;
 			}

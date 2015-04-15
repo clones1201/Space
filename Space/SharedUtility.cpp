@@ -80,7 +80,7 @@ namespace Space
 	int32 Name::GetHashCode() const
 	{
 		std::hash<TypeTrait<Name::Impl>::Ptr> hasher;
-		return hasher(m_impl);
+		return (int32)hasher(m_impl);
 	}
 
 	std::ostream& Name::Write(std::ostream& archiver) const

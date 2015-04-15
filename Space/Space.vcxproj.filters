@@ -144,9 +144,6 @@
     <ClInclude Include="..\Public\ShaderResourcePool.hpp">
       <Filter>Public\RenderSystem</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Renderable.hpp">
-      <Filter>Public</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\ShaderCommon.hpp">
       <Filter>Public\RenderSystem</Filter>
     </ClInclude>
@@ -158,6 +155,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\Win32Window.hpp">
       <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Renderable.hpp">
+      <Filter>Public\RenderSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Math.hpp">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D11InputLayout.hpp">
+      <Filter>Public\RenderSystem\D3D11</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -250,6 +256,16 @@
     </ClCompile>
     <ClCompile Include="Win32Window.cpp">
       <Filter>Private\Global\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderable.cpp" />
+    <ClCompile Include="InputLayout.cpp">
+      <Filter>Private\RenderSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Space.cpp">
+      <Filter>Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

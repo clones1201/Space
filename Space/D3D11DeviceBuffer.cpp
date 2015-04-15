@@ -11,7 +11,7 @@ namespace Space
 
 		D3D11Device& mDevice;
 	public:
-		D3D11DeviceBufferImpl(D3D11Device& device, BufferType type, ResourceUsage usage, byte const* initialData, size_t lengthInBytes)
+		D3D11DeviceBufferImpl(D3D11Device& device, BufferType type, ResourceUsage usage, byte const* initialData, uint32 lengthInBytes)
 			:mDevice(device), D3D11DeviceBuffer(type,usage,lengthInBytes)
 		{
 			D3D11_BUFFER_DESC desc;
@@ -79,7 +79,7 @@ namespace Space
 		}		 
 	};
 
-	D3D11DeviceBuffer* D3D11DeviceBuffer::Create(D3D11Device& device, BufferType type, ResourceUsage usage, byte const* initialData, size_t lengthInBytes)
+	D3D11DeviceBuffer* D3D11DeviceBuffer::Create(D3D11Device& device, BufferType type, ResourceUsage usage, byte const* initialData, uint32 lengthInBytes)
 	{
 		try
 		{

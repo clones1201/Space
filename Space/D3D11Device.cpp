@@ -64,7 +64,7 @@ namespace Space
 					pDevice = nullptr;
 					pDeviceContext = nullptr;
 					hr = D3D11CreateDevice(
-						pAdapters.at(i),
+						nullptr,//pAdapters.at(i),
 						m_DriverType,
 						NULL,
 						createDeviceFlags,

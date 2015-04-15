@@ -3,6 +3,7 @@
 
 #include "Prerequisites.hpp"
 #include "Basic.hpp"
+#include "Window.hpp"
 
 namespace Space
 {

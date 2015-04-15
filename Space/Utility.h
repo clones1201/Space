@@ -1,13 +1,7 @@
 #ifndef __D3DCORE_UTILITY_H__
 #define __D3DCORE_UTILITY_H__
 
-#include "Prerequisites.hpp"
-
-// libarchive
-// Multi - format archive and compression library
-// http://www.libarchive.org/
-//#include "archive.h"
-//#include "archive_entry.h"
+#include "Prerequisites.hpp" 
 
 namespace Space
 {
@@ -18,8 +12,8 @@ namespace Space
 	std::string wstr2str(const std::wstring &in);
 	std::string wstr2str(const std::string &in);
 
-	int32 GetVarArgsW(wchar_t* dest, size_t size, const wchar_t* fmt, va_list args);
-	int32 GetVarArgsA(char* dest, size_t size, const char* fmt, va_list args);
+	int32 GetVarArgsW(wchar_t* dest, uint32 size, const wchar_t* fmt, va_list args);
+	int32 GetVarArgsA(char* dest, uint32 size, const char* fmt, va_list args);
 
 #if (defined _UNICODE) || (defined UNICODE)
 #define GetVarArgs GetVarArgsW
@@ -87,6 +81,7 @@ namespace Space
 	int32 Alignment(int32 n);
 
 	int32 GetFormatSize(DataFormat format);
+	int32 GetElementSize(VertexElemType type);
 }
 
 

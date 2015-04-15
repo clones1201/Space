@@ -1,6 +1,5 @@
 #include "Log.h"
 #include "Utility.h"
-#include "Window.hpp"
 #include "Win32Window.hpp"
 
 namespace Space
@@ -10,7 +9,7 @@ namespace Space
 		:Window(name, width, height, fullscreen)
 	{
 		m_hInstance = (HINSTANCE)GetModuleHandle(NULL);
-
+		 
 		// Register class
 		WNDCLASSEX wcex;
 		wcex.cbSize = sizeof(WNDCLASSEX);

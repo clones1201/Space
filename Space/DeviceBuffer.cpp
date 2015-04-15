@@ -26,7 +26,7 @@ namespace Space
 		return m_Type;
 	}
 
-	DeviceBuffer* DeviceBuffer::Create(RenderSystem* pRenderSys, BufferType type, ResourceUsage usage, byte const* initialData, size_t lengthInBytes)
+	DeviceBuffer* DeviceBuffer::Create(RenderSystem* pRenderSys, BufferType type, ResourceUsage usage, byte const* initialData, uint32 lengthInBytes)
 	{
 		try
 		{
@@ -39,7 +39,7 @@ namespace Space
 		}
 	}
 
-	VertexBuffer* VertexBuffer::Create(RenderSystem* pRenderSys, byte const* initialData, size_t lengthInBytes)
+	VertexBuffer* VertexBuffer::Create(RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes)
 	{
 		try
 		{
@@ -64,7 +64,7 @@ namespace Space
 		return m_pBuffer->Update(startOffset, lengthInBytes, pData);
 	}
 
-	IndexBuffer* IndexBuffer::Create(RenderSystem* pRenderSys, byte const* initialData, size_t lengthInBytes)
+	IndexBuffer* IndexBuffer::Create(RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes)
 	{
 		try
 		{
@@ -89,7 +89,7 @@ namespace Space
 		return m_pBuffer->Update(startOffset, lengthInBytes, pData);
 	}
 	
-	ConstantBuffer* ConstantBuffer::Create(RenderSystem* pRenderSys, byte const* initialData, size_t lengthInBytes)
+	ConstantBuffer* ConstantBuffer::Create(RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes)
 	{
 		try
 		{
@@ -127,7 +127,7 @@ namespace Space
 		return false;
 	}
 
-	TextureBuffer* TextureBuffer::Create(RenderSystem* pRenderSys, byte const* initialData, size_t lengthInBytes)
+	TextureBuffer* TextureBuffer::Create(RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes)
 	{
 		try
 		{

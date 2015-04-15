@@ -2,6 +2,7 @@
 #define __SPACE_D3D11_RENDERTARGET_HPP__
 
 #include "Prerequisites.hpp"
+#include "Basic.hpp"
 #include "RenderTarget.hpp"
 #include "D3D11Prerequisites.hpp"
 #include "D3D11RenderSystem.hpp"

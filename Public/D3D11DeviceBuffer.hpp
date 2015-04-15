@@ -15,7 +15,7 @@ namespace Space
 	protected:
 		D3D11DeviceBuffer(BufferType type, ResourceUsage usage, uint32 lengthInBytes);
 	public:
-		static D3D11DeviceBuffer* Create(D3D11Device& device, BufferType type, ResourceUsage usage, byte const* initialData, size_t lengthInBytes);
+		static D3D11DeviceBuffer* Create(D3D11Device& device, BufferType type, ResourceUsage usage, byte const* initialData, uint32 lengthInBytes);
 		
 		virtual ID3D11Buffer* GetRawBuffer() const = 0;
 

@@ -3,7 +3,6 @@
 
 #include "Prerequisites.hpp"
 #include "Basic.hpp"
-
 #include "SharedUtility.hpp"
 
 namespace Space

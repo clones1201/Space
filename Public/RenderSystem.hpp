@@ -2,7 +2,7 @@
 #define __SPACE_RENDERSYSTEM_HPP__
 
 #include "Prerequisites.hpp"
-#include "Basic.hpp" 
+#include "Basic.hpp"
 
 namespace Space
 {
@@ -15,7 +15,7 @@ namespace Space
 
 	public:
 		virtual RenderWindow* CreateRenderWindow(std::string const& name, int32 width, int32 height, bool isFullScreen) = 0;
-		virtual DeviceBuffer* CreateBuffer(BufferType type, ResourceUsage usage, byte const* initialData, size_t lengthInBytes) = 0;
+		virtual DeviceBuffer* CreateBuffer(BufferType type, ResourceUsage usage, byte const* initialData, uint32 lengthInBytes) = 0;
 
 		virtual DeviceTexture1D* CreateTexture1D(int32 X, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, byte const* initialData) = 0;
 		virtual DeviceTexture1D* CreateTexture1DArray(int32 X, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, int32 arraySize, byte const* initialData) = 0;

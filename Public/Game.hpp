@@ -2,7 +2,6 @@
 #define __SPACE_GAME_HPP__
 
 #include "Prerequisites.hpp"
-#include "Basic.hpp"
 
 namespace Space
 {
