@@ -8,11 +8,7 @@ namespace Space
 {
 	class RenderTarget : virtual public Interface
 	{
-	public:
-		virtual bool Activate(DepthStencilView* pDepthStencil) = 0;
-		virtual void Deactivate() = 0;
-		virtual void Clear(float clearColor[4]) = 0;
-		
+	public:		
 		virtual ~RenderTarget();
 
 	protected:

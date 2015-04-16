@@ -23,6 +23,11 @@ namespace Space
 	D3D11_BIND_FLAG GetD3D11BindFlag(ResourceBindFlag flags);
 	
 	ResourceBindFlag GetBindFlag(UINT flags);
+
+	extern DXGI_FORMAT g_ElemDXGIFormatTable[];
+
+#define GetElemDXGIFormat(type) g_ElemDXGIFormatTable[type];
+
 }
 
 #endif

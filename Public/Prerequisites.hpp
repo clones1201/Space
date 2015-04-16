@@ -214,10 +214,10 @@ namespace Space
 		ES_Unknown = 0,
 		ES_Position,
 		ES_Normal,
-		ES_Texcoord,
+		ES_TexCoord,
 		ES_Tangent,
 	}ElemSemantic;
-
+	
 	typedef enum _PrimitiveTopology
 	{
 		PT_Undefined,

@@ -1,8 +1,7 @@
 #ifndef __SPACE_D3D11PREREQUISITES_HPP__
 #define __SPACE_D3D11PREREQUISITES_HPP__
 
-#include <d3d11.h>
-#include <dxgi.h>
+#include <d3d11_2.h>
 #include <d3dcompiler.h>
 
 namespace Space

@@ -6,9 +6,13 @@ namespace Space
 	class D3D11Device::Impl 
 	{
 	private:
-		CComPtr<ID3D11Device> m_pDevice;
-		CComPtr<ID3D11DeviceContext> m_pImmediateContext;
-		CComPtr<IDXGIFactory> m_pDXGIFactory;
+		CComPtr<ID3D11Device> m_pDevice = nullptr;
+		CComPtr<ID3D11DeviceContext> m_pImmediateContext = nullptr;
+		CComPtr<IDXGIFactory> m_pDXGIFactory = nullptr;
+
+#ifdef _DEBUG
+		CComPtr<ID3D11Debug> m_pDebug = nullptr;
+#endif
 
 		D3D_DRIVER_TYPE m_DriverType = D3D_DRIVER_TYPE_UNKNOWN;
 		D3D_FEATURE_LEVEL m_FeatureLevel = D3D_FEATURE_LEVEL_11_0;
@@ -85,7 +89,7 @@ namespace Space
 			{
 				throw std::exception("D3D11CreateDevice failed");
 			}
-			if (m_FeatureLevel != D3D_FEATURE_LEVEL_11_0)
+			if (m_FeatureLevel != D3D_FEATURE_LEVEL_11_1)
 			{
 				throw std::exception("FeatureLevel Not Supported");
 			}
@@ -94,9 +98,20 @@ namespace Space
 			m_pDevice = pDevice;
 			m_pImmediateContext = pDeviceContext;
 
+#ifdef _DEBUG			
+			hr = m_pDevice->QueryInterface(__uuidof(ID3D11Device), (void**)&m_pDebug);
+			if (FAILED(hr))
+			{
+				throw std::exception("Not in debug mode");
+			}
+#endif
+
 		}
 		~Impl()
 		{
+#ifdef _DEBUG
+			m_pDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+#endif
 		}
 
 		ID3D11Device* Get() const

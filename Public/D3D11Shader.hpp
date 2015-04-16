@@ -13,7 +13,7 @@ namespace Space
 	class D3D11VertexShader : public VertexShader
 	{
 	public:
-		static D3D11VertexShader* LoadBinaryFromMemory(D3D11Device& pRenderSys, byte const* byteCodes, uint32 sizeInBytes);
+		static D3D11VertexShader* LoadBinaryFromMemory(D3D11Device& device, byte const* byteCodes, uint32 sizeInBytes);
 
 		virtual void SetConstantBuffers(std::vector<TypeTrait<ConstantBuffer>::Ptr>& vBuffers) = 0;
 		virtual void SetShaderResources(std::vector<TypeTrait<ShaderResource>::Ptr>& vResources) = 0;
@@ -30,7 +30,7 @@ namespace Space
 	class D3D11PixelShader : public PixelShader
 	{
 	public:
-		static D3D11PixelShader* LoadBinaryFromMemory(D3D11Device& pRenderSys, byte const* byteCodes, uint32 sizeInBytes);
+		static D3D11PixelShader* LoadBinaryFromMemory(D3D11Device& device, byte const* byteCodes, uint32 sizeInBytes);
 
 		virtual void SetConstantBuffers(std::vector<TypeTrait<ConstantBuffer>::Ptr>& vBuffers) = 0;
 		virtual void SetShaderResources(std::vector<TypeTrait<ShaderResource>::Ptr>& vResources) = 0;

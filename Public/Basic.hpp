@@ -42,6 +42,13 @@ namespace Space
 		virtual ~Interface();
 	};
 
+	class Archiveable 
+	{
+	public:
+		virtual ~Archiveable();
+		virtual std::ostream& Write(std::ostream& archiver) const = 0;
+		virtual std::istream& Read(std::istream& archiver) = 0;
+	};
 
 }
 

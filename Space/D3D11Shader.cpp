@@ -37,7 +37,8 @@ namespace Space
 
 		void D3D11VertexShader::Apply()
 		{
-
+			if (m_pShader != nullptr)
+				mDevice.GetImmediateContext()->VSSetShader(m_pShader, nullptr, 0);
 		}
 
 	};
@@ -94,7 +95,8 @@ namespace Space
 
 		void D3D11PixelShader::Apply()
 		{
-
+			if (m_pShader != nullptr)
+				mDevice.GetImmediateContext()->PSSetShader(m_pShader, nullptr, 0);
 		}
 
 	};

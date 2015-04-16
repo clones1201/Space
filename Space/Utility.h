@@ -82,6 +82,8 @@ namespace Space
 
 	int32 GetFormatSize(DataFormat format);
 	int32 GetElementSize(VertexElemType type);
+
+	char const* GetSemanticName(ElemSemantic semantic);
 }
 
 

@@ -9,8 +9,12 @@ namespace Space
 	class InputLayout
 	{
 	public:		
+		static InputLayout* Create(RenderSystem* pRenderSys);
+		virtual void Complete(byte const* pInputSignature, uint32 lengthInBytes) = 0;
+
 		bool AddElem(VertexElemType type, ElemSemantic semantic);
 		bool RemoveElem(int32 idx);
+		bool IsCompleted() const;
 
 		VertexElemType GetElemTypeByIndex(int32 idx) const;
 		ElemSemantic GetSemanticByIndex(int32 idx) const;
@@ -26,11 +30,13 @@ namespace Space
 		virtual ~InputLayout();
 	protected:
 		InputLayout();
+		void _Complete();
 
 		struct Description
 		{
 			VertexElemType type;
 			ElemSemantic semantic;
+			int32 semanticId;
 			int32 offset;
 		};
 		std::vector<Description> m_LayoutVector;
@@ -39,7 +45,9 @@ namespace Space
 		int32 m_NormalCount = 0;
 		int32 m_TangentCount = 0;
 
-		int32 m_SizeOfVertex;
+		int32 m_SizeOfVertex = 0;
+
+		bool m_IsCompleted = false;
 	};
 }
 

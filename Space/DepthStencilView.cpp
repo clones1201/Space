@@ -16,7 +16,7 @@ namespace Space
 		case DF_D32_FLOAT:
 			break;
 		}
-		pRenderSys->CreateDepthStencilView(pTexture);
+		return pRenderSys->CreateDepthStencilView(pTexture);
 	}
 
 	DepthStencilView::~DepthStencilView(){}

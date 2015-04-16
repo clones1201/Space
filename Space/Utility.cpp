@@ -91,7 +91,7 @@ namespace Space
 	{
 		return StringFormatW(TEXT("%f"), f);
 	}
-	
+
 	std::ostream& Write(std::ostream& archiver, std::string const& str)
 	{
 		std::string::size_type size = str.size();
@@ -199,63 +199,57 @@ namespace Space
 		case DF_D24_UNORM_S8_UINT:
 		case DF_D32_FLOAT:
 			return 4;
-		} 
+		}
 	}
+
+#define ElementSize(type) case VET_##type: return sizeof(type)
 
 	int32 GetElementSize(VertexElemType type)
 	{
 		switch (type)
 		{
-		case VET_Float1:
-			return sizeof(float);
-		case VET_Float2:
-			return sizeof(Float2);
-		case VET_Float3:
-			return sizeof(Float3);
-		case VET_Float4:
-			return sizeof(Float4);
-		case VET_Byte2:
-			return sizeof(Byte2);
-		case VET_Byte4:
-			return sizeof(Byte4);
-		case VET_ByteN2:
-			return sizeof(ByteN2);
-		case VET_ByteN4:
-			return sizeof(ByteN4);
-		case VET_UByte2:
-			return sizeof(UByte2);
-		case VET_UByte4:
-			return sizeof(UByte4);
-		case VET_UByteN2:
-			return sizeof(UByteN2);
-		case VET_UByteN4:
-			return sizeof(UByteN4);
-		case VET_UShort2:
-			return sizeof(UShort2);
-		case VET_UShort4:
-			return sizeof(UShort4);
-		case VET_UShortN2:		// 16 bit word normalized to (value/32767.0,value/32767.0,0,0,1)
-			return sizeof(UShortN2);
-		case VET_UShortN4:
-			return sizeof(UShortN4);
-		case VET_Short2:
-			return sizeof(Short2);
-		case VET_Short4:
-			return sizeof(Short4);
-		case VET_ShortN2:		// 16 bit word normalized to (value/32767.0,value/32767.0,0,0,1)
-			return sizeof(ShortN2);
-		case VET_ShortN4:
-			return sizeof(ShortN4);
-		case VET_Half2:
-			return sizeof(Half2);
-		case VET_Half4:
-			return sizeof(Half4);
-		case VET_Color:
-			return sizeof(Color);	
+			ElementSize(Float1);
+			ElementSize(Float2);
+			ElementSize(Float3);
+			ElementSize(Float4);
+			ElementSize(Byte2);
+			ElementSize(Byte4);
+			ElementSize(ByteN2);
+			ElementSize(ByteN4);
+			ElementSize(UByte2);
+			ElementSize(UByte4);
+			ElementSize(UByteN2);
+			ElementSize(UByteN4);
+			ElementSize(UShort2);
+			ElementSize(UShort4);
+			ElementSize(UShortN2);
+			ElementSize(UShortN4);
+			ElementSize(Short2);
+			ElementSize(Short4);
+			ElementSize(ShortN2);
+			ElementSize(ShortN4);
+			ElementSize(Half2);
+			ElementSize(Half4);
+			ElementSize(Color);
 		case VET_None:
 		case VET_MAX:
 		default:
 			return 0;
 		}
+	}
+#undef ElementSize
+
+	static char const* g_SemanticNames[] =
+	{
+		"UNKNOWN",
+		"POSITION",
+		"NORMAL",
+		"TEXCOORD",
+		"TANGENT"
+	};
+
+	char const* GetSemanticName(ElemSemantic semantic)
+	{
+		return g_SemanticNames[(int32)semantic];
 	}
 }

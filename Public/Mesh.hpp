@@ -10,14 +10,15 @@ namespace Space
 	class MeshPart : public Uncopyable
 	{
 	public:
-
 	private:
 		TypeTrait<VertexBuffer>::Ptr m_pVertexBuffer;
 		TypeTrait<IndexBuffer>::Ptr m_pIndexBuffer;
 
 		TypeTrait<InputLayout>::Ptr m_pInputLayout;
 
+		InputLayout* GetInputLayout();
 
+		friend class Mesh;
 	};
 
 	class Mesh : public Uncopyable
@@ -31,6 +32,9 @@ namespace Space
 			RenderSystem* pRenderSys,
 			std::string const& filename
 			);
+
+		MeshPart* CreatePart();
+		void RemovePart(MeshPart* pPart);
 	protected:
 		
 	};

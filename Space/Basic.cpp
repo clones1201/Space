@@ -11,4 +11,6 @@ namespace Space
 
 	Interface::Interface(){}
 	Interface::~Interface(){}
+
+	Archiveable::~Archiveable(){}
 }

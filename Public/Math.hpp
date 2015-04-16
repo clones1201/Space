@@ -6,13 +6,16 @@
 #include <DirectXColors.h>
 #include <DirectXCollision.h>
 #include <DirectXPackedVector.h>
-#endif
 
 using namespace DirectX;
-using namespace DirectX::PackedVector;
+using namespace DirectX::PackedVector; 
+#endif
 
 namespace Space
 {
+
+#if (SPACE_PLATFORM == SPACE_WIN32)
+	typedef float Float1;
 	typedef DirectX::XMFLOAT2 Float2;
 	typedef DirectX::XMFLOAT3 Float3;
 	typedef DirectX::XMFLOAT4 Float4;
@@ -626,6 +629,8 @@ namespace Space
 #define StoreUShortN4 XMStoreUShortN4 
 #define StoreXDec4 XMStoreXDec4 
 #define StoreXDecN4 XMStoreXDecN4 
+
+#endif
 
 }
 

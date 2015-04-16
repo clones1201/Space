@@ -6,19 +6,20 @@ namespace Space
 {
 	bool InputLayout::AddElem(VertexElemType type, ElemSemantic semantic)
 	{
+		int32 idx = 0;
 		switch (semantic)
 		{
 		case ES_Position:
-			m_PositionCount += 1;
+			idx = m_PositionCount++;
 			break;
 		case ES_Normal:
-			m_NormalCount += 1;
+			idx = m_NormalCount++;
 			break;
-		case ES_Texcoord:
-			m_TexCoordCount += 1;
+		case ES_TexCoord:
+			idx = m_TexCoordCount++;
 			break;
 		case ES_Tangent:
-			m_TangentCount += 1;
+			idx = m_TangentCount++;
 			break;
 		case ES_Unknown:
 		default:
@@ -26,12 +27,15 @@ namespace Space
 		}
 		int32 offset = m_SizeOfVertex;
 		m_SizeOfVertex += GetElementSize(type);
-		m_LayoutVector.push_back(Description{ type, semantic, offset });
+		m_LayoutVector.push_back(Description{ type, semantic, idx, offset });
+		m_IsCompleted = false;
+		return false;
 	}
 	bool InputLayout::RemoveElem(int32 idx)
 	{
 		auto target = m_LayoutVector.begin();
-		switch (target->type)
+		std::advance(target, idx);
+		switch (target->semantic)
 		{
 		case ES_Position:
 			m_PositionCount -= 1;
@@ -39,7 +43,7 @@ namespace Space
 		case ES_Normal:
 			m_NormalCount -= 1;
 			break;
-		case ES_Texcoord:
+		case ES_TexCoord:
 			m_TexCoordCount -= 1;
 			break;
 		case ES_Tangent:
@@ -49,8 +53,14 @@ namespace Space
 		default:
 			return false;
 		}
-		std::advance(target, idx);
+		for (auto iter = target; iter != m_LayoutVector.end(); ++iter)
+		{
+			if (iter->semantic = target->semantic)
+				iter->semanticId--;
+		}
 		m_LayoutVector.erase(target);
+		m_IsCompleted = false;
+		return true;
 	}
 
 	VertexElemType InputLayout::GetElemTypeByIndex(int32 idx) const
@@ -86,6 +96,16 @@ namespace Space
 	int32 InputLayout::GetNormalCount() const
 	{
 		return m_NormalCount;
+	}
+
+	void InputLayout::_Complete()
+	{
+		m_IsCompleted = true;
+	}
+	
+	bool InputLayout::IsCompleted() const
+	{
+		return m_IsCompleted;
 	}
 
 	InputLayout::InputLayout()

@@ -162,7 +162,10 @@
     <ClInclude Include="..\Public\Math.hpp">
       <Filter>Public</Filter>
     </ClInclude>
-    <ClInclude Include="D3D11InputLayout.hpp">
+    <ClInclude Include="..\Public\Effects.hpp">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\D3D11InputLayout.hpp">
       <Filter>Public\RenderSystem\D3D11</Filter>
     </ClInclude>
   </ItemGroup>
@@ -260,12 +263,17 @@
     <ClCompile Include="Mesh.cpp">
       <Filter>Private</Filter>
     </ClCompile>
-    <ClCompile Include="Renderable.cpp" />
     <ClCompile Include="InputLayout.cpp">
       <Filter>Private\RenderSystem</Filter>
     </ClCompile>
     <ClCompile Include="Space.cpp">
       <Filter>Private</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D11InputLayout.cpp">
+      <Filter>Private\RenderSystem\D3D11\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderable.cpp">
+      <Filter>Private\RenderSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -275,8 +283,5 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
-    <None Include="..\Shaders\SampleShader.ssf">
-      <Filter>Private\Shaders</Filter>
-    </None>
   </ItemGroup>
 </Project>
