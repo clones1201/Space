@@ -1,17 +1,38 @@
 #include "Log.h"
-#include "Utility.h"
+#include "Utility.hpp"
 
 #include "DeviceBuffer.hpp"
-#include "Mesh.hpp"
 #include "InputLayout.hpp"
-#include ""
+#include "Mesh.hpp"
 
-#include "assimp\cimport.h"
-#include "assimp\scene.h"
+#include "assimp/cimport.h"
+#include "assimp/scene.h"
 #include "assimp/postprocess.h"
 
 namespace Space
 {
+	MeshPart* Mesh::CreatePart()
+	{
+		auto newPart = TypeTrait<MeshPart>::Ptr(new MeshPart());
+		m_PartCollection.push_back(newPart);
+		return newPart.get();
+	}
+
+	void Mesh::RemovePart(MeshPart* part)
+	{
+		for (
+			auto iter = m_PartCollection.begin(); 
+			iter != m_PartCollection.end();
+			++iter)
+		{
+			if (iter->get() == part)
+			{
+				m_PartCollection.erase(iter);
+				break;
+			}
+		}
+	}
+
 	Mesh* Mesh::CreateFromFBX(RenderSystem* pRenderSys, std::wstring const& filename)
 	{
 		return CreateFromFBX(pRenderSys,wstr2str(filename));
@@ -29,7 +50,7 @@ namespace Space
 
 		Mesh* ret = new Mesh();
 
-		for (int32 meshIndex = 0; meshIndex < scene->mNumMeshes; ++i)
+		for (uint32 meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex)
 		{
 			MeshPart* part = ret->CreatePart();
 			aiMesh* pAiPart = scene->mMeshes[meshIndex];
@@ -45,49 +66,53 @@ namespace Space
 				|| !pAiPart->HasTangentsAndBitangents())
 			{
 				ret->RemovePart(part);
+				continue;
 			};
 						
 			min = Float3((float*)&(pAiPart->mVertices[0]));
 			max = Float3((float*)&(pAiPart->mVertices[0]));
+						
+			part->m_pInputLayout.reset(InputLayout::Create(pRenderSys));
+			auto layout = part->m_pInputLayout;
 
-			InputLayout* layout = part->GetInputLayout();
-			layout-
+			layout->AddElem(VET_Float3, ES_Position);
+			layout->AddElem(VET_Float3, ES_Normal);
+			layout->AddElem(VET_Float3, ES_Tangent);
+			for (int32 i = 0; i < numUVChannels; ++i)
+				layout->AddElem(VET_Float2, ES_TexCoord);
+			
+			uint32 stride = layout->GetVertexSize();
+			byte* vertices = new byte[stride * numVertices];
+			uint16* indices = new uint16[3 * numFaces];
 
-
-			Vertex* vertices = new Vertex[numVertices];
-			uint32* indices = new uint32[3 * numFaces];
-
-			for (uint64 i = 0; i < numVertices; ++i)
+#define Get(V,i,stride,offset) (V[stride * i] + offset)
+			for (int32 i = 0; i < numVertices; ++i)
 			{
-				vertices[i].Position = float3((float*)&(scene->mMeshes[meshIndex]->mVertices[i]));
-				vertices[i].Normal = float3((float*)&(scene->mMeshes[meshIndex]->mNormals[i]));
-				vertices[i].Tangent = float3((float*)&(scene->mMeshes[meshIndex]->mTangents[i]));
-				vertices[i].TexCoord = float2((float*)&(scene->mMeshes[meshIndex]->mTextureCoords[0][i]));
-				if (scene->mMeshes[meshIndex]->mTextureCoords[1])
+				*(Float3*)Get(vertices, i, stride, layout->GetOffsetByIndex(0)) = Float3((float*)&(pAiPart->mVertices[i]));
+				*(Float3*)Get(vertices, i, stride, layout->GetOffsetByIndex(1)) = Float3((float*)&(pAiPart->mTangents[i]));
+				*(Float3*)Get(vertices, i, stride, layout->GetOffsetByIndex(2)) = Float3((float*)&(pAiPart->mNormals[i]));
+				
+				for (int32 j = 0; j < numUVChannels; ++j)
 				{
-					vertices[i].TexCoord2 = float2((float*)&(scene->mMeshes[meshIndex]->mTextureCoords[1][i]));
+					aiVector3D texcoord = pAiPart->mTextureCoords[j][i];
+					*(Float2*)Get(vertices, i, stride, layout->GetOffsetByIndex(3)) = Float2((float*)&(pAiPart->mTextureCoords[j][i]));
 				}
-				else
-				{
-					vertices[i].TexCoord2 = float2(0, 0);
-				}
-				vertices[i].Color = float3(0, 0, 0);
 
-				float t = dot(cross(scene->mMeshes[meshIndex]->mNormals[i], scene->mMeshes[meshIndex]->mTangents[i]), scene->mMeshes[meshIndex]->mBitangents[i]);
 #if	UV_MIRROR
+				float t = dot(cross(scene->mMeshes[meshIndex]->mNormals[i], scene->mMeshes[meshIndex]->mTangents[i]), scene->mMeshes[meshIndex]->mBitangents[i]);
 				if (t < 0)
 					vertices[i].Tangent = float3(-vertices[i].Tangent.r, vertices[i].Tangent.g, vertices[i].Tangent.b);
 #endif
 
-				min.r = min(min.r, vertices[i].Position.r);
-				min.g = min(min.g, vertices[i].Position.g);
-				min.b = min(min.b, vertices[i].Position.b);
-				max.r = max(max.r, vertices[i].Position.r);
-				max.g = max(max.g, vertices[i].Position.g);
-				max.b = max(max.b, vertices[i].Position.b);
+				min.x = std::min(min.x, pAiPart->mVertices[i].x);
+				min.y = std::min(min.y, pAiPart->mVertices[i].y);
+				min.z = std::min(min.z, pAiPart->mVertices[i].z);
+				max.x = std::max(max.x, pAiPart->mVertices[i].x);
+				max.y = std::max(max.y, pAiPart->mVertices[i].y);
+				max.z = std::max(max.z, pAiPart->mVertices[i].z);
 			}
-			size = max(max.r - min.r, max(max.g - min.g, max.b - min.b));
-			center = float3((min.r + max.r) / 2.0f, (min.g + max.g) / 2.0f, (min.b + max.b) / 2.0f);
+			part->m_Size = std::max(max.x - min.x, std::max(max.y - min.y, max.z - min.z));
+			part->m_Center = Float3((min.x + max.x) / 2.0f, (min.y + max.y) / 2.0f, (min.z + max.z) / 2.0f);
 
 			for (long long i = 0; i < numFaces; ++i)
 			{
@@ -96,19 +121,15 @@ namespace Space
 				indices[3 * i + 1] = face->mIndices[1];
 				indices[3 * i + 2] = face->mIndices[2];
 			}
+		 
+			part->m_pVertexBuffer.reset(VertexBuffer::Create(pRenderSys, vertices, layout->GetVertexSize() * numVertices));
+			part->m_pIndexBuffer.reset(IndexBuffer::Create(pRenderSys, (byte*)indices, sizeof(uint16) * 3 * numFaces));
+
+			delete vertices;
+			delete indices;
 		}
 		 
-		VertexBuffer::Create(pRenderSys, vertices, sizeof(Vertex) * numVertices);
-		IndexBuffer::Create(pRenderSys, indices, sizeof(uint16) * 3 * numFaces);
-		 
-		//delete scene;
-		return hr;
-
-	failed:
-		aiReleaseImport(scene);
-		delete vertices;
-		delete indices;
-		return nullptr;
+		aiReleaseImport(scene); 
 	}
 	
 

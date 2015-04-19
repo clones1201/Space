@@ -26,7 +26,7 @@ namespace Space
 		virtual bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData) = 0;
 	}; 
 
-	class VertexBuffer
+	class VertexBuffer : public Uncopyable
 	{
 	protected:
 		std::unique_ptr<DeviceBuffer> m_pBuffer = nullptr;
@@ -38,54 +38,69 @@ namespace Space
 		static VertexBuffer* Create(RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes);
 
 		bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData);
+
+		DeviceBuffer* GetBuffer();
 	};
 
-	class IndexBuffer
+	class IndexBuffer : public Uncopyable
 	{
-	protected:
-		std::unique_ptr<DeviceBuffer> m_pBuffer = nullptr;
-
-		IndexBuffer(DeviceBuffer* pBuffer);
 	public:
 		virtual ~IndexBuffer();
 
 		static IndexBuffer* Create(RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes);
 
 		bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData);
+
+		DeviceBuffer* GetBuffer();
+	protected:
+		IndexBuffer(DeviceBuffer* pBuffer);
+
+		std::unique_ptr<DeviceBuffer> m_pBuffer = nullptr;
 	};
 
-	class ConstantBuffer
+	class ConstantBuffer : public Uncopyable
 	{ 
-	protected:
-		std::unique_ptr<DeviceBuffer> m_pBuffer = nullptr;
-		byte *m_pShadowData = nullptr;
-		uint32 m_Size;
-		
-		ConstantBuffer(DeviceBuffer* pBuffer);
 	public:
 		virtual ~ConstantBuffer();
 
 		static ConstantBuffer* Create(RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes);
 
 		void UpdateToDevice();
-		bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData);
+		bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData);		
+		byte const* GetBufferPointer() const;
+
+		DeviceBuffer* GetBuffer();
+	protected:
+		ConstantBuffer(DeviceBuffer* pBuffer);
+		
+		std::unique_ptr<DeviceBuffer> m_pBuffer = nullptr;
+		byte *m_pShadowData = nullptr;
+
+		friend class ShaderVariableAccessor;
+		friend class ConstantBufferAccessor;
 	};
 
-	class TextureBuffer
+	class TextureBuffer : public Uncopyable
 	{
-	protected:
-		std::unique_ptr<DeviceBuffer> m_pBuffer = nullptr;
-
-		TextureBuffer(DeviceBuffer* pBuffer);
 	public:
 		virtual ~TextureBuffer();
 
-		static TextureBuffer* Create(RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes);
+		static TextureBuffer* Create(
+			RenderSystem* pRenderSys, byte const* initialData,
+			uint32 lengthInBytes, uint32 sizeOfElem, uint32 numElements);
 
-		bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData);
+		uint32 GetSizeOfElement() const;
+		uint32 GetElementCount() const;
+		bool Update(uint32 index, uint32 lengthInBytes, byte const* pData);
+		
+		DeviceBuffer* GetBuffer();	
+	protected:
+		TextureBuffer(DeviceBuffer* pBuffer,
+			uint32 sizeOfElem, uint32 numElements);
 
-		ShaderResource* GetShaderResource();
-
+		std::unique_ptr<DeviceBuffer> m_pBuffer = nullptr;
+		uint32 m_SizeOfElem;
+		uint32 m_NumElements;
 	};
 }
 

@@ -1,6 +1,5 @@
 #include "Log.h"
-#include "Utility.h"
-#include "SharedUtility.hpp"
+#include "Utility.hpp"
 #include "RenderSystem.hpp"
 #include "RenderTarget.hpp"
 #include "DeviceBuffer.hpp"

@@ -89,7 +89,7 @@ namespace Space
 			{
 				throw std::exception("D3D11CreateDevice failed");
 			}
-			if (m_FeatureLevel != D3D_FEATURE_LEVEL_11_1)
+			if (m_FeatureLevel != D3D_FEATURE_LEVEL_11_0)
 			{
 				throw std::exception("FeatureLevel Not Supported");
 			}

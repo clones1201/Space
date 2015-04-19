@@ -1,0 +1,92 @@
+{
+    "Material": {
+        "Name": "default",
+        "ConstantBuffer": [
+            {
+                "Name": "UpdateEveryFrame",
+                "Property": [
+                    { "Type": "Float4x4", "Name": "mView" },
+                    { "Type": "Float4x4", "Name": "mWorld" },
+                    { "Type": "Float4x4", "Name": "mProject" }
+                ]
+            }
+        ],
+        "Texture2D": [
+            {
+                "Name": "texture1",
+                "Filename": "T_Bricks_D.dds"
+            },
+            {
+                "Name": "texture2",
+                "Filename": "T_Bricks_N.dds"
+            }
+        ],
+        "Sampler": [
+
+        ],
+        "StaticParameters": [
+            {
+                "Name": "TextureSwitch",
+                "Type": "Switch",
+                "DefaultValue": "True"
+            }
+        ],
+        "UniformExpression": [
+            {
+                "Type": "Scaler",
+                "Value": "SV_Time"
+            },
+            {
+                "Type": "Vector",
+                "Value": {
+                    "Type": "Add",
+                    "Parameters": [
+                        {
+                            "Type": "Constant4",
+                            "Value": "1.3,2.5,3.6,4.1"
+                        },
+                        {
+                            "Type": "Constant4",
+                            "Value": "4,3,2,1"
+                        }
+                    ]
+                }
+            }
+        ],
+        "Shaders": [
+            {
+                "Name": "0",
+                "SourceFile": "0.hlsl",
+                "Target": "SM_5_0",
+                "VertexShader": "VS",
+                "PixelShader": "PS"
+            },
+            {
+                "Name": "1",
+                "SourceFile": "1.hlsl",
+                "Target": "SM_5_0",
+                "VertexShader": "VS",
+                "PixelShader": "PS"
+            }
+        ],
+
+        "ShaderMap": [
+            {
+                "ParameterSet": {
+                    "Value": [
+                        { "TextureSwitch": "True" }
+                    ]
+                },
+                "Shader": "0"
+            },
+            {
+                "ParameterSet": {
+                    "Value": [
+                        { "TextureSwitch": "False" }
+                    ]
+                },
+                "Shader": "1"
+            }
+        ]
+    }
+}

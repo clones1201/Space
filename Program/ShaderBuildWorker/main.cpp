@@ -1,8 +1,11 @@
+#define NOMINMAX
+
 #include <fstream>
 #include <string>
 #include <iostream>
 #include <locale>
 #include <codecvt>
+#include <algorithm>
 
 #include <atlbase.h>
 
@@ -15,15 +18,19 @@
 
 using namespace std;
 using namespace rapidjson;
- 
+
 int main(int argc, char*argv[])
 {
 	try
 	{
-		std::string path = argv[1];
-		std::string filename = std::string(argv[2]);
+		std::string fullpath = argv[1];
 
-		std::fstream tempFile((path + "/" + filename).c_str(), std::ios_base::in);
+		auto sep1 = fullpath.find_last_of('/');
+		auto sep2 = fullpath.find_last_of('\\');
+		auto sep = std::max(sep1 != std::string::npos ? sep1 : 0, sep2 != std::string::npos ? sep2 : 0);
+		std::string path = fullpath.substr(0,sep);
+
+		std::fstream tempFile(fullpath.c_str(), std::ios_base::in);
 		if (!tempFile.is_open())
 		{
 			throw exception("Missing Template File");
@@ -76,7 +83,7 @@ int main(int argc, char*argv[])
 				std::ios_base::in);
 			if (!source.is_open())
 			{
-				throw exception("Missing Template File");
+				throw exception("Missing Source File");
 			}
 			std::istreambuf_iterator<char> beg(source), end;
 			std::string sourceCode(beg, end);
@@ -118,9 +125,9 @@ int main(int argc, char*argv[])
 			if (pPSBlob != nullptr && pVSBlob != nullptr)
 			{
 				wstring_convert<std::codecvt_utf8<wchar_t>,wchar_t> converter;
-				wstring wpath = converter.from_bytes(path + SourceFileName.GetString());
-				D3DWriteBlobToFile(pVSBlob, (wpath + L"_vs.cso").c_str(), true);
-				D3DWriteBlobToFile(pPSBlob, (wpath + L"_ps.cso").c_str(), true);
+				wstring wpath = converter.from_bytes(path + '/' + SourceFileName.GetString());
+				D3DWriteBlobToFile(pVSBlob, (wpath + L".vs.cso").c_str(), true);
+				D3DWriteBlobToFile(pPSBlob, (wpath + L".ps.cso").c_str(), true);
 			}
 		}
 	}

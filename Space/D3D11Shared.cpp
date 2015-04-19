@@ -1,4 +1,3 @@
-#include "Prerequisites.hpp"
 #include "D3D11Shared.hpp"
 
 namespace Space
@@ -109,14 +108,7 @@ namespace Space
 
 		DataFormat GetByDXGIFormat(DXGI_FORMAT format)
 		{
-			try
-			{
-				return DXGIFormatTable.at(format);
-			}
-			catch (std::out_of_range)
-			{
-				return DF_UNKNOWN;
-			}
+			TRY_CATCH_OUT_OF_RANGE(return DXGIFormatTable.at(format),return DF_UNKNOWN);
 		}
 	};
 

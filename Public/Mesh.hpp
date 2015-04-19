@@ -10,14 +10,17 @@ namespace Space
 	class MeshPart : public Uncopyable
 	{
 	public:
+
+
 	private:
 		TypeTrait<VertexBuffer>::Ptr m_pVertexBuffer;
 		TypeTrait<IndexBuffer>::Ptr m_pIndexBuffer;
 
 		TypeTrait<InputLayout>::Ptr m_pInputLayout;
-
-		InputLayout* GetInputLayout();
-
+		
+		float m_Size;
+		Float3 m_Center;
+		
 		friend class Mesh;
 	};
 
@@ -37,6 +40,7 @@ namespace Space
 		void RemovePart(MeshPart* pPart);
 	protected:
 		
+		std::list<TypeTrait<MeshPart>::Ptr> m_PartCollection;
 	};
 
 }

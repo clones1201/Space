@@ -3,7 +3,6 @@
 
 #include "Prerequisites.hpp"
 #include "Basic.hpp"
-
 #include "ShaderCommon.hpp"
 #include "ShaderReflection.hpp"
 
@@ -13,18 +12,17 @@ namespace Space
 	{  
 	public:
 		static VertexShader* LoadBinaryFromMemory(RenderSystem* pRenderSys, byte const* byteCodes, uint32 sizeInBytes);
+		byte const* GetByteCodes() const;
+		uint32 GetSizeInBytes() const;
 		
-		ShaderResourcePool* ResourcePool = nullptr;
-
-		std::vector<uint> ShaderResourceTable;
-		std::vector<uint> SamplerTable; 
-
 		virtual void Apply() = 0;
 
 		virtual ~VertexShader();
 	protected:		
 		VertexShader(); 
 
+		byte const* m_ByteCodes = nullptr;
+		uint32 m_SizeInBytes = 0;
 		bool m_IsBinaryAvailable; 
 	};
 
@@ -41,17 +39,17 @@ namespace Space
 	{
 	public:
 		static PixelShader* LoadBinaryFromMemory(RenderSystem* pRenderSys, byte const* byteCodes, uint32 sizeInBytes);
-
-		ShaderResourcePool* ResourcePool = nullptr;
-
-		std::vector<uint> ShaderResourceTable;
-		std::vector<uint> SamplerTable;
-
+		byte const* GetByteCodes() const;
+		uint32 GetSizeInBytes() const;
+		
 		virtual void Apply() = 0;
 
 		virtual ~PixelShader();
 	protected:
 		PixelShader();
+
+		byte const* m_ByteCodes = nullptr;
+		uint32 m_SizeInBytes = 0;
 	};
 
 
@@ -61,7 +59,8 @@ namespace Space
 		std::unique_ptr<VertexShader> m_pVS = nullptr;
 		std::unique_ptr<PixelShader> m_pPS = nullptr;
 		
-
+		std::unique_ptr<ShaderReflection> m_pVSReflect = nullptr;
+		std::unique_ptr<ShaderReflection> m_pPSReflect = nullptr;
 	public: 
 
 

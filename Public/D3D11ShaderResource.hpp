@@ -11,7 +11,8 @@ namespace Space
 	class D3D11ShaderResource : public ShaderResource
 	{
 	public:
-		static D3D11ShaderResource* Create(D3D11Device& device, ID3D11Resource* pResource);
+		static D3D11ShaderResource* Create(D3D11Device& device, DeviceTexture2D* pTexture);
+		static D3D11ShaderResource* Create(D3D11Device& device, TextureBuffer* pTBuffer);
 
 		virtual ID3D11ShaderResourceView* GetShaderResourceView() const = 0;
 

@@ -19,7 +19,7 @@ namespace Space
 			desc.ByteWidth = m_LengthInBytes;
 			desc.Usage = GetD3D11Usage(m_Usage);
 			desc.BindFlags = GetD3D11BufferBindFlags(type);
-
+			
 			D3D11_SUBRESOURCE_DATA data;
 			ZeroMemory(&data, sizeof(data));
 			data.pSysMem = initialData;
@@ -37,7 +37,14 @@ namespace Space
 
 		bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData)
 		{
-			bool isSuccess = false;;
+			if (pData == nullptr)
+				return false;
+
+			if (startOffset + lengthInBytes > m_LengthInBytes)
+				return false;
+
+			bool isSuccess = false;
+			HRESULT hr = S_OK;
 			switch (m_Usage)
 			{
 			case RU_Default:
@@ -57,13 +64,15 @@ namespace Space
 			case RU_Dynamic:
 			{
 				D3D11_MAPPED_SUBRESOURCE mapped;
-				mDevice.GetImmediateContext()->Map(m_pBuffer, 0, D3D11_MAP_WRITE, 0, &mapped );
+				hr = mDevice.GetImmediateContext()->Map(m_pBuffer, 0, D3D11_MAP_WRITE, 0, &mapped);
+				if (SUCCEEDED(hr))
+				{
+					auto error = memcpy_s((byte*)mapped.pData + startOffset, m_LengthInBytes, pData, lengthInBytes);
 
-				auto error = memcpy_s((byte*)mapped.pData + startOffset, m_LengthInBytes, pData, lengthInBytes);
+					if (error == 0) isSuccess = true;
 
-				if (error == 0) isSuccess = true;					 
-
-				mDevice.GetImmediateContext()->Unmap(m_pBuffer, 0);
+					mDevice.GetImmediateContext()->Unmap(m_pBuffer, 0);
+				}
 			}
 			break;
 			case RU_Immutable:

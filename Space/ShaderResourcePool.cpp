@@ -1,5 +1,5 @@
 #include "Log.h"
-#include "Utility.h"
+#include "Utility.hpp"
 #include "ShaderResourcePool.hpp"
 
 namespace Space

@@ -9,7 +9,7 @@ namespace Space
 {
 	struct StaticBoolParameter //: public Archiveable
 	{
-		Name parameterName;
+		Name ParamName;
 		bool value : 1;
 		StaticBoolParameter();
 		StaticBoolParameter(std::string const& name);
@@ -24,7 +24,7 @@ namespace Space
 
 	struct StaticComponentMaskParameter : public Archiveable
 	{
-		Name parameterName;
+		Name ParamName;
 		bool maskR : 1, maskG : 1, maskB : 1, maskA : 1;
 		StaticComponentMaskParameter();
 		StaticComponentMaskParameter(std::string const& name);

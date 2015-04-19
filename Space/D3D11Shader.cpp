@@ -1,6 +1,5 @@
 #include "Log.h"
-#include "Utility.h"
-#include "SharedUtility.hpp"
+#include "Utility.hpp"
 #include "D3D11Shader.hpp"
 #include "D3D11Device.hpp"
 
@@ -16,13 +15,25 @@ namespace Space
 		D3D11VertexShaderImpl(D3D11Device &device, byte const* byteCodes, uint32 sizeInBytes)
 			: mDevice(device){
 
+			m_SizeInBytes = sizeInBytes;
+			m_ByteCodes = new byte[sizeInBytes];
+
+			memcpy_s((void*)m_ByteCodes, m_SizeInBytes, byteCodes, sizeInBytes);
+
 			ID3D11VertexShader* pVS = nullptr;
-			HRESULT hr = mDevice->CreateVertexShader(byteCodes,sizeInBytes,nullptr,&pVS);
+			HRESULT hr = mDevice->CreateVertexShader(m_ByteCodes, m_SizeInBytes, nullptr, &pVS);
 			if (FAILED(hr))
 			{
 				throw std::exception("CreateVertexShader failed.");
 			}
 			m_pShader = pVS; 
+
+		}
+
+		~D3D11VertexShaderImpl()
+		{
+			if (m_ByteCodes != nullptr)
+				delete[] m_ByteCodes;
 
 		}
 
@@ -74,14 +85,24 @@ namespace Space
 		D3D11PixelShaderImpl(D3D11Device &device, byte const* byteCodes, uint32 sizeInBytes)
 			: mDevice(device){
 
-			ID3D11PixelShader* pVS = nullptr;
-			HRESULT hr = mDevice->CreatePixelShader(byteCodes, sizeInBytes, nullptr, &pVS);
+			m_SizeInBytes = sizeInBytes;
+			m_ByteCodes = new byte[sizeInBytes];
+
+			memcpy_s((void*)m_ByteCodes, m_SizeInBytes, byteCodes, sizeInBytes);
+
+			ID3D11PixelShader* pPS = nullptr;
+			HRESULT hr = mDevice->CreatePixelShader(m_ByteCodes, m_SizeInBytes, nullptr, &pPS);
 			if (FAILED(hr))
 			{
 				throw std::exception("CreatePixelShader failed.");
 			}
-			m_pShader = pVS;
+			m_pShader = pPS;
+		}
 
+		~D3D11PixelShaderImpl()
+		{
+			if (m_ByteCodes != nullptr)
+				delete[] m_ByteCodes;
 		}
 
 		void D3D11PixelShader::SetConstantBuffers(std::vector<TypeTrait<ConstantBuffer>::Ptr>& vBuffers)

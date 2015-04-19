@@ -1,5 +1,5 @@
 #include "Log.h"
-#include "Utility.h"
+#include "Utility.hpp"
 #include "D3D11Shared.hpp"
 #include "D3D11Device.hpp"
 #include "D3D11DeviceTexture.hpp"

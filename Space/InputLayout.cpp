@@ -1,6 +1,7 @@
 #include "Log.h"
-#include "Utility.h"
+#include "Utility.hpp"
 #include "InputLayout.hpp"
+#include "RenderSystem.hpp"
 
 namespace Space
 {
@@ -81,6 +82,11 @@ namespace Space
 		return GetElementSize(m_LayoutVector.at(idx).type);
 	}
 
+	int32 InputLayout::GetVertexSize() const
+	{
+		return m_SizeOfVertex;
+	}
+
 	int32 InputLayout::GetElemCount() const
 	{
 		return m_LayoutVector.size();
@@ -114,5 +120,18 @@ namespace Space
 
 	InputLayout::~InputLayout()
 	{
+	}
+
+	InputLayout* InputLayout::Create(RenderSystem* pRenderSys)
+	{
+		try
+		{
+			return pRenderSys->CreateInputLayout();
+		}
+		catch (std::exception &e)
+		{
+			Log(e.what());
+			return nullptr;
+		}
 	}
 }

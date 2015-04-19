@@ -12,17 +12,7 @@ namespace Space
 		SS_GeometryShader = 1,
 		SS_PixelShader = 2,
 		SS_Num = 3
-	}ShaderStage;
-
-	struct ShaderVariableDesc
-	{
-		wchar_t const* name;
-		int32 size;
-		int32 offset;
-	};
-
-
-
+	}ShaderStage; 
 }
 
 #endif

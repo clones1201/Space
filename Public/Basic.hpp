@@ -19,13 +19,13 @@ namespace Space
 
 	template < typename _Type > class TypeTrait : public TypeTraitBase < _Type > {};
 
-	class Object
+	class SPACE_API Object
 	{
 	public:
 		virtual ~Object();
 	};
 
-	class Uncopyable{
+	class SPACE_API Uncopyable{
 	protected:
 		Uncopyable();
 		virtual ~Uncopyable();
@@ -34,7 +34,7 @@ namespace Space
 		Uncopyable& operator=(const Uncopyable&) = delete;
 	};
 
-	class Interface : private Uncopyable
+	class SPACE_API Interface : private Uncopyable
 	{
 	protected:
 		Interface(); 
@@ -42,13 +42,24 @@ namespace Space
 		virtual ~Interface();
 	};
 
-	class Archiveable 
+	class SPACE_API Archiveable
 	{
 	public:
 		virtual ~Archiveable();
 		virtual std::ostream& Write(std::ostream& archiver) const = 0;
 		virtual std::istream& Read(std::istream& archiver) = 0;
 	};
+
+#define TRY_CATCH_LOG(expression,result) try{\
+	expression; }\
+	catch(std::exception& e){\
+	Log(e.what());\
+	result;}
+
+#define TRY_CATCH_OUT_OF_RANGE(expression,result)  try{\
+	expression; }\
+	catch(std::out_of_range&){\
+	result;}
 
 }
 

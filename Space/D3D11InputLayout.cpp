@@ -1,5 +1,5 @@
 #include "Log.h"
-#include "Utility.h"
+#include "Utility.hpp"
 #include "D3D11Shared.hpp"
 #include "D3D11Device.hpp"
 #include "D3D11InputLayout.hpp"
@@ -52,5 +52,23 @@ namespace Space
 		}
 	};
 
+	D3D11InputLayout::D3D11InputLayout(D3D11Device& device)
+		:mDevice(device)
+	{}
 
+	D3D11InputLayout::~D3D11InputLayout()
+	{}
+
+	D3D11InputLayout* D3D11InputLayout::Create(D3D11Device& device)
+	{
+		try
+		{
+			return new D3D11InputLayoutImpl(device);
+		}
+		catch (std::exception &e)
+		{
+			Log(e.what());
+			return nullptr;
+		}
+	}
 }

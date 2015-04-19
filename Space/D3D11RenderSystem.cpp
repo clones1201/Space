@@ -8,6 +8,8 @@
 #include "D3D11RenderTarget.hpp"
 #include "D3D11RenderWindow.hpp"
 #include "D3D11Shader.hpp"
+#include "D3D11InputLayout.hpp"
+#include "D3D11ShaderResource.hpp"
 
 namespace Space
 {
@@ -41,7 +43,11 @@ namespace Space
 		virtual PixelShader* LoadPixelShaderFromMemory(byte const* byteCodes, uint32 sizeInBytes) throw();
 
 		virtual DepthStencilView* CreateDepthStencilView(DeviceTexture2D* pTexture) throw();
-		virtual RenderTarget* CreateRenderTarget(DeviceTexture2D* pTexture) throw();
+		virtual RenderTarget* CreateRenderTarget(DeviceTexture2D* pTexture) throw(); 
+		virtual ShaderResource* CreateShaderResource(DeviceTexture2D* pTexture);
+		virtual ShaderResource* CreateShaderResource(TextureBuffer* pTBuffer);
+
+		virtual InputLayout* CreateInputLayout() throw();
 	};
 
 	D3D11RenderSystem::D3D11RenderSystem()
@@ -85,51 +91,73 @@ namespace Space
 		return (D3D11Device*)&mDevice;
 	}
 
-	RenderWindow* D3D11RenderSystemImpl::CreateRenderWindow(const std::string& title, int32 width, int32 height, bool fullscreen)
+	RenderWindow* D3D11RenderSystemImpl::CreateRenderWindow(
+		const std::string& title, int32 width, int32 height, bool fullscreen)
 	{
 		return D3D11RenderWindow::Create(mDevice, title, width, height, fullscreen);
 	}
-	DeviceBuffer* D3D11RenderSystemImpl::CreateBuffer(BufferType type, ResourceUsage usage, byte const* initialData, uint32 lengthInBytes)
+	DeviceBuffer* D3D11RenderSystemImpl::CreateBuffer(
+		BufferType type, ResourceUsage usage, 
+		byte const* initialData, uint32 lengthInBytes)
 	{
-		return D3D11DeviceBuffer::Create(mDevice, type, usage, initialData, lengthInBytes);
+		return D3D11DeviceBuffer::Create(mDevice, 
+			type, usage, initialData, lengthInBytes);
 	}
 
-	DeviceTexture1D* D3D11RenderSystemImpl::CreateTexture1D(int32 X, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, byte const* initialData)
+	DeviceTexture1D* D3D11RenderSystemImpl::CreateTexture1D(
+		int32 X, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, 
+		byte const* initialData)
 	{
-		return D3D11DeviceTexture1D::Create(mDevice, X, format, usage, flag, initialData);
+		return D3D11DeviceTexture1D::Create(mDevice, 
+			X, format, usage, flag, initialData);
 	}
-	DeviceTexture1D* D3D11RenderSystemImpl::CreateTexture1DArray(int32 X, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, int32 arraySize, byte const* initialData)
+	DeviceTexture1D* D3D11RenderSystemImpl::CreateTexture1DArray(
+		int32 X, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, 
+		int32 arraySize, byte const* initialData)
 	{
-		return D3D11DeviceTexture1D::CreateArray(mDevice, X, format, usage, flag, arraySize, initialData);
+		return D3D11DeviceTexture1D::CreateArray(mDevice, 
+			X, format, usage, flag, arraySize, initialData);
 	}
-	DeviceTexture2D* D3D11RenderSystemImpl::CreateTexture2D(int32 X, int32 Y, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, byte const* initialData)
+	DeviceTexture2D* D3D11RenderSystemImpl::CreateTexture2D(
+		int32 X, int32 Y, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, byte const* initialData)
 	{
-		return D3D11DeviceTexture2D::Create(mDevice, X, Y, format, usage, flag,initialData);
+		return D3D11DeviceTexture2D::Create(mDevice, 
+			X, Y, format, usage, flag,initialData);
 	}
-	DeviceTexture2D* D3D11RenderSystemImpl::CreateTexture2DArray(int32 X, int32 Y, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, int32 arraySize, byte const* initialData)
+	DeviceTexture2D* D3D11RenderSystemImpl::CreateTexture2DArray(
+		int32 X, int32 Y, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, int32 arraySize, byte const* initialData)
 	{
-		return D3D11DeviceTexture2D::Create(mDevice, X, Y, format, usage, flag, initialData);
+		return D3D11DeviceTexture2D::Create(mDevice, 
+			X, Y, format, usage, flag, initialData);
 	}
-	DeviceTexture2D* D3D11RenderSystemImpl::CreateTexture2DFromFile(std::string const& filename, DataFormat format, ResourceUsage usage, ResourceBindFlag flag)
+	DeviceTexture2D* D3D11RenderSystemImpl::CreateTexture2DFromFile(
+		std::string const& filename, DataFormat format, ResourceUsage usage, ResourceBindFlag flag)
 	{
 		return D3D11DeviceTexture2D::CreateFromFile(mDevice,filename, format, usage, flag);
 	}
-	DeviceTexture3D* D3D11RenderSystemImpl::CreateTexture3D(int32 X, int32 Y, int32 Z, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, byte const* initialData)
+	DeviceTexture3D* D3D11RenderSystemImpl::CreateTexture3D(
+		int32 X, int32 Y, int32 Z, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, byte const* initialData)
 	{
-		return D3D11DeviceTexture3D::Create(mDevice, X, Y, Z, format, usage, flag, initialData);
+		return D3D11DeviceTexture3D::Create(mDevice, 
+			X, Y, Z, format, usage, flag, initialData);
 	}
 
-	VertexShader* D3D11RenderSystemImpl::LoadVertexShaderFromMemory(byte const* byteCodes, uint32 sizeInBytes) throw()
+	VertexShader* D3D11RenderSystemImpl::LoadVertexShaderFromMemory(
+		byte const* byteCodes, uint32 sizeInBytes) throw()
 	{
-		return D3D11VertexShader::LoadBinaryFromMemory(mDevice,byteCodes, sizeInBytes);
+		return D3D11VertexShader::LoadBinaryFromMemory(mDevice,
+			byteCodes, sizeInBytes);
 	}
 
-	PixelShader* D3D11RenderSystemImpl::LoadPixelShaderFromMemory(byte const* byteCodes, uint32 sizeInBytes) throw()
+	PixelShader* D3D11RenderSystemImpl::LoadPixelShaderFromMemory(
+		byte const* byteCodes, uint32 sizeInBytes) throw()
 	{
-		return D3D11PixelShader::LoadBinaryFromMemory(mDevice, byteCodes, sizeInBytes);
+		return D3D11PixelShader::LoadBinaryFromMemory(mDevice, 
+			byteCodes, sizeInBytes);
 	}
 
-	DepthStencilView* D3D11RenderSystemImpl::CreateDepthStencilView(DeviceTexture2D* pTexture) throw()
+	DepthStencilView* D3D11RenderSystemImpl::CreateDepthStencilView(
+		DeviceTexture2D* pTexture) throw()
 	{
 		return D3D11DepthStencilView::Create(mDevice, pTexture);
 	}
@@ -138,5 +166,20 @@ namespace Space
 	{
 		return D3D11RenderTarget::Create(mDevice, pTexture);
 	}
+	
+	ShaderResource* D3D11RenderSystemImpl::CreateShaderResource(
+		DeviceTexture2D* pTexture)
+	{
+		return D3D11ShaderResource::Create(mDevice, pTexture);
+	}
+	ShaderResource* D3D11RenderSystemImpl::CreateShaderResource(
+		TextureBuffer* pTBuffer)
+	{
+		return D3D11ShaderResource::Create(mDevice, pTBuffer);
+	}
 
+	InputLayout* D3D11RenderSystemImpl::CreateInputLayout() throw()
+	{
+		return D3D11InputLayout::Create(mDevice);
+	}
 }

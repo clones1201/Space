@@ -2,6 +2,7 @@
 #define __SPACE_D3D11_SHARED_HPP__
 
 #include "Prerequisites.hpp"
+#include "Basic.hpp"
 #include "D3D11Prerequisites.hpp"
 
 namespace Space

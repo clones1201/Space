@@ -23,13 +23,15 @@ namespace Space
 		virtual DeviceTexture2D* CreateTexture2DArray(int32 X, int32 Y, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, int32 arraySize, byte const* initialData) = 0;
 		virtual DeviceTexture2D* CreateTexture2DFromFile(std::string const& filename, DataFormat format, ResourceUsage usage, ResourceBindFlag flag) = 0;
 		virtual DeviceTexture3D* CreateTexture3D(int32 X, int32 Y, int32 Z, DataFormat format, ResourceUsage usage, ResourceBindFlag flag,byte const* initialData) = 0;
-		/*virtual DeviceTexture3D* CreateTexture3DArray(int32 X, int32 Y, int32 Z, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, int32 arraySize, byte const* initialData) = 0;*/
 
 		virtual VertexShader* LoadVertexShaderFromMemory(byte const* byteCodes, uint32 sizeInBytes) = 0;
 		virtual PixelShader* LoadPixelShaderFromMemory(byte const* byteCodes, uint32 sizeInBytes) = 0;
 		
 		virtual DepthStencilView* CreateDepthStencilView(DeviceTexture2D* pTexture) = 0;
 		virtual RenderTarget* CreateRenderTarget(DeviceTexture2D* pTexture) = 0;
+		virtual ShaderResource* CreateShaderResource(DeviceTexture2D* pTexture) = 0;
+		virtual ShaderResource* CreateShaderResource(TextureBuffer* pTBuffer) = 0;
+		virtual InputLayout* CreateInputLayout() = 0;
 	};
 }
 

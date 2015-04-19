@@ -1,5 +1,5 @@
 #include "Log.h"
-#include "Utility.h"
+#include "Utility.hpp"
 #include "Window.hpp"
 #include "Win32Window.hpp"
 

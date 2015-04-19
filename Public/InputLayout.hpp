@@ -21,12 +21,14 @@ namespace Space
 		int32 GetOffsetByIndex(int32 idx) const;
 		int32 GetSizeInByteByIndex(int32 idx) const;
 
+		int32 GetVertexSize() const;
+
 		int32 GetElemCount() const;
 		int32 GetPositionCount() const;
 		int32 GetTexCoordCount() const;
 		int32 GetNormalCount() const;
 		int32 GetTangentCount() const;
-
+		
 		virtual ~InputLayout();
 	protected:
 		InputLayout();

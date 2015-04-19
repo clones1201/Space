@@ -1,15 +1,15 @@
 #ifndef __SPACE_PREREQUISITES_HPP__
 #define __SPACE_PREREQUISITES_HPP__
 
-#ifndef SPACE_GAME
+//#ifndef SPACE_GAME
 #ifdef SPACE_EXPORTS
 #define SPACE_API __declspec(dllexport)
 #else
 #define SPACE_API __declspec(dllimport)
 #endif
-#else
-#define SPACE_API 
-#endif
+//#else
+//#define SPACE_API 
+//#endif
 
 #define SPACE_WIN32 1
 

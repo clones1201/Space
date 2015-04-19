@@ -75,7 +75,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)Public\;$(SolutionDir)ThirdParty\includes\;$(VCInstallDir)UnitTest\include;</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_UNICODE;UNICODE;SPACE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;SPACE_EXPORTS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -103,7 +103,8 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)Public\;$(VCInstallDir)UnitTest\include\;$(FBXSDK_DIR)\include\;$(DXTK_DIR)\inc\;$(ASSIMP_DIR)\include\;</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_UNICODE;UNICODE;SPACE_GAME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;SPACE_GAME;SPACE_EXPORTS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4251;</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -126,7 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\Public\ConstantBufferMap.hpp" />
+    <ClInclude Include="..\Public\Behavior.hpp" />
     <ClInclude Include="..\Public\D3D11DepthStencilView.hpp" />
     <ClInclude Include="..\Public\D3D11Device.hpp" />
     <ClInclude Include="..\Public\D3D11DeviceBuffer.hpp" />
@@ -148,10 +149,11 @@
     <ClInclude Include="..\Public\Renderable.hpp" />
     <ClInclude Include="..\Public\DeviceTexture.hpp" />
     <ClInclude Include="..\Public\Renderer.hpp" />
+    <ClInclude Include="..\Public\ResourcePool.h" />
     <ClInclude Include="..\Public\ShaderCommon.hpp" />
     <ClInclude Include="..\Public\ShaderReflection.hpp" />
     <ClInclude Include="..\Public\ShaderResourcePool.hpp" />
-    <ClInclude Include="..\Public\SharedUtility.hpp" />
+    <ClInclude Include="..\Public\Utility.hpp" />
     <ClInclude Include="..\Public\Win32Window.hpp" />
     <ClInclude Include="D3D11Shared.hpp" />
     <FxCompile Include="..\Shaders\Basic.hlsl">
@@ -174,11 +176,9 @@
     <ClInclude Include="..\Public\Space.hpp" />
     <ClInclude Include="..\Public\Window.hpp" />
     <ClInclude Include="Log.h" />
-    <ClInclude Include="Utility.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Basic.cpp" />
-    <ClCompile Include="ConstantBufferMap.cpp" />
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="D3D11DepthStencilView.cpp" />
     <ClCompile Include="D3D11Device.cpp" />
@@ -204,9 +204,9 @@
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="RenderWindow.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShaderReflection.cpp" />
     <ClCompile Include="ShaderResource.cpp" />
     <ClCompile Include="ShaderResourcePool.cpp" />
-    <ClCompile Include="SharedUtility.cpp" />
     <ClCompile Include="Space.cpp" />
     <ClCompile Include="Test\UtilityTest.cpp" />
     <ClCompile Include="Utility.cpp" />

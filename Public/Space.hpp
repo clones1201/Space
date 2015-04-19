@@ -9,6 +9,8 @@
 #include "Core.hpp"
 #include "Game.hpp"
 
+#include "Shader.hpp"
 #include "Mesh.hpp"
+#include "ShaderReflection.hpp"
 
 #endif

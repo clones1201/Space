@@ -1,0 +1,12 @@
+{
+    "MaterialInstance": {
+        "Parent": "0",
+        "StaticParameters": [
+            {
+                "TextureSwitch": "True"
+            }
+        ],
+        "UniformExpressions": [            
+        ]
+    }
+}
