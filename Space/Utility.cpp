@@ -23,7 +23,7 @@ namespace Space
 #endif
 	}
 	std::wstring str2wstr(const std::string &in){
-		std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+		static std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
 		return converter.from_bytes(in);
 	}
 	std::wstring str2wstr(const std::wstring &in)
@@ -31,7 +31,7 @@ namespace Space
 		return in;
 	}
 	std::string wstr2str(const std::wstring &in){
-		std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+		static std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
 		return converter.to_bytes(in);
 	}
 	std::string wstr2str(const std::string &in)
@@ -130,6 +130,16 @@ namespace Space
 	int32 Alignment(int32 n){
 		return (ALIGNMENT * (1 + (n - 1) / ALIGNMENT));
 	}
+
+	std::string GetAssetsPath()
+	{
+#if (defined _DEBUG) || (defined DEBUG)
+		return "../Assets/";
+#else
+		return "../../Assets/";
+#endif
+	}
+
 
 	int32 GetFormatSize(DataFormat format)
 	{
@@ -380,9 +390,4 @@ namespace Space
 			}
 		}
 	}
-}
-
-Space::int32 std::hash<Space::Name>::operator()(Space::Name const& param) const
-{
-	return param.GetHashCode();
 }

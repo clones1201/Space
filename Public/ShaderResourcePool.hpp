@@ -9,20 +9,21 @@ namespace Space
 	class ShaderResourcePool : public Uncopyable
 	{
 	public:
-		uint32 RegistShaderResource(TypeTrait<ShaderResource>::Ptr pResource);
-		void UnregistShaderResource(TypeTrait<ShaderResource>::Ptr pResource);
-		ShaderResource* GetShaderResourceById(uint32 id);
+		static ShaderResourcePool* Create(RenderSystem* pRenderSys);
 
-		uint32 RegistConstantBuffer(TypeTrait<ConstantBuffer>::Ptr pCBuffer);
-		void UnregistConstantBuffer(TypeTrait<ConstantBuffer>::Ptr pCBBuffer);
-		ConstantBuffer* GetConstantBufferById(uint32 id);
+		void BindTexture2DResource(Name const& name, DeviceTexture2D* pTexture);
+		void BindTextureBufferResourceByName(Name const& name, TextureBuffer* pTBuffer);
+		void BindConstantBufferResourceByName(Name const& name, ConstantBuffer* pCBuffer);
 
-		void ClearAllShaderResource();
-		void ClearAllConstantBuffer();
-		//Sampler* GetShaderResourceById(uint32 id);
-	private: 
-		std::map<uint, TypeTrait<ShaderResource>::Ptr> m_ShaderResourceMap;
-		std::map<uint, TypeTrait<ConstantBuffer>::Ptr> m_ConstantBufferMap;
+		DeviceTexture2D* GetTexture2DResourceByName(Name const& name) const;
+		TextureBuffer* GetTextureBufferResourceByName(Name const& name) const;
+		ConstantBuffer* GetConstantBufferResourceByName(Name const& name) const;
+
+
+		std::map<Name, std::shared_ptr<DeviceTexture2D>> m_Texture2DMap;
+		std::map<Name, std::shared_ptr<ConstantBuffer>> m_CBufferMap;
+		std::map<Name, std::shared_ptr<TextureBuffer>> m_TBufferMap;
+
 	};
 }
 

@@ -5,6 +5,7 @@
 #include "Basic.hpp"
 #include "ShaderCommon.hpp"
 #include "ShaderReflection.hpp"
+#include "ShaderResourcePool.hpp"
 
 namespace Space
 {
@@ -52,20 +53,6 @@ namespace Space
 		uint32 m_SizeInBytes = 0;
 	};
 
-
-	class Shader : virtual public Interface
-	{
-	protected:
-		std::unique_ptr<VertexShader> m_pVS = nullptr;
-		std::unique_ptr<PixelShader> m_pPS = nullptr;
-		
-		std::unique_ptr<ShaderReflection> m_pVSReflect = nullptr;
-		std::unique_ptr<ShaderReflection> m_pPSReflect = nullptr;
-	public: 
-
-
-
-	};
 }
 
 #endif

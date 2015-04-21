@@ -11,11 +11,11 @@ namespace Space
 {
 
 	ShaderReflection::ShaderReflection(VertexShader* pShader)
-		:m_pPS(nullptr), m_pVS(pShader)
+		:pPS(nullptr), pVS(pShader)
 	{
 	}
 	ShaderReflection::ShaderReflection(PixelShader* pShader)
-		: m_pPS(pShader), m_pVS(nullptr)
+		: pPS(pShader), pVS(nullptr)
 	{
 	}
 
@@ -51,7 +51,7 @@ namespace Space
 
 	ShaderReflectionConstantBuffer::ShaderReflectionConstantBuffer(
 		ShaderReflection* pReflection)
-		:m_pReflection(pReflection){
+		:pReflection(pReflection){
 	}
 
 	ShaderReflectionConstantBuffer::~ShaderReflectionConstantBuffer()
@@ -64,7 +64,7 @@ namespace Space
 
 	ShaderReflection* ShaderReflectionConstantBuffer::GetShaderReflection()
 	{
-		return m_pReflection;
+		return pReflection;
 	}
 	uint32 ShaderReflectionConstantBuffer::GetSizeInBytes() const
 	{
@@ -82,12 +82,12 @@ namespace Space
 	void ShaderReflectionConstantBuffer::SetBuffer(ConstantBuffer* pBuffer)
 	{
 		if (pBuffer != nullptr)
-			m_pBuffer = pBuffer;
+			pBuffer = pBuffer;
 	}
 
 	void ShaderReflectionConstantBuffer::UnSetBuffer()
 	{
-		m_pBuffer = nullptr;
+		pBuffer = nullptr;
 		/*for (auto iter = m_Variables.begin(); iter != m_Variables.end(); ++iter)
 		{
 			(*iter)->UnSetBuffer();
@@ -96,7 +96,7 @@ namespace Space
 
 	ConstantBuffer* ShaderReflectionConstantBuffer::GetBuffer() const
 	{
-		return m_pBuffer;
+		return pBuffer;
 	}
 	
 	//
@@ -105,12 +105,12 @@ namespace Space
 
 	ShaderReflectionVariable::ShaderReflectionVariable(
 		ShaderReflectionConstantBuffer *pCB)
-		:m_pParentCB(pCB), m_pParentVariable(nullptr)
+		:pParentCB(pCB), pParentVariable(nullptr)
 	{}
 
 	ShaderReflectionVariable::ShaderReflectionVariable(
 		ShaderReflectionVariable* pVariable)
-		: m_pParentVariable(pVariable), m_pParentCB(nullptr)
+		: pParentVariable(pVariable), pParentCB(nullptr)
 	{}
 
 	ShaderReflectionVariable::~ShaderReflectionVariable()
@@ -118,11 +118,11 @@ namespace Space
 
 	ShaderReflectionConstantBuffer* ShaderReflectionVariable::GetParentConstantBuffer() const
 	{
-		return m_pParentCB;
+		return pParentCB;
 	}
 	ShaderReflectionVariable* ShaderReflectionVariable::GetParentVariable() const
 	{
-		return m_pParentVariable;
+		return pParentVariable;
 	}	 
 	uint32 ShaderReflectionVariable::GetStartOffset() const
 	{
@@ -156,104 +156,104 @@ namespace Space
 	std::string ShaderReflectionVariable::AsString() const
 	{
 		return std::string(
-			m_pParentCB->GetBuffer()->GetBufferPointer() + m_StartOffset,
-			m_pParentCB->GetBuffer()->GetBufferPointer() + m_StartOffset + m_Size
+			pParentCB->GetBuffer()->GetBufferPointer() + m_StartOffset,
+			pParentCB->GetBuffer()->GetBufferPointer() + m_StartOffset + m_Size
 			);
 	}
 	bool ShaderReflectionVariable::AsBool() const
 	{
 		if (m_Size < sizeof(bool)) return bool();
-		return *(bool*)(m_pParentCB->GetBuffer()->GetBufferPointer() + m_StartOffset);
+		return *(bool*)(pParentCB->GetBuffer()->GetBufferPointer() + m_StartOffset);
 	}
 	int32 ShaderReflectionVariable::AsInt() const
 	{
 		if (m_Size < sizeof(int32)) return int32();
-		return *(int32*)(m_pParentCB->GetBuffer()->GetBufferPointer() + m_StartOffset);
+		return *(int32*)(pParentCB->GetBuffer()->GetBufferPointer() + m_StartOffset);
 	}
 	uint32 ShaderReflectionVariable::AsUint() const
 	{
 		if (m_Size < sizeof(uint32)) return uint32();
-		return *(uint32*)(m_pParentCB->GetBuffer()->GetBufferPointer() + m_StartOffset);
+		return *(uint32*)(pParentCB->GetBuffer()->GetBufferPointer() + m_StartOffset);
 	}
 	Float1 ShaderReflectionVariable::AsFloat1() const
 	{
 		if (m_Size < sizeof(Float1)) return Float1();
-		return *(Float1*)(m_pParentCB->GetBuffer()->GetBufferPointer() + m_StartOffset);
+		return *(Float1*)(pParentCB->GetBuffer()->GetBufferPointer() + m_StartOffset);
 	}
 	Float2 ShaderReflectionVariable::AsFloat2() const
 	{
 		if (m_Size < sizeof(Float2)) return Float2();
-		return *(Float2*)(m_pParentCB->GetBuffer()->GetBufferPointer() + m_StartOffset);
+		return *(Float2*)(pParentCB->GetBuffer()->GetBufferPointer() + m_StartOffset);
 	}
 	Float3 ShaderReflectionVariable::AsFloat3() const
 	{
 		if (m_Size < sizeof(Float3)) return Float3();
-		return *(Float3*)(m_pParentCB->GetBuffer()->GetBufferPointer() + m_StartOffset);
+		return *(Float3*)(pParentCB->GetBuffer()->GetBufferPointer() + m_StartOffset);
 	}
 	Float4 ShaderReflectionVariable::AsFloat4() const
 	{
 		if (m_Size < sizeof(Float4)) return Float4();
-		return *(Float4*)(m_pParentCB->GetBuffer()->GetBufferPointer() + m_StartOffset);
+		return *(Float4*)(pParentCB->GetBuffer()->GetBufferPointer() + m_StartOffset);
 	}
 	Float4x4 ShaderReflectionVariable::AsFloat4x4() const
 	{
 		if (m_Size < sizeof(Float4x4)) return Float4x4();
-		return *(Float4x4*)(m_pParentCB->GetBuffer()->GetBufferPointer() + m_StartOffset);
+		return *(Float4x4*)(pParentCB->GetBuffer()->GetBufferPointer() + m_StartOffset);
 	}
 	Float4x3 ShaderReflectionVariable::AsFloat4x3() const
 	{
 		if (m_Size < sizeof(Float4x3)) return Float4x3();
-		return *(Float4x3*)(m_pParentCB->GetBuffer()->GetBufferPointer() + m_StartOffset);
+		return *(Float4x3*)(pParentCB->GetBuffer()->GetBufferPointer() + m_StartOffset);
 	}
 	Float3x3 ShaderReflectionVariable::AsFloat3x3() const
 	{
 		if (m_Size < sizeof(Float3x3)) return Float3x3();
-		return *(Float3x3*)(m_pParentCB->GetBuffer()->GetBufferPointer() + m_StartOffset);
+		return *(Float3x3*)(pParentCB->GetBuffer()->GetBufferPointer() + m_StartOffset);
 	}
 
 	void ShaderReflectionVariable::SetBool(bool value)
 	{
-		m_pParentCB->GetBuffer()->Update(m_StartOffset, std::min(sizeof(value), m_Size), (byte*)&value);
+		pParentCB->GetBuffer()->Update(m_StartOffset, std::min(sizeof(value), m_Size), (byte*)&value);
 	}
 	void ShaderReflectionVariable::SetInt(int32 value)
 	{
-		m_pParentCB->GetBuffer()->Update(m_StartOffset, std::min(sizeof(value), m_Size), (byte*)&value);
+		pParentCB->GetBuffer()->Update(m_StartOffset, std::min(sizeof(value), m_Size), (byte*)&value);
 	}
 	void ShaderReflectionVariable::SetUint(uint32 value)
 	{
-		m_pParentCB->GetBuffer()->Update(m_StartOffset, std::min(sizeof(value), m_Size), (byte*)&value);
+		pParentCB->GetBuffer()->Update(m_StartOffset, std::min(sizeof(value), m_Size), (byte*)&value);
 	}
 	void ShaderReflectionVariable::SetFloat1(Float1 value)
 	{
-		m_pParentCB->GetBuffer()->Update(m_StartOffset, std::min(sizeof(value), m_Size), (byte*)&value);
+		pParentCB->GetBuffer()->Update(m_StartOffset, std::min(sizeof(value), m_Size), (byte*)&value);
 	}
 	void ShaderReflectionVariable::SetFloat2(Float2 value)
 	{
-		m_pParentCB->GetBuffer()->Update(m_StartOffset, std::min(sizeof(value), m_Size), (byte*)&value);
+		pParentCB->GetBuffer()->Update(m_StartOffset, std::min(sizeof(value), m_Size), (byte*)&value);
 	}
 	void ShaderReflectionVariable::SetFloat3(Float3 value)
 	{
-		m_pParentCB->GetBuffer()->Update(m_StartOffset, std::min(sizeof(value), m_Size), (byte*)&value);
+		pParentCB->GetBuffer()->Update(m_StartOffset, std::min(sizeof(value), m_Size), (byte*)&value);
 	}
 	void ShaderReflectionVariable::SetFloat4(Float4 value)
 	{
-		m_pParentCB->GetBuffer()->Update(m_StartOffset, std::min(sizeof(value), m_Size), (byte*)&value);
+		pParentCB->GetBuffer()->Update(m_StartOffset, std::min(sizeof(value), m_Size), (byte*)&value);
 	}
 	void ShaderReflectionVariable::SetFloat4x4(Float4x4 value)
 	{
-		m_pParentCB->GetBuffer()->Update(m_StartOffset, std::min(sizeof(value), m_Size), (byte*)&value);
+		pParentCB->GetBuffer()->Update(m_StartOffset, std::min(sizeof(value), m_Size), (byte*)&value);
 	}
 	void ShaderReflectionVariable::SetFloat4x3(Float4x3 value)
 	{
-		m_pParentCB->GetBuffer()->Update(m_StartOffset, std::min(sizeof(value), m_Size), (byte*)&value);
+		pParentCB->GetBuffer()->Update(m_StartOffset, std::min(sizeof(value), m_Size), (byte*)&value);
 	}
 	void ShaderReflectionVariable::SetFloat3x3(Float3x3 value)
 	{
-		m_pParentCB->GetBuffer()->Update(m_StartOffset, std::min(sizeof(value),m_Size), (byte*)&value);
+		pParentCB->GetBuffer()->Update(m_StartOffset, std::min(sizeof(value),m_Size), (byte*)&value);
 	}
 	void ShaderReflectionVariable::SetStruct(byte const* pData, uint32 lengthInBytes)
 	{
-		m_pParentCB->GetBuffer()->Update(m_StartOffset, std::min(lengthInBytes,m_Size), (byte*)pData);
+		pParentCB->GetBuffer()->Update(m_StartOffset, std::min(lengthInBytes,m_Size), (byte*)pData);
 	}
 
 	//

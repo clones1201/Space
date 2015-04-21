@@ -30,8 +30,8 @@ namespace Space
 		ShaderReflection(VertexShader* pShader);
 		ShaderReflection(PixelShader* pShader);
 
-		VertexShader const* const m_pVS;
-		PixelShader const* const m_pPS;
+		VertexShader const* const pVS;
+		PixelShader const* const pPS;
 
 		std::vector<TypeTrait<ShaderReflectionConstantBuffer>::Ptr> m_ConstBuffers;
 		std::vector<TypeTrait<ShaderReflectionBindResource>::Ptr> m_Resources;
@@ -66,8 +66,8 @@ namespace Space
 		ShaderReflectionConstantBuffer(
 			ShaderReflection* pReflection);
 
-		ShaderReflection* const m_pReflection;
-		ConstantBuffer* m_pBuffer;
+		ShaderReflection* const pReflection;
+		ConstantBuffer* pBuffer;
 		Name m_Name;
 		std::vector<TypeTrait<ShaderReflectionVariable>::Ptr> m_Variables;
 
@@ -187,8 +187,8 @@ namespace Space
 		ShaderReflectionVariable(ShaderReflectionConstantBuffer* pCB);
 		ShaderReflectionVariable(ShaderReflectionVariable *pVariable);
 				
-		ShaderReflectionConstantBuffer* const m_pParentCB;
-		ShaderReflectionVariable* const m_pParentVariable;
+		ShaderReflectionConstantBuffer* const pParentCB;
+		ShaderReflectionVariable* const pParentVariable;
 		std::vector<TypeTrait<ShaderReflectionVariable>::Ptr> m_Members;
 		Name m_Name;
 		uint32 m_StartOffset;

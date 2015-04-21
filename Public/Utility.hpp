@@ -118,10 +118,14 @@ namespace Space
 		void RevokeId(uint32 id);
 	};
 
+	//return path of Assets folder
+	std::string GetAssetsPath();
+
 	int32 GetFormatSize(DataFormat format);
 	int32 GetElementSize(VertexElemType type);
 
 	char const* GetSemanticName(ElemSemantic semantic);
+
 
 }
 
@@ -131,9 +135,15 @@ namespace std
 	class std::hash < Space::Name >
 	{
 	public:
-		Space::int32 operator()(Space::Name const& param) const;
+		size_t operator()(Space::Name const& param) const
+		{
+			return param.GetHashCode();
+		}
 	};
-
 }
+
+#include "rapidjson/rapidjson.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/document.h"
 
 #endif

@@ -5,7 +5,7 @@
 namespace Space
 {
 
-	uint32 ShaderResourcePool::RegistShaderResource(
+	/*uint32 ShaderResourcePool::RegistShaderResource(
 		TypeTrait<ShaderResource>::Ptr pResource)
 	{
 		auto iter = std::find_if(
@@ -103,7 +103,7 @@ namespace Space
 	{
 		m_ConstantBufferMap.clear();
 	}
-
+*/
 
 	
 

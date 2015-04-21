@@ -7,15 +7,10 @@ static const float3 DirectionalLightColor = float3(1.0f, 1.0f, 1.0f);	//should m
 #define Pi 3.1415926
 #define DualPi 6.2831852
 
-struct MatrixPack2
-{
-	matrix<float,4,4> mProjection;
-};
-
 struct MatrixPack
 {
+	matrix<float,4,4> mProjection;
 	Float4x4 mWorld;
-	MatrixPack2 pack;
 };
 
 tbuffer Bone{
@@ -66,7 +61,7 @@ float4 PositionTransform(float4 input){
 	float4 output = (float4)0;
 		output = mul(input, pack.mWorld);
 	output = mul(output, mView);
-	output = mul(output, pack.pack.mProjection);
+	//output = mul(output, pack.pack.mProjection);
 	return output;
 }
 
@@ -84,8 +79,7 @@ void PS(VSOutput vsoutput,out Float4 OutColor : SV_Target)
 {	
 	float4 color1 = texture1.Sample(sampler1, vsoutput.TexCoord.xy);
 	float4 color2 = texture2.Sample(sampler2, vsoutput.TexCoord.xy);
-	float4 color3 = tbuffer1.Sample(sampler1, vsoutput.TexCoord.xy);
-	color1 = color1 + pack.mWorld[0] + color3;
-	color2 = color2 + mView[0] + g_mTexBoneWorld[0][3] + g_Buffer.Load(2) + m_Buffer1.Load(2) + +m_Buffer2.Load(4);
+	color1 = color1 + pack.mWorld[0];
+	color2 = color2 + mView[0] + g_mTexBoneWorld[0][3] + g_Buffer.Load(2);
 	OutColor = saturate(color1 - color2);
 }

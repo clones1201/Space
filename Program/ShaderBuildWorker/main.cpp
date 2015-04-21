@@ -1,6 +1,7 @@
 #define NOMINMAX
 
 #include <fstream>
+#include <vector>
 #include <string>
 #include <iostream>
 #include <locale>
@@ -86,13 +87,13 @@ int main(int argc, char*argv[])
 				throw exception("Missing Source File");
 			}
 			std::istreambuf_iterator<char> beg(source), end;
-			std::string sourceCode(beg, end);
+			std::vector<char> sourceCode(beg, end);
 
 			CComPtr<ID3DBlob> pVSBlob = nullptr;
 			CComPtr<ID3DBlob> pPSBlob = nullptr;
 			CComPtr<ID3DBlob> pErrorBlob = nullptr;
 			HRESULT hr = D3DCompile(
-				sourceCode.c_str(), sourceCode.size(), SourceFileName.GetString(),
+				sourceCode.data(), sourceCode.size(), SourceFileName.GetString(),
 				nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, VertexShaderEntry.GetString(),
 				("vs" + suffix).c_str(),
 				D3DCOMPILE_OPTIMIZATION_LEVEL3,
@@ -107,7 +108,7 @@ int main(int argc, char*argv[])
 			}
 			pErrorBlob = nullptr;
 			hr = D3DCompile(
-				sourceCode.c_str(), sourceCode.size(), SourceFileName.GetString(),
+				sourceCode.data(), sourceCode.size(), SourceFileName.GetString(),
 				nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, PixelShaderEntry.GetString(),
 				("ps" + suffix).c_str(),
 				D3DCOMPILE_OPTIMIZATION_LEVEL3,

@@ -53,7 +53,7 @@ namespace Space
 #define TRY_CATCH_LOG(expression,result) try{\
 	expression; }\
 	catch(std::exception& e){\
-	Log(e.what());\
+	Log("%s\n",e.what());\
 	result;}
 
 #define TRY_CATCH_OUT_OF_RANGE(expression,result)  try{\

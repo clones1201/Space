@@ -132,9 +132,6 @@
     <ClInclude Include="..\Public\ShaderResource.hpp">
       <Filter>Public\RenderSystem</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\ShaderResourcePool.hpp">
-      <Filter>Public\RenderSystem</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\ShaderCommon.hpp">
       <Filter>Public\RenderSystem</Filter>
     </ClInclude>
@@ -153,19 +150,16 @@
     <ClInclude Include="..\Public\Math.hpp">
       <Filter>Public</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Effects.hpp">
-      <Filter>Public</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\D3D11InputLayout.hpp">
       <Filter>Public\RenderSystem\D3D11</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Behavior.hpp">
       <Filter>Public</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\ResourcePool.h">
+    <ClInclude Include="..\Public\Utility.hpp">
       <Filter>Public</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Utility.hpp">
+    <ClInclude Include="..\Public\ShaderResourcePool.hpp">
       <Filter>Public</Filter>
     </ClInclude>
   </ItemGroup>
@@ -271,6 +265,9 @@
     </ClCompile>
     <ClCompile Include="ShaderReflection.cpp">
       <Filter>Private\RenderSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

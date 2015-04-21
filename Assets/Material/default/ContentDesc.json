@@ -1,6 +1,8 @@
 {
     "Material": {
         "Name": "default",
+        "BlendMode":"Opaque",
+		"Domain":  "Surface",
         "ConstantBuffer": [
             {
                 "Name": "UpdateEveryFrame",
@@ -11,6 +13,18 @@
                 ]
             }
         ],
+        "TextureBuffer": [
+
+        ],
+        "Buffer": [ 
+
+        ],
+        "Texture1D": [
+
+        ],
+        "Texture1DParameter": [
+
+        ],
         "Texture2D": [
             {
                 "Name": "texture1",
@@ -20,6 +34,15 @@
                 "Name": "texture2",
                 "Filename": "T_Bricks_N.dds"
             }
+        ],
+        "Texture2DParameter": [
+
+        ],
+        "Texture3D": [
+
+        ],
+        "Texture3DParameter": [
+
         ],
         "Sampler": [
 

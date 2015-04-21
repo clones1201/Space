@@ -3,18 +3,15 @@
 
 #include "Prerequisites.hpp"
 #include "Basic.hpp"
+#include "Utility.hpp"
 
 namespace Space
 {
 
 	class BindResourcePool : public Uncopyable
 	{
-	protected:
-
 	public:
-
-
-
+		
 
 	};
 
