@@ -63,8 +63,28 @@ namespace Space
 		std::vector<StaticBoolParameter> SwitchParameters;
 		std::vector<StaticComponentMaskParameter> ComponentMaskParameters;
 	public:
+		StaticParameterSet();
+		StaticParameterSet(StaticParameterSet const& other);
+		StaticParameterSet& operator=(StaticParameterSet const& other);
+		StaticParameterSet(StaticParameterSet && other);
+		StaticParameterSet& operator=(StaticParameterSet && other);
+
 		std::vector<StaticParameterSet> GetAllStaticParameterSet();
 		
+		void Clear();
+
+		void AddSwitch(Name const& name);
+		void RemoveSwitch(Name const& name);
+		void AddMask(Name const& name);
+		void RemoveMask(Name const& name);
+		
+		int32 GetSwitchCount() const;
+		int32 GetMaskCount() const;
+
+		StaticBoolParameter& GetSwitchByIndex(int32 idx);
+		StaticBoolParameter& GetSwitchByName(Name name);
+		StaticComponentMaskParameter& GetMaskByIndex(int32 idx);
+		StaticComponentMaskParameter& GetMaskByName(Name name);
 
 		bool operator == (const StaticParameterSet& param) const;
 		bool operator != (const StaticParameterSet& param) const;
@@ -136,7 +156,8 @@ namespace Space
 	typedef SPACE_API enum _MaterialDomain
 	{
 		MD_Surface = 0,
-		MD_PostProcess
+		MD_PostProcess,
+		MD_Max
 	}MaterialDomain;
 
 	typedef SPACE_API enum _MaterialBlendMode
@@ -144,16 +165,18 @@ namespace Space
 		MB_Opaque = 0,
 		MB_Masked,
 		MB_Translucent,
-		MB_Additive
+		MB_Additive,
+		MB_Max
 	}MaterialBlendMode;
-	
+		
 	class SPACE_API Material : virtual public Uncopyable
 	{
 	public:
 		static Material* Create(RenderSystem* pRenderSys, std::string const& name);
 		static Material* Create(RenderSystem* pRenderSys, std::wstring const& name);
 
-		StaticParameterSet const* GetStaticParameterSet() const;
+		StaticParameterSet const& GetStaticParameterSet() const;
+		StaticParameterSet& GetStaticParameterSet();
 
 		Name GetName() const;
 		void Apply(RenderSystem* pRenderSys);
@@ -162,8 +185,15 @@ namespace Space
 		Material(RenderSystem* pRenderSys, std::string const& name);
 
 		Name m_Name;
+		MaterialDomain m_Domain;
+		MaterialBlendMode m_BlendMode;
 
-		std::vector<std::shared_ptr<Shader>> m_Shaders;
+		StaticParameterSet m_ParameterSet;
+		StaticParameterSet m_DefaultParameterSet;
+
+		std::shared_ptr<Shader> m_CurrentShader = nullptr;
+
+		std::unordered_map<Name, std::shared_ptr<Shader>> m_Shaders;
 		std::unordered_map<StaticParameterSet, Shader*> m_ShaderMap;
 	};
 }

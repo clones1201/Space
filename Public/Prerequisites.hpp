@@ -46,9 +46,13 @@
 #include <cstdarg>
 #include <ctime>
 
+#if (defined _UNICODE) || (defined UNICODE)
+#define SPACE_UNICODE
+#endif
+
 namespace Space
 {
-#if (defined _UNICODE) || (defined UNICODE)
+#ifdef SPACE_UNICODE
 	using tstring = std::wstring;
 #else
 	using tstring = std::string;

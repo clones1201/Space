@@ -42,6 +42,56 @@ namespace Space
 		virtual ~Interface();
 	};
 
+	class SPACE_API RefCountObject : public Uncopyable
+	{
+	protected:
+		std::atomic<int32> m_RefCount = 0;
+		RefCountObject();
+	public:
+		virtual ~RefCountObject();
+		int32 AddRef();
+		int32 Release();
+	};
+
+	template<typename Type>
+	class RefCountPtr
+	{
+	public:
+		RefCountPtr(Type* p) :p(p){}
+		~RefCountPtr(){ if(p!= nullptr) p->Release(); }
+
+		RefCountPtr(RefCountPtr<Type> Other)
+		{
+			p = Other.p;
+			if (p != nullptr)
+				p->AddRef();
+		}
+
+		template<typename TypeB>
+		RefCountPtr(RefCountPtr<TypeB> Other)
+		{
+			if (dynamic_cast<Type*>(Other.p) != nullptr)
+			{
+				p = Other.p;
+				if (p != nullptr)
+					p->AddRef();
+			}
+		}
+
+		template <typename TypeB>
+		bool QueryInterface(TypeB** interf)
+		{
+			if (nullptr !=
+				(*interf = dynamic_cast<typename std::remove_reference<TypeB>::type*>(p)))
+			{
+				return true;
+			}
+			return false;			
+		}
+
+		Type* p;
+	};
+
 	class SPACE_API Archiveable
 	{
 	public:

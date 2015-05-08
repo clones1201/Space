@@ -82,7 +82,7 @@ namespace Space
 	void ShaderReflectionConstantBuffer::SetBuffer(ConstantBuffer* pBuffer)
 	{
 		if (pBuffer != nullptr)
-			pBuffer = pBuffer;
+			this->pBuffer = pBuffer;
 	}
 
 	void ShaderReflectionConstantBuffer::UnSetBuffer()

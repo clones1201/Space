@@ -60,6 +60,7 @@ int main(int argc, char*argv[])
 		for (auto iter = shaders.Begin(); iter != shaders.End(); ++iter)
 		{
 			Value& shader = *iter;
+
 			Value& SourceFileName = shader["SourceFile"];
 			if (SourceFileName.IsNull() || !SourceFileName.IsString())
 				continue;

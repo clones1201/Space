@@ -1,22 +1,22 @@
 {
     "Material": {
         "Name": "default",
-        "BlendMode":"Opaque",
-		"Domain":  "Surface",
-        "ConstantBuffer": [
-            {
-                "Name": "UpdateEveryFrame",
-                "Property": [
-                    { "Type": "Float4x4", "Name": "mView" },
-                    { "Type": "Float4x4", "Name": "mWorld" },
-                    { "Type": "Float4x4", "Name": "mProject" }
-                ]
-            }
-        ],
+        "BlendMode": "Opaque",
+        "Domain": "Surface",
+        /* "ConstantBuffer": [
+             {
+                 "Name": "UpdateEveryFrame",
+                 "Property": [
+                     { "Type": "Float4x4", "Name": "mView" },
+                     { "Type": "Float4x4", "Name": "mWorld" },
+                     { "Type": "Float4x4", "Name": "mProject" }
+                  ]
+             }
+         ],*/
         "TextureBuffer": [
 
         ],
-        "Buffer": [ 
+        "Buffer": [
 
         ],
         "Texture1D": [
@@ -51,7 +51,7 @@
             {
                 "Name": "TextureSwitch",
                 "Type": "Switch",
-                "DefaultValue": "True"
+                "DefaultValue": true
             }
         ],
         "UniformExpression": [
@@ -78,15 +78,15 @@
         ],
         "Shaders": [
             {
-                "Name": "0",
-                "SourceFile": "0.hlsl",
+                "Name": "Shader0",
+                "SourceFile": "Shader0.hlsl",
                 "Target": "SM_5_0",
                 "VertexShader": "VS",
                 "PixelShader": "PS"
             },
             {
-                "Name": "1",
-                "SourceFile": "1.hlsl",
+                "Name": "Shader1",
+                "SourceFile": "Shader1.hlsl",
                 "Target": "SM_5_0",
                 "VertexShader": "VS",
                 "PixelShader": "PS"
@@ -95,20 +95,16 @@
 
         "ShaderMap": [
             {
-                "ParameterSet": {
-                    "Value": [
-                        { "TextureSwitch": "True" }
-                    ]
-                },
-                "Shader": "0"
+                "ParameterSet": [
+                    { "TextureSwitch": true }
+                ],
+                "Shader": "Shader0"
             },
             {
-                "ParameterSet": {
-                    "Value": [
-                        { "TextureSwitch": "False" }
-                    ]
-                },
-                "Shader": "1"
+                "ParameterSet": [
+                    { "TextureSwitch": true }
+                ],
+                "Shader": "Shader1"
             }
         ]
     }
