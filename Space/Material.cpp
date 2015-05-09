@@ -5,6 +5,60 @@
 
 namespace Space
 {
+
+	StaticBoolParameter::StaticBoolParameter()
+	{}
+
+	StaticBoolParameter::~StaticBoolParameter()
+	{}
+
+	StaticBoolParameter::StaticBoolParameter(
+		std::string const& name, bool defaultValue)
+		:StaticBoolParameter(Name(name), defaultValue)
+	{
+	}
+
+	StaticBoolParameter::StaticBoolParameter(
+		std::wstring const& name, bool defaultValue)
+		: StaticBoolParameter(Name(name),defaultValue)
+	{
+	}
+
+	StaticBoolParameter::StaticBoolParameter(
+		Name const& name, bool defaultValue)
+		: m_Name(name), m_Value(defaultValue)
+	{
+	}
+
+	Name StaticBoolParameter::GetName() const
+	{
+		return m_Name;
+	}
+	
+	void StaticBoolParameter::SetName(Name const& name)
+	{
+		m_Name = name;
+	}
+
+	bool StaticBoolParameter::GetValue() const
+	{
+		return m_Value;
+	}
+
+	void StaticBoolParameter::SetValue(bool value)
+	{
+		m_Value = value;
+	}
+
+	uint32 StaticBoolParameter::GetHashCode() const
+	{
+		std::hash<Name> nHasher;
+		std::hash<bool> bHasher;
+		return nHasher(m_Name) ^ bHasher(m_Value);
+	}
+
+	// Definitions of class Material
+
 	static char* g_DomainStringArrayA[] = {
 		"Surface",
 		"PostProcess"
@@ -194,7 +248,8 @@ namespace Space
 		{
 			throw std::exception("Material doesn't have any shaders in it.");
 		}
-		for (auto iter = nodeShaders.Begin(); iter != nodeShaders.End(); ++iter)
+		for (auto iter = nodeShaders.Begin();
+			iter != nodeShaders.End(); ++iter)
 		{
 			Value& nodeShader = *iter;
 			Value& nodeShaderName = nodeShader["Name"];
@@ -215,7 +270,8 @@ namespace Space
 		}
 		m_ParameterSet.Clear();
 		m_DefaultParameterSet.Clear();
-		for (auto iter = nodeStaticParameters.Begin(); iter != nodeStaticParameters.End(); ++iter)
+		for (auto iter = nodeStaticParameters.Begin(); 
+			iter != nodeStaticParameters.End(); ++iter)
 		{
 			Value& nodeParam = *iter;
 			Value& nodeName = nodeParam["Name"];
@@ -271,7 +327,8 @@ namespace Space
 		{
 			throw std::exception("Material doesn't have a Shader Map in it.");
 		}
-		for (auto iter = nodeShaderMap.Begin(); iter != nodeShaders.End(); ++iter)
+		for (auto iter = nodeShaderMap.Begin(); 
+			iter != nodeShaders.End(); ++iter)
 		{
 			Value& nodeShaderMapItem = *iter;
 			Value& nodeParameterSet = nodeShaderMapItem["ParameterSet"];
@@ -280,10 +337,11 @@ namespace Space
 				Log("Parameter Set is missing\n");
 				continue;
 			}
-			for (auto iter = nodeParameterSet.Begin(); iter != nodeParameterSet.End(); ++iter)
+			StaticParameterSet paramSet = m_DefaultParameterSet;
+			for (auto iter = nodeParameterSet.Begin(); 
+				iter != nodeParameterSet.End(); ++iter)
 			{
-				StaticParameterSet paramSet = m_DefaultParameterSet;
-
+				Value& nodeParamItem = *iter;
 			}
 		}
 	}

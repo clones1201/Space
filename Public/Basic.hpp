@@ -60,7 +60,7 @@ namespace Space
 		RefCountPtr(Type* p) :p(p){}
 		~RefCountPtr(){ if(p!= nullptr) p->Release(); }
 
-		RefCountPtr(RefCountPtr<Type> Other)
+		RefCountPtr(RefCountPtr<Type> const& Other)
 		{
 			p = Other.p;
 			if (p != nullptr)
@@ -68,7 +68,7 @@ namespace Space
 		}
 
 		template<typename TypeB>
-		RefCountPtr(RefCountPtr<TypeB> Other)
+		RefCountPtr(RefCountPtr<TypeB> const& Other)
 		{
 			if (dynamic_cast<Type*>(Other.p) != nullptr)
 			{

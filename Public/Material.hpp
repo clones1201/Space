@@ -4,28 +4,127 @@
 #include "Prerequisites.hpp"
 #include "Basic.hpp"
 #include "Utility.hpp"
+#include "Shader.hpp"
+#include "ShaderReflection.hpp"
 
 namespace Space
 {
 	class SPACE_API StaticBoolParameter
 	{
 	private:
-		Name ParamName;
-		bool value : 1;
+		Name m_Name;
+		bool m_Value : 1;
 	public:
 		StaticBoolParameter();
-		StaticBoolParameter(std::string const& name);
-		StaticBoolParameter(std::wstring const& name);
-		StaticBoolParameter(const Name& name);
+		StaticBoolParameter(std::string const& name, bool defaultValue = false);
+		StaticBoolParameter(std::wstring const& name, bool defaultValue = false);
+		StaticBoolParameter(const Name& name, bool defaultValue = false);
 
+		~StaticBoolParameter();
+
+		Name GetName() const;
+		void SetName(Name const& name);
 		bool GetValue() const;
-		void SetValue(bool value) const;
+		void SetValue(bool value);
 		uint32 GetHashCode() const;
 
 		//	virtual std::ostream& Write(std::ostream& archiver) const;
 		//	virtual std::istream& Read(std::istream& archiver);
-		bool operator == (StaticBoolParameter const& param) const;
-		bool operator != (StaticBoolParameter const& param) const;
+		//bool operator == (StaticBoolParameter const& param) const;
+		//bool operator != (StaticBoolParameter const& param) const;
+	};
+
+	class TStaticBoolParameter;
+	class TStaticComponentMaskParameter;
+
+	template <class Ty>
+	class IsSwitchParameter
+	{
+	};
+
+	template<>
+	class IsSwitchParameter < TStaticBoolParameter >
+	{
+		static const bool value = true;
+	};
+
+	template<>
+	class IsSwitchParameter < TStaticComponentMaskParameter >
+	{
+		static const bool value = false;
+	};
+	
+	template <class Ty>
+	class TStaticParameter
+	{
+	public:
+		Name m_Name;
+
+		typedef	typename std::enable_if <IsSwitchParameter<Ty>::value, bool> ::type
+			SwitchBoolValue;
+		typedef	typename std::enable_if <!IsSwitchParameter<Ty>::value, bool> ::type
+			MaskBoolValue;
+
+		inline SwitchBoolValue GetValue() const
+		{
+			return m_Value;
+		}
+		inline void SetValue(SwitchBoolValue value)
+		{
+			m_Value = value;
+		}
+
+		inline MaskBoolValue GetValueR() const
+		{
+			return m_ValueR;
+		}
+		inline MaskBoolValue GetValueG() const
+		{
+			return m_ValueG;
+		}
+		inline MaskBoolValue GetValueB() const
+		{
+			return m_ValueB;
+		}
+		inline MaskBoolValue GetValueA() const
+		{
+			return m_ValueA;
+		}
+		inline void SetValueR(MaskBoolValue value)
+		{
+			m_ValueR = value;
+		}
+		inline void SetValueG(MaskBoolValue value)
+		{
+			m_ValueG = value;
+		}
+		inline void SetValueB(MaskBoolValue value)
+		{
+			m_ValueB = value;
+		}
+		inline void SetValueA(MaskBoolValue value)
+		{
+			m_ValueA = value;
+		}
+
+	private:
+		SwitchBoolValue m_Value = false;
+		MaskBoolValue m_ValueR = false;
+		MaskBoolValue m_ValueG = false;
+		MaskBoolValue m_ValueB = false;
+		MaskBoolValue m_ValueA = false;
+	};
+
+	class SPACE_API TStaticBoolParameter 
+		: public TStaticParameter < TStaticBoolParameter >
+	{
+		
+	};
+
+	class SPACE_API TStaticComponentMaskParameter 
+		: public TStaticParameter < TStaticComponentMaskParameter >
+	{
+
 	};
 
 	class SPACE_API StaticComponentMaskParameter
@@ -35,9 +134,12 @@ namespace Space
 		bool maskR : 1, maskG : 1, maskB : 1, maskA : 1;
 	public:
 		StaticComponentMaskParameter();
-		StaticComponentMaskParameter(std::string const& name);
-		StaticComponentMaskParameter(std::wstring const& name);
-		StaticComponentMaskParameter(Name const& name);
+		StaticComponentMaskParameter(std::string const& name,
+			bool maskR = false,bool maskG = false, bool maskB = false, bool maskA = false);
+		StaticComponentMaskParameter(std::wstring const& name,
+			bool maskR = false, bool maskG = false, bool maskB = false, bool maskA = false);
+		StaticComponentMaskParameter(Name const& name,
+			bool maskR = false, bool maskG = false, bool maskB = false, bool maskA = false);
 
 		bool GetMaskR() const;
 		bool GetMaskG() const;
@@ -53,8 +155,8 @@ namespace Space
 
 		//	virtual std::ostream& Write(std::ostream& archiver) const;
 		//	virtual std::istream& Read(std::istream& archiver);
-		bool operator == (StaticComponentMaskParameter const& param) const;
-		bool operator != (StaticComponentMaskParameter const& param) const;
+		//bool operator == (StaticComponentMaskParameter const& param) const;
+		//bool operator != (StaticComponentMaskParameter const& param) const;
 	};
 
 	class SPACE_API StaticParameterSet

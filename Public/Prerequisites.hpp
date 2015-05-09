@@ -27,6 +27,7 @@
 
 #include "Math.hpp"
 
+#include <atomic>
 #include <algorithm>
 #include <functional>
 #include <vector>

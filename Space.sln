@@ -16,6 +16,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ShaderBuildWorker", "Program\ShaderBuildWorker\ShaderBuildWorker.vcxproj", "{6F5FF595-91AD-4B59-B54E-C39BF1B819B3}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScriptExp", "ScriptExp\ScriptExp.vcxproj", "{763FAF7C-6DD6-441A-B572-0D96B86184EF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E9ECBDE3-B1DB-4984-A1BF-33D9212995AE} = {E9ECBDE3-B1DB-4984-A1BF-33D9212995AE}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

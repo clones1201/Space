@@ -12,5 +12,6 @@
 #include "Shader.hpp"
 #include "Mesh.hpp"
 #include "ShaderReflection.hpp"
+#include "Material.hpp"
 
 #endif
