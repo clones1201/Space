@@ -17,6 +17,7 @@ class = typename std::enable_if<std::is_integral<T>::value>::type>
 int main(int argc, char* argv[])
 {
 	{
+		is_odd(4.0);
 		/*std::fstream tempFile("C:/Code/GitHub/Space/Assets/Material/default/0.hlsl.ps.cso", std::ios_base::in | std::ios_base::binary);
 		if (!tempFile.is_open())
 		{
