@@ -2,7 +2,8 @@ Space
 =====  
   
 Third Party Library required :  
-    **(Name | Environment Variable)**  
+    _(Name | Environment Variable)_  
     * DirectXTK, $(DXTK_DIR)  
     * assimp, $(ASSIMP_DIR)  
+    * rapidJSON, $(RAPIDJSON_DIR)
 
