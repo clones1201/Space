@@ -134,9 +134,9 @@ namespace Space
 	std::string GetAssetsPath()
 	{
 #if (defined _DEBUG) || (defined DEBUG)
-		return "../Assets/";
-#else
 		return "../../Assets/";
+#else
+		return "../Assets/";
 #endif
 	}
 

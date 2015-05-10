@@ -1,20 +1,20 @@
 #ifndef __SPACE_PREREQUISITES_HPP__
 #define __SPACE_PREREQUISITES_HPP__
 
-//#ifndef SPACE_GAME
 #ifdef SPACE_EXPORTS
 #define SPACE_API __declspec(dllexport)
 #else
 #define SPACE_API __declspec(dllimport)
 #endif
-//#else
-//#define SPACE_API 
-//#endif
+
 
 #define SPACE_WIN32 1
 
 #if defined _WIN32
 #define SPACE_PLATFORM SPACE_WIN32
+#ifdef _M_IX86
+
+#endif
 #else
 #error no other platform supported.
 #endif
@@ -34,6 +34,7 @@
 #include <map>
 #include <list>
 #include <unordered_map>
+#include <unordered_set>
 #include <set>
 #include <string>
 #include <iostream>

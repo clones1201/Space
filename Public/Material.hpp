@@ -9,45 +9,39 @@
 
 namespace Space
 {
+	class StaticParameterSet;
+
 	class SPACE_API StaticBoolParameter
 	{
-	private:
-		Name m_Name;
-		bool m_Value : 1;
 	public:
-		StaticBoolParameter();
-		StaticBoolParameter(std::string const& name, bool defaultValue = false);
-		StaticBoolParameter(std::wstring const& name, bool defaultValue = false);
-		StaticBoolParameter(const Name& name, bool defaultValue = false);
-
 		~StaticBoolParameter();
 
 		Name GetName() const;
 		void SetName(Name const& name);
 		bool GetValue() const;
 		void SetValue(bool value);
-		uint32 GetHashCode() const;
 
-		//	virtual std::ostream& Write(std::ostream& archiver) const;
-		//	virtual std::istream& Read(std::istream& archiver);
-		//bool operator == (StaticBoolParameter const& param) const;
-		//bool operator != (StaticBoolParameter const& param) const;
+		bool operator==(StaticBoolParameter const& other) const;
+	private:
+		StaticParameterSet* pSet;
+		Name m_Name;
+		uint8 m_Bit;
+		StaticBoolParameter(StaticParameterSet* pSet, std::string const& name, uint8 bit);
+		StaticBoolParameter(StaticParameterSet* pSet, std::wstring const& name, uint8 bit);
+		StaticBoolParameter(StaticParameterSet* pSet, const Name& name, uint8 bit);
+
+		//uint32 GetHashCode() const;
+
+		friend class StaticParameterSet;
 	};
 	
-	class SPACE_API StaticComponentMaskParameter
+	class SPACE_API StaticMaskParameter
 	{
-	private:
-		Name ParamName;
-		bool maskR : 1, maskG : 1, maskB : 1, maskA : 1;
 	public:
-		StaticComponentMaskParameter();
-		StaticComponentMaskParameter(std::string const& name,
-			bool maskR = false,bool maskG = false, bool maskB = false, bool maskA = false);
-		StaticComponentMaskParameter(std::wstring const& name,
-			bool maskR = false, bool maskG = false, bool maskB = false, bool maskA = false);
-		StaticComponentMaskParameter(Name const& name,
-			bool maskR = false, bool maskG = false, bool maskB = false, bool maskA = false);
+		~StaticMaskParameter();
 
+		Name GetName() const;
+		void SetName(Name const& name);
 		bool GetMaskR() const;
 		bool GetMaskG() const;
 		bool GetMaskB() const;
@@ -57,75 +51,87 @@ namespace Space
 		void SetMaskG(bool value);
 		void SetMaskB(bool value);
 		void SetMaskA(bool value);
+		 
+		bool operator==(StaticMaskParameter const& other) const;
+	private:
+		StaticParameterSet* pSet;
+		Name m_Name;
+		uint8 m_BitR;
+		uint8 m_BitG;
+		uint8 m_BitB;
+		uint8 m_BitA;
+		StaticMaskParameter(
+			StaticParameterSet* pSet, std::string const& name, 
+			uint8 bitR, uint8 bitG, uint8 bitB, uint8 bitA);
+		StaticMaskParameter(
+			StaticParameterSet* pSet, std::wstring const& name,
+			uint8 bitR, uint8 bitG, uint8 bitB, uint8 bitA);
+		StaticMaskParameter(
+			StaticParameterSet* pSet, Name const& name,
+			uint8 bitR, uint8 bitG, uint8 bitB, uint8 bitA);
 
-		uint32 GetHashCode() const;
-
-		//	virtual std::ostream& Write(std::ostream& archiver) const;
-		//	virtual std::istream& Read(std::istream& archiver);
-		//bool operator == (StaticComponentMaskParameter const& param) const;
-		//bool operator != (StaticComponentMaskParameter const& param) const;
+		friend class StaticParameterSet;
 	};
 
+	/* can have 32 static switch at all or 8 static mask at all */
 	class SPACE_API StaticParameterSet
 	{
-	private:
-		std::vector<StaticBoolParameter> SwitchParameters;
-		std::vector<StaticComponentMaskParameter> ComponentMaskParameters;
 	public:
 		StaticParameterSet();
-		StaticParameterSet(StaticParameterSet const& other);
-		StaticParameterSet& operator=(StaticParameterSet const& other);
-		StaticParameterSet(StaticParameterSet && other);
-		StaticParameterSet& operator=(StaticParameterSet && other);
-
+		
+		// return a vector of sets, which includes all possible value sets
 		std::vector<StaticParameterSet> GetAllStaticParameterSet();
 		
 		void Clear();
 
-		void AddSwitch(Name const& name);
-		void RemoveSwitch(Name const& name);
-		void AddMask(Name const& name);
-		void RemoveMask(Name const& name);
-		
+		void AddSwitch(Name const& name, 
+			bool defaultValue = false);
+		void AddMask(Name const& name,
+			bool maskR = false, bool maskG = false, 
+			bool maskB = false, bool maskA = false);
+				
 		int32 GetSwitchCount() const;
 		int32 GetMaskCount() const;
 
-		StaticBoolParameter& GetSwitchByIndex(int32 idx);
-		StaticBoolParameter& GetSwitchByName(Name name);
-		StaticComponentMaskParameter& GetMaskByIndex(int32 idx);
-		StaticComponentMaskParameter& GetMaskByName(Name name);
+		// throw exception if no parameter has this name
+		StaticBoolParameter& GetSwitchByName(Name name);		
+		// throw exception if no parameter has this name
+		StaticMaskParameter& GetMaskByName(Name name);
 
-		bool operator == (const StaticParameterSet& param) const;
-		bool operator != (const StaticParameterSet& param) const;
+		typedef std::unordered_map<Name, StaticBoolParameter>::iterator SwitchIterator;
+		typedef std::unordered_map<Name, StaticBoolParameter>::const_iterator ConstSwitchIterator;
+		SwitchIterator SwitchBegin();
+		ConstSwitchIterator CSwitchBegin() const;
+		SwitchIterator SwitchEnd();
+		ConstSwitchIterator CSwitchEnd() const;
 
+		typedef std::unordered_map<Name, StaticMaskParameter>::iterator MaskIterator;
+		typedef std::unordered_map<Name, StaticMaskParameter>::const_iterator ConstMaskIterator;
+		MaskIterator MaskBegin();
+		ConstMaskIterator CMaskBegin() const;
+		MaskIterator MaskEnd();
+		ConstMaskIterator CMaskEnd() const;
+		
+		// hash code only depent on values, without names
 		uint32 GetHashCode() const;
-		//	virtual std::ostream& Write(std::ostream& archiver) const;
-		//	virtual std::istream& Read(std::istream& archiver);
+	
+		uint32 _GetBits() const;
+		void _SetBits(uint32 bits);
+		bool _GetBoolValueFromBits(uint8 bit) const;
+		void _SetBoolValueToBits(uint8 bit,bool value);
+
+		bool operator==(StaticParameterSet const& other) const;
+	private: 
+		std::unordered_map<Name, StaticBoolParameter> m_SwitchParameters;
+		std::unordered_map<Name, StaticMaskParameter> m_MaskParameters;
+
+		uint32 m_Bits = 0;
+		uint8 m_BitCount = 0;
 	};
 }
 
 namespace std
-{
-	template<>
-	class std::hash < Space::StaticBoolParameter >
-	{
-	public:
-		size_t operator()(Space::StaticBoolParameter const& param) const
-		{
-			return param.GetHashCode();
-		}
-	};
-
-	template<>
-	class std::hash < Space::StaticComponentMaskParameter >
-	{
-	public:
-		size_t operator()(Space::StaticComponentMaskParameter const& param) const
-		{
-			return param.GetHashCode();
-		}
-	};
-
+{ 
 	template<>
 	class std::hash < Space::StaticParameterSet >
 	{
@@ -202,7 +208,7 @@ namespace Space
 
 		std::shared_ptr<Shader> m_CurrentShader = nullptr;
 
-		std::unordered_map<Name, std::shared_ptr<Shader>> m_Shaders;
+		std::unordered_map<Name, std::unique_ptr<Shader>> m_Shaders;
 		std::unordered_map<StaticParameterSet, Shader*> m_ShaderMap;
 	};
 }

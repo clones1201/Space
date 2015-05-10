@@ -105,6 +105,9 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Public\;$(VCInstallDir)UnitTest\include\;$(FBXSDK_DIR)\include\;$(DXTK_DIR)\inc\;$(ASSIMP_DIR)\include\;$(RAPIDJSON_DIR)\include\;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_UNICODE;UNICODE;SPACE_GAME;SPACE_EXPORTS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4251;</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ShowIncludes>false</ShowIncludes>
+      <OmitDefaultLibName>true</OmitDefaultLibName>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -154,13 +157,6 @@
     <ClInclude Include="..\Public\Utility.hpp" />
     <ClInclude Include="..\Public\Win32Window.hpp" />
     <ClInclude Include="D3D11Shared.hpp" />
-    <FxCompile Include="..\Shaders\Basic.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Editor|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Editor|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Game|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Game|x64'">true</ExcludedFromBuild>
-      <FileType>CppHeader</FileType>
-    </FxCompile>
     <ClInclude Include="..\Public\Basic.hpp" />
     <ClInclude Include="..\Public\Core.hpp" />
     <ClInclude Include="..\Public\Game.hpp" />

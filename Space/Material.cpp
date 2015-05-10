@@ -6,27 +6,24 @@
 namespace Space
 {
 
-	StaticBoolParameter::StaticBoolParameter()
-	{}
-
 	StaticBoolParameter::~StaticBoolParameter()
 	{}
 
 	StaticBoolParameter::StaticBoolParameter(
-		std::string const& name, bool defaultValue)
-		:StaticBoolParameter(Name(name), defaultValue)
+		StaticParameterSet* pSet,std::string const& name, uint8 bit)
+		:StaticBoolParameter(pSet,Name(name), bit)
 	{
 	}
 
 	StaticBoolParameter::StaticBoolParameter(
-		std::wstring const& name, bool defaultValue)
-		: StaticBoolParameter(Name(name),defaultValue)
+		StaticParameterSet* pSet, std::wstring const& name, uint8 bit)
+		:StaticBoolParameter(pSet,Name(name),bit)
 	{
 	}
 
 	StaticBoolParameter::StaticBoolParameter(
-		Name const& name, bool defaultValue)
-		: m_Name(name), m_Value(defaultValue)
+		StaticParameterSet* pSet, Name const& name, uint8 bit)
+		: pSet(pSet), m_Name(name), m_Bit(bit)
 	{
 	}
 
@@ -42,19 +39,236 @@ namespace Space
 
 	bool StaticBoolParameter::GetValue() const
 	{
-		return m_Value;
+		return pSet->_GetBoolValueFromBits(m_Bit);
 	}
 
 	void StaticBoolParameter::SetValue(bool value)
 	{
-		m_Value = value;
+		pSet->_SetBoolValueToBits(m_Bit, value);
 	}
 
-	uint32 StaticBoolParameter::GetHashCode() const
+	bool StaticBoolParameter::operator==(StaticBoolParameter const& other) const
 	{
-		std::hash<Name> nHasher;
-		std::hash<bool> bHasher;
-		return nHasher(m_Name) ^ bHasher(m_Value);
+		return (m_Bit == other.m_Bit) && (m_Name == other.m_Name);
+	}
+
+	//Definitions of class StaticMaskParameter
+		
+	StaticMaskParameter::StaticMaskParameter(
+		StaticParameterSet* pSet, std::string const& name,
+		uint8 bitR, uint8 bitG, uint8 bitB, uint8 bitA)
+		:StaticMaskParameter(pSet, Name(name),bitR, bitG, bitB, bitA)
+	{
+	}
+
+	StaticMaskParameter::StaticMaskParameter(
+		StaticParameterSet* pSet, std::wstring const& name,
+		uint8 bitR, uint8 bitG, uint8 bitB, uint8 bitA)
+		: StaticMaskParameter(pSet,Name(name),bitR,bitG,bitB,bitA)
+	{
+	}
+
+	StaticMaskParameter::StaticMaskParameter(
+		StaticParameterSet* pSet, Name const& name,
+		uint8 bitR, uint8 bitG, uint8 bitB, uint8 bitA)
+		: pSet(pSet), m_Name(name), m_BitR(bitR), m_BitG(bitG), m_BitB(bitB), m_BitA(bitA)
+	{
+	}
+
+	StaticMaskParameter::~StaticMaskParameter()
+	{
+	}
+
+	Name StaticMaskParameter::GetName() const
+	{
+		return Name(m_Name);
+	}
+	void StaticMaskParameter::SetName(Name const& name)
+	{
+		m_Name = name;
+	}
+	bool StaticMaskParameter::GetMaskR() const
+	{
+		return pSet->_GetBoolValueFromBits(m_BitR);
+	}
+	bool StaticMaskParameter::GetMaskG() const
+	{
+		return pSet->_GetBoolValueFromBits(m_BitG);
+	}
+	bool StaticMaskParameter::GetMaskB() const
+	{
+		return pSet->_GetBoolValueFromBits(m_BitB);
+	}
+	bool StaticMaskParameter::GetMaskA() const
+	{
+		return pSet->_GetBoolValueFromBits(m_BitA);
+	}
+
+	void StaticMaskParameter::SetMaskR(bool value)
+	{
+		pSet->_SetBoolValueToBits(m_BitR, value);
+	}
+	void StaticMaskParameter::SetMaskG(bool value)
+	{
+		pSet->_SetBoolValueToBits(m_BitG, value);
+	}
+	void StaticMaskParameter::SetMaskB(bool value)
+	{
+		pSet->_SetBoolValueToBits(m_BitB, value);
+	}
+	void StaticMaskParameter::SetMaskA(bool value)
+	{
+		pSet->_SetBoolValueToBits(m_BitA, value);
+	}
+	
+	bool StaticMaskParameter::operator==(StaticMaskParameter const& other) const
+	{
+		return 
+			(m_BitR == other.m_BitR) && 
+			(m_BitG == other.m_BitG) &&
+			(m_BitB == other.m_BitB) &&
+			(m_BitA == other.m_BitA) &&
+			(m_Name == other.m_Name);
+	}
+
+	// Definitions of class StaticParameterSet
+	StaticParameterSet::StaticParameterSet(){}
+	
+	std::vector<StaticParameterSet> StaticParameterSet::GetAllStaticParameterSet()
+	{
+		std::vector<StaticParameterSet> ret;
+		int count = (2 << this->GetSwitchCount()) * (4 << this->GetMaskCount());
+		ret.reserve(count);
+		for (auto i = 0; i < count; ++i)
+		{
+			StaticParameterSet newOne = *this;
+			newOne.m_Bits = i;
+			ret.push_back(newOne);
+		}
+		return std::move(ret);
+	}
+
+	void StaticParameterSet::Clear()
+	{
+		m_SwitchParameters.clear();
+		m_MaskParameters.clear();
+		m_Bits = 0;
+		m_BitCount = 0;
+	}
+
+	void StaticParameterSet::AddSwitch(Name const& name,
+		bool defaultValue)
+	{
+		assert(m_BitCount + 1 < 32);
+		StaticBoolParameter newParam = StaticBoolParameter(
+			this, name, m_BitCount);
+		m_BitCount++;
+		newParam.SetValue(defaultValue);
+		m_SwitchParameters.insert(
+			std::pair<Name,StaticBoolParameter>(name,newParam));
+	}
+	void StaticParameterSet::AddMask(Name const& name,
+		bool maskR, bool maskG,
+		bool maskB, bool maskA)
+	{
+		assert(m_BitCount + 4 < 32);
+		StaticMaskParameter newParam = StaticMaskParameter(
+			this, name, m_BitCount, m_BitCount + 1, m_BitCount + 2, m_BitCount + 3);
+		m_BitCount += 4;
+		newParam.SetMaskR(maskR);
+		newParam.SetMaskG(maskG);
+		newParam.SetMaskB(maskB);
+		newParam.SetMaskA(maskA);
+		m_MaskParameters.insert(
+			std::pair<Name, StaticMaskParameter>(name, newParam));
+	}
+
+	int32 StaticParameterSet::GetSwitchCount() const
+	{
+		return m_SwitchParameters.size();
+	}
+	int32 StaticParameterSet::GetMaskCount() const
+	{
+		return m_MaskParameters.size();
+	}
+
+	StaticBoolParameter& StaticParameterSet::GetSwitchByName(Name name)
+	{
+		return m_SwitchParameters.at(name);
+	}
+	StaticMaskParameter& StaticParameterSet::GetMaskByName(Name name)
+	{
+		return m_MaskParameters.at(name);
+	} 
+
+	StaticParameterSet::SwitchIterator StaticParameterSet::SwitchBegin()
+	{
+		return m_SwitchParameters.begin();
+	}
+	StaticParameterSet::ConstSwitchIterator StaticParameterSet::CSwitchBegin() const
+	{
+		return m_SwitchParameters.cbegin();
+	}
+	StaticParameterSet::SwitchIterator StaticParameterSet::SwitchEnd()
+	{
+		return m_SwitchParameters.end();
+	}
+	StaticParameterSet::ConstSwitchIterator StaticParameterSet::CSwitchEnd() const
+	{
+		return m_SwitchParameters.cend();
+	}
+
+	StaticParameterSet::MaskIterator StaticParameterSet::MaskBegin()
+	{
+		return m_MaskParameters.begin();
+	}
+	StaticParameterSet::ConstMaskIterator StaticParameterSet::CMaskBegin() const
+	{
+		return m_MaskParameters.cbegin();
+	}
+	StaticParameterSet::MaskIterator StaticParameterSet::MaskEnd()
+	{
+		return m_MaskParameters.end();
+	}
+	StaticParameterSet::ConstMaskIterator StaticParameterSet::CMaskEnd() const
+	{
+		return m_MaskParameters.cend();
+	}
+
+	uint32 StaticParameterSet::GetHashCode() const
+	{
+		std::hash<uint32> hasher;
+		return hasher(m_Bits);
+	}
+
+	uint32 StaticParameterSet::_GetBits() const
+	{
+		return m_Bits;
+	}
+
+	void StaticParameterSet::_SetBits(uint32 bits)
+	{
+		m_Bits = bits;
+	}
+
+	bool StaticParameterSet::_GetBoolValueFromBits(uint8 bit) const
+	{
+		return (bool)((m_Bits >> bit) & 0x00000001);
+	}
+	void StaticParameterSet::_SetBoolValueToBits(uint8 bit, bool value)
+	{
+		value? 
+			m_Bits &= (1 << bit):
+			m_Bits |= ~(1 << bit);
+	} 
+
+	bool StaticParameterSet::operator==(StaticParameterSet const& other) const
+	{
+		return
+			(m_BitCount == other.m_BitCount) &&
+			(m_Bits == m_Bits) &&
+			(m_SwitchParameters == other.m_SwitchParameters) &&
+			(m_MaskParameters == other.m_MaskParameters);
 	}
 
 	// Definitions of class Material
@@ -194,7 +408,8 @@ namespace Space
 
 	Material::Material(RenderSystem* pRenderSys, std::string const& name)
 	{
-		std::fstream tempFile(GetAssetsPath() + "Material/" + name + "/ContentDesc.json", std::ios_base::in | std::ios_base::binary);
+		std::string filepath = GetAssetsPath() + "Material/" + name + "/ContentDesc.json";
+		std::fstream tempFile(filepath, std::ios_base::in | std::ios_base::binary);
 		if (!tempFile.is_open())
 		{
 			throw std::exception("Missing Shader File");
@@ -239,30 +454,10 @@ namespace Space
 		}
 		else
 		{
-			m_Domain = GetMaterialDomainByString(nodeBlendMode.GetString());
+			m_Domain = GetMaterialDomainByString(nodeDomain.GetString());
 		}
 
-		// Get All Shaders in Material
-		Value& nodeShaders = nodeMaterial["Shaders"];
-		if (nodeShaders.IsNull() || !nodeShaders.IsArray())
-		{
-			throw std::exception("Material doesn't have any shaders in it.");
-		}
-		for (auto iter = nodeShaders.Begin();
-			iter != nodeShaders.End(); ++iter)
-		{
-			Value& nodeShader = *iter;
-			Value& nodeShaderName = nodeShader["Name"];
-			
-			Value& nodeSourceFileName = nodeShader["SourceFile"];
-			Shader* shader = Shader::Create(pRenderSys,
-				nodeSourceFileName.GetString());
-
-			m_Shaders.insert( std::pair<Name,std::shared_ptr<Shader>>(
-					Name(nodeShaderName.GetString()),
-					std::shared_ptr<Shader>(shader)));
-		}
-
+		// Get Static Parameter Set
 		Value& nodeStaticParameters = nodeMaterial["StaticParameters"];
 		if (nodeStaticParameters.IsNull() || !nodeStaticParameters.IsArray())
 		{
@@ -292,56 +487,72 @@ namespace Space
 			else if (nodeType.GetString() == std::string("Mask"))
 			{
 				m_DefaultParameterSet.AddMask(name);
-				Value& nodeValueR = nodeParam["DefaultValueR"];
-				Value& nodeValueG = nodeParam["DefaultValueG"];
-				Value& nodeValueB = nodeParam["DefaultValueB"];
-				Value& nodeValueA = nodeParam["DefaultValueA"];
+				Value& nodeValue = nodeParam["DefaultValue"];
+				if (!nodeValue.IsArray())
+				{
+					continue;
+				}
+				
+				auto iterR = nodeValue.Begin();
+				auto iterG = iterR + 1;
+				auto iterB = iterG + 1;
+				auto iterA = iterB + 1;
 
 				m_DefaultParameterSet.GetMaskByName(name)
 					.SetMaskR(
-					!nodeValueR.IsNull() && nodeValueR.IsBool() ?
-					nodeValueR.GetBool() :
+					iterR->IsBool() ?
+					iterR->GetBool() :
 					false);
 				m_DefaultParameterSet.GetMaskByName(name)
 					.SetMaskG(
-					!nodeValueG.IsNull() && nodeValueG.IsBool() ?
-					nodeValueG.GetBool() :
+					iterG->IsBool() ?
+					iterG->GetBool() :
 					false);
 				m_DefaultParameterSet.GetMaskByName(name)
 					.SetMaskB(
-					!nodeValueB.IsNull() && nodeValueB.IsBool() ?
-					nodeValueB.GetBool() :
+					iterB->IsBool() ?
+					iterB->GetBool() :
 					false);
 				m_DefaultParameterSet.GetMaskByName(name)
 					.SetMaskA(
-					!nodeValueA.IsNull() && nodeValueA.IsBool() ?
-					nodeValueA.GetBool() :
+					iterA->IsBool() ?
+					iterA->GetBool() :
 					false);
 			}
 		}
 		m_ParameterSet = m_DefaultParameterSet;
-
-		// Get Shader Map (Static Parameters Set => Shader)
-		Value& nodeShaderMap = nodeMaterial["ShaderMap"];
-		if (nodeShaderMap.IsNull() || !nodeShaderMap.IsArray())
+		// Get All Shaders in Material
+		Value& nodeShaders = nodeMaterial["Shaders"];
+		if (nodeShaders.IsNull() || !nodeShaders.IsArray())
 		{
-			throw std::exception("Material doesn't have a Shader Map in it.");
+			throw std::exception("Material doesn't have any shaders in it.");
 		}
-		for (auto iter = nodeShaderMap.Begin(); 
+		for (auto iter = nodeShaders.Begin();
 			iter != nodeShaders.End(); ++iter)
 		{
-			Value& nodeShaderMapItem = *iter;
-			Value& nodeParameterSet = nodeShaderMapItem["ParameterSet"];
-			if (nodeParameterSet.IsNull() || !nodeParameterSet.IsArray())
+			Value& nodeShader = *iter;
+			Value& nodeShaderName = nodeShader["Name"];
+			
+			Value& nodeSourceFileName = nodeShader["SourceFile"];
+			Shader* shader = Shader::Create(pRenderSys,
+				nodeSourceFileName.GetString());
+
+			m_Shaders.insert( std::pair<Name,std::unique_ptr<Shader>>(
+					Name(nodeShaderName.GetString()),
+					std::unique_ptr<Shader>(shader)));
+
+			Value& nodeParamSet = nodeShader["ParameterSet"];
+			if (nodeParamSet.IsArray())
 			{
-				Log("Parameter Set is missing\n");
-				continue;
-			}
-			StaticParameterSet paramSet = m_DefaultParameterSet;
-			for (auto iter = nodeParameterSet.Begin(); 
-				iter != nodeParameterSet.End(); ++iter)
-			{
-				Value& nodeParamItem = *iter;
+				for (auto iter = nodeParamSet.Begin();
+					iter != nodeParamSet.End(); ++iter)
+				{
+					StaticParameterSet paramSet = m_DefaultParameterSet;
+					paramSet._SetBits(iter->GetUint());
+					m_ShaderMap.insert(
+						std::pair<StaticParameterSet,Shader*>(
+						paramSet,shader));
+				}
 			}
 		}
 	}
