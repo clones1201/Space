@@ -198,6 +198,8 @@ namespace Space
 		virtual ~Material();
 	protected:
 		Material(RenderSystem* pRenderSys, std::string const& name);
+		
+		void SelectShader();
 
 		Name m_Name;
 		MaterialDomain m_Domain;
@@ -206,7 +208,7 @@ namespace Space
 		StaticParameterSet m_ParameterSet;
 		StaticParameterSet m_DefaultParameterSet;
 
-		std::shared_ptr<Shader> m_CurrentShader = nullptr;
+		Shader* m_CurrentShader = nullptr;
 
 		std::unordered_map<Name, std::unique_ptr<Shader>> m_Shaders;
 		std::unordered_map<StaticParameterSet, Shader*> m_ShaderMap;

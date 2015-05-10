@@ -104,6 +104,8 @@ namespace Space
 		VertexShader* pShader)
 		:ShaderReflection(pShader)
 	{
+		if (pShader == nullptr)
+			throw std::exception("pShader == nullptr");
 		_Initialize(pShader->GetByteCodes(), pShader->GetSizeInBytes());
 	}
 
@@ -111,6 +113,8 @@ namespace Space
 		PixelShader* pShader
 		) : ShaderReflection(pShader)
 	{
+		if (pShader == nullptr)
+			throw std::exception("pShader == nullptr");
 		_Initialize(pShader->GetByteCodes(), pShader->GetSizeInBytes());
 	}
 

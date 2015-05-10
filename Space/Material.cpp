@@ -370,6 +370,7 @@ namespace Space
 			(std::istreambuf_iterator<char>(tempFile)),
 			(std::istreambuf_iterator<char>()));
 
+		tempFile.close();
 		tempFile.open(name + ".vs.cso", std::ios_base::in | std::ios_base::binary);
 		if (!tempFile.is_open())
 		{
@@ -408,8 +409,9 @@ namespace Space
 
 	Material::Material(RenderSystem* pRenderSys, std::string const& name)
 	{
-		std::string filepath = GetAssetsPath() + "Material/" + name + "/ContentDesc.json";
-		std::fstream tempFile(filepath, std::ios_base::in | std::ios_base::binary);
+		std::string materialPath = GetAssetsPath() + "Material/" + name + "/";
+		std::string DescriptionPath = materialPath + "ContentDesc.json";
+		std::fstream tempFile(DescriptionPath, std::ios_base::in | std::ios_base::binary);
 		if (!tempFile.is_open())
 		{
 			throw std::exception("Missing Shader File");
@@ -533,9 +535,8 @@ namespace Space
 			Value& nodeShader = *iter;
 			Value& nodeShaderName = nodeShader["Name"];
 			
-			Value& nodeSourceFileName = nodeShader["SourceFile"];
 			Shader* shader = Shader::Create(pRenderSys,
-				nodeSourceFileName.GetString());
+				materialPath + nodeShaderName.GetString());
 
 			m_Shaders.insert( std::pair<Name,std::unique_ptr<Shader>>(
 					Name(nodeShaderName.GetString()),
@@ -555,9 +556,14 @@ namespace Space
 				}
 			}
 		}
+		SelectShader();
 	}
 
 	Material::~Material()
 	{}
 
+	void Material::SelectShader()
+	{
+		m_CurrentShader = m_ShaderMap.at(m_ParameterSet);
+	}
 }

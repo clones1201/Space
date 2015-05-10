@@ -50,7 +50,6 @@
         "Shaders": [
             {
                 "Name": "Shader0",
-                "SourceFile": "Shader0.hlsl",
                 "Target": "SM_5_0",
                 "VertexShader": "VS",
                 "PixelShader": "PS",
@@ -58,7 +57,6 @@
             },
             {
                 "Name": "Shader1",
-                "SourceFile": "Shader1.hlsl",
                 "Target": "SM_5_0",
                 "VertexShader": "VS",
                 "PixelShader": "PS",
