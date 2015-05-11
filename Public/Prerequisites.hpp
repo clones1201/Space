@@ -28,6 +28,7 @@
 #include "Math.hpp"
 
 #include <atomic>
+#include <mutex>
 #include <algorithm>
 #include <functional>
 #include <vector>

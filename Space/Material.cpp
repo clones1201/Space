@@ -1,4 +1,6 @@
 #include "Log.h"
+#include "RenderSystem.hpp"
+#include "DeviceBuffer.hpp"
 #include "Shader.hpp"
 #include "ShaderReflection.hpp"
 #include "Material.hpp"
@@ -394,6 +396,22 @@ namespace Space
 	Shader::~Shader()
 	{}
 
+	// pre-defined constant buffers
+	struct CommonVariables
+	{
+		// modelview * view
+		Float4x3 _MV;
+		// Projection | CameraPosition, Time
+		Float4x4 _PCT;
+	};
+
+	std::once_flag Material::g_CommonCreationFlag;
+	std::unique_ptr<ConstantBuffer> Material::g_CommonVariablesBuffer; 
+	Float4x4 Material::g_World;
+	Float4x4 Material::g_View;
+	Float4x4 Material::g_Projection;
+	float Material::g_Time;
+	
 	Material* Material::Create(RenderSystem* pRenderSys, std::wstring const& name)
 	{
 		return Create(pRenderSys, wstr2str(name));
@@ -409,6 +427,22 @@ namespace Space
 
 	Material::Material(RenderSystem* pRenderSys, std::string const& name)
 	{
+		std::call_once(g_CommonCreationFlag, [&]()
+		{
+			CommonVariables variables;
+			variables._MV._11 = 1.0f;
+			variables._MV._22 = 1.0f;
+			variables._MV._33 = 1.0f;
+			
+			variables._PCT._11 = 1.0f;
+			variables._PCT._22 = 1.0f;
+			variables._PCT._33 = 1.0f;
+			variables._PCT._44 = 0.0f;
+
+			g_CommonVariablesBuffer.reset(ConstantBuffer::Create(pRenderSys,
+				(byte const*)&variables, sizeof(CommonVariables)));
+		});
+
 		std::string materialPath = GetAssetsPath() + "Material/" + name + "/";
 		std::string DescriptionPath = materialPath + "ContentDesc.json";
 		std::fstream tempFile(DescriptionPath, std::ios_base::in | std::ios_base::binary);
@@ -566,4 +600,58 @@ namespace Space
 	{
 		m_CurrentShader = m_ShaderMap.at(m_ParameterSet);
 	}
+
+	Name Material::GetName() const
+	{
+		return m_Name;
+	}
+
+	MaterialDomain Material::GetDomain() const
+	{
+		return m_Domain;
+	}
+
+	MaterialBlendMode Material::GetBlendMode() const
+	{
+		return m_BlendMode;
+	}
+
+	void Material::SetWorld(Float4x4 world)
+	{
+		g_World = world;
+	}
+	void Material::SetView(Float4x4 view)
+	{
+		g_View = view;
+	}
+	void Material::SetProjection(Float4x4 projection)
+	{
+		g_Projection = g_Projection;
+	}
+	void Material::SetGameTime(float time)
+	{
+		g_Time = time;
+	}
+
+	void Material::Apply()
+	{
+		Matrix world = LoadFloat4x4(&g_World);
+		Matrix view = LoadFloat4x4(&g_View);
+		Matrix projection = LoadFloat4x4(&g_Projection);
+
+		Matrix worldView = world * view;
+		projection.r[3].m128_f32[3] = g_Time;
+	
+		CommonVariables variables;
+		StoreFloat4x3(&variables._MV,worldView);
+		StoreFloat4x4(&variables._PCT, projection);
+		g_CommonVariablesBuffer->Update(0, sizeof(CommonVariables),
+			(byte const*)&variables);
+		g_CommonVariablesBuffer->UpdateToDevice();
+		
+		SelectShader();
+
+		if (m_CurrentShader != nullptr) m_CurrentShader->Apply();
+	}
+
 }

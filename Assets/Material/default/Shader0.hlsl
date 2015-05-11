@@ -1,4 +1,5 @@
 #define Float4x4 float4x4
+#define Float4x3 float4x3
 #define Float4 float4
 
 static const float3 DirectionalLightDirection = normalize(float3(1.0f, -1.0f, -1.0f));
@@ -7,22 +8,19 @@ static const float3 DirectionalLightColor = float3(1.0f, 1.0f, 1.0f);	//should m
 #define Pi 3.1415926
 #define DualPi 6.2831852
 
-struct MatrixPack
-{
-	matrix<float,4,4> mProjection;
-	Float4x4 mWorld;
-};
-
 tbuffer Bone{
 	Float4x4 g_mTexBoneWorld[256];
 };
 
 Buffer<float4> g_Buffer;
 
-cbuffer UpdateEveryFrame
+cbuffer CommonVariables
 {
-	Float4x4 mView;
-	MatrixPack pack;
+	//   model * view 
+	Float4x3 mMV;
+	//  projection
+	//  Camera[0] | Camera[1] | Camera[2] | GameTime
+	Float4x4 mPCT; 
 };
 
 Texture2D texture1;
@@ -48,6 +46,33 @@ struct VSInput
 	float4 TexCoord : TEXCOORD0;
 };
 
+struct MaterialVertexInputParameters
+{
+	// ModelView - View
+	float4x4 MV;
+	float4x4  Projection;
+	float Time;
+};
+
+MaterialVertexInputParameter GetVertexInputParameter(VSInput input)
+{
+	MaterialVertexInputParameter ret = (MaterialVertexInputParametr)0;
+	ret.MV = {
+		{ mMV[0] },
+		{ mMV[1] },
+		{ mMV[2] },
+		{ 0, 0, 0, 1 }
+	};
+	ret.Projection = {
+		mProjection[0],
+		mProjection[1],
+		mProjection[2],
+		{ 0, 0, 0, 1 }
+	};
+	ret.Time = mProjection._44; 
+	return ret;
+}
+
 struct VSOutput
 {
 	float4 Position  : SV_POSITION;
@@ -55,13 +80,14 @@ struct VSOutput
 	float4 Normal    : NORMAL0;
 	float4 Tangent   : TANGENT0;
 	float4 TexCoord  : TEXCOORD0;
+	float3 CameraPositon;
+	float Time;
 };
 
-float4 PositionTransform(float4 input){
+float4 PositionTransform(float4 input,MaterialVertexInputParameter parameters){
 	float4 output = (float4)0;
-		output = mul(input, pack.mWorld);
-	output = mul(output, mView);
-	//output = mul(output, pack.pack.mProjection);
+	output = mul(input, parameters.MV);
+	output = mul(output, parameters.Projection);
 	return output;
 }
 
@@ -69,9 +95,9 @@ void VS(VSInput input,out VSOutput output)
 {
 	output = (VSOutput)0;
 	output.Position = PositionTransform(input.Position);
-	output.PositionWS = mul(float4(input.Position.xyz, 1.0f), pack.mWorld);
-	output.Normal = mul(float4(input.Normal.xyz, 0.0f), pack.mWorld);
-	output.Tangent = mul(float4(input.Tangent.xyz, 0.0f), pack.mWorld);
+	output.PositionWS = mul(float4(input.Position.xyz, 1.0f), parameters.MV);
+	output.Normal = mul(float4(input.Normal.xyz, 0.0f), parameters.MV);
+	output.Tangent = mul(float4(input.Tangent.xyz, 0.0f), parameters.MV);
 	output.TexCoord = input.TexCoord;   
 }
 

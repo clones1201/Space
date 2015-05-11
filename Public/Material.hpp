@@ -183,7 +183,7 @@ namespace Space
 		MB_Additive,
 		MB_Max
 	}MaterialBlendMode;
-		
+	
 	class SPACE_API Material : virtual public Uncopyable
 	{
 	public:
@@ -194,12 +194,26 @@ namespace Space
 		StaticParameterSet& GetStaticParameterSet();
 
 		Name GetName() const;
-		void Apply(RenderSystem* pRenderSys);
+		MaterialDomain GetDomain() const;
+		MaterialBlendMode GetBlendMode() const;
+	
+		static void SetWorld(Float4x4 world);
+		static void SetView(Float4x4 view);
+		static void SetProjection(Float4x4 projection);
+		static void SetGameTime(float time);
+
+		// TODO 
+		//TextureParameter& GetTextureParameter(Name const& name);
+		//ScalarParameter& GetScalarParameter(Name const& name);
+		//VectorParameter& GetVectorParameter(Name const& name);
+
+		void Apply();
 		virtual ~Material();
 	protected:
 		Material(RenderSystem* pRenderSys, std::string const& name);
 		
 		void SelectShader();
+		RenderSystem* pRenderSystem;
 
 		Name m_Name;
 		MaterialDomain m_Domain;
@@ -207,6 +221,13 @@ namespace Space
 
 		StaticParameterSet m_ParameterSet;
 		StaticParameterSet m_DefaultParameterSet;
+		
+		static std::once_flag g_CommonCreationFlag;
+		static std::unique_ptr<ConstantBuffer> g_CommonVariablesBuffer;
+		static Float4x4 g_World;
+		static Float4x4 g_View;
+		static Float4x4 g_Projection;
+		static float g_Time;
 
 		Shader* m_CurrentShader = nullptr;
 
