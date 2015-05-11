@@ -114,6 +114,13 @@
       <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;$(DXTK_DIR)\Bin\Desktop_2013\Win32\Debug\;$(FBXSDK_DIR)\lib\vs2013\x86\debug\;$(ASSIMP_DIR)\lib\Release\;</AdditionalLibraryDirectories>
       <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxgi.lib;DirectXTK.lib;assimp.lib;libfbxsdk.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>xcopy /F /Y "$(SolutionDir)/Extra/Space.natvis" "$(VisualStudioDir)\Visualizers\Space.natvis"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Game|x64'">
     <ClCompile>

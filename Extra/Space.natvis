@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+
+<Type Name="Space::Name">
+	<DisplayString Condition="m_impl._Ptr != 0">[count {m_impl._Rep->_Uses}] {{{*(m_impl._Ptr->pStr._Myptr)}}}</DisplayString>
+	<DisplayString Condition="m_impl._Ptr == 0">corrupted</DisplayString>
+</Type>
+
+</AutoVisualizer>

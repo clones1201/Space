@@ -260,25 +260,30 @@ namespace Space
 	class Name::Impl
 	{
 	public:
-		typedef std::map<std::weak_ptr<Name::Impl>, std::wstring, std::owner_less<std::weak_ptr<Name::Impl>>> NameMapType;
+		typedef std::list<std::weak_ptr<Name::Impl>> StringPool;
 
-		static NameMapType g_NameMap;
+		static StringPool g_StringPool;
 
-		std::weak_ptr<Name::Impl> ptr;
+		std::weak_ptr<Name::Impl> pSelf;
+		std::unique_ptr<std::wstring> pStr = nullptr;
 
 		Impl(){}
-		Impl(const std::wstring& name){}
 		~Impl()
 		{
-			g_NameMap.erase(ptr);
+			g_StringPool.erase(
+				std::find_if(g_StringPool.begin(),g_StringPool.end(), 
+				[&](std::weak_ptr<Name::Impl> const& param1)->bool
+			{
+				return pSelf.lock() == param1.lock();
+			}));
 		}
 	};
 
-	Name::Impl::NameMapType Name::Impl::g_NameMap;
+	Name::Impl::StringPool Name::Impl::g_StringPool;
 
 	Name::Name()
+		:Name(L"")
 	{
-		Name(TEXT(""));
 	}
 	Name::Name(std::string const& name)
 		:Name(str2wstr(name))
@@ -287,18 +292,19 @@ namespace Space
 	Name::Name(std::wstring const& name)
 	{
 		bool found = false;
-		std::for_each(Impl::g_NameMap.begin(), Impl::g_NameMap.end(),
-			[&name, this, &found](std::pair<std::weak_ptr<Name::Impl>, std::wstring> elem)
-		{
-			if (elem.second == name){
-				this->m_impl = elem.first.lock();
+		std::for_each(Impl::g_StringPool.begin(), Impl::g_StringPool.end(),
+			[&name, this, &found](Impl::StringPool::value_type& elem)
+		{			
+			if (*(elem.lock()->pStr) == name){
+				this->m_impl = elem.lock();
 				found = true;
 			}
 		});
 		if (!found){
-			m_impl.reset(new Name::Impl(name));
-			m_impl->ptr = m_impl;
-			Impl::g_NameMap.insert(Impl::NameMapType::value_type(m_impl, name));
+			m_impl.reset(new Name::Impl());
+			m_impl->pSelf = m_impl;
+			m_impl->pStr.reset(new std::wstring(name));
+			Impl::g_StringPool.push_back(m_impl);
 		}
 	}
 	Name::Name(Name const& param)
@@ -310,11 +316,11 @@ namespace Space
 	}
 	std::wstring Name::ToWString() const
 	{
-		TRY_CATCH_OUT_OF_RANGE(return Impl::g_NameMap.at(m_impl), return TEXT(""));
+		return *(m_impl->pStr);
 	}
 	std::string Name::ToString() const
 	{
-		TRY_CATCH_OUT_OF_RANGE(return wstr2str(Impl::g_NameMap.at(m_impl)), return (""));
+		return wstr2str(*(m_impl->pStr));
 	}
 	bool Name::operator==(const Name&param) const
 	{
