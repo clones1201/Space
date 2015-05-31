@@ -27,7 +27,7 @@ namespace Space
 
 	extern DXGI_FORMAT g_ElemDXGIFormatTable[];
 
-#define GetElemDXGIFormat(type) g_ElemDXGIFormatTable[type];
+#define GetElemDXGIFormat(type) g_ElemDXGIFormatTable[type]
 
 }
 

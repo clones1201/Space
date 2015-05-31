@@ -316,6 +316,7 @@ namespace Space
 				return (MaterialDomain)i;
 			}
 		}
+		return MaterialDomain::Surface;
 	}
 	inline MaterialDomain GetMaterialDomainByString(std::wstring const& name)
 	{
@@ -326,6 +327,7 @@ namespace Space
 				return (MaterialDomain)i;
 			}
 		}
+		return MaterialDomain::Surface;
 	}
 
 	inline MaterialBlendMode GetMaterialBlendModeByString(std::string const& name)
@@ -337,6 +339,7 @@ namespace Space
 				return (MaterialBlendMode)i;
 			}
 		}
+		return MaterialBlendMode::Opaque;
 	}
 	inline MaterialBlendMode GetMaterialBlendModeByString(std::wstring const& name)
 	{
@@ -347,6 +350,7 @@ namespace Space
 				return (MaterialBlendMode)i;
 			}
 		}
+		return MaterialBlendMode::Opaque;
 	}
 	
 	Shader* Shader::Create(RenderSystem* pRenderSys, std::wstring const& name)
@@ -661,8 +665,7 @@ namespace Space
 		
 		SelectShader();
 
-		if (m_CurrentShader != nullptr) 
-			return m_CurrentShader;
+		return m_CurrentShader;
 	}
 
 }

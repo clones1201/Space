@@ -13,54 +13,6 @@ namespace Space
 	CommandList::~CommandList()
 	{}
 	
-	void CommandList::Reset()
-	{
-		_Reset();
-	}
-
-	void CommandList::Close()
-	{
-		_Close();
-	}
-
-	void CommandList::SetPrimitiveTopology()
-	{
-		_SetPrimitiveTopology();
-	}
-
-	void CommandList::SetIndexBuffer(IndexBuffer* buffer)
-	{
-		_SetIndexBuffer();
-	}
-	void CommandList::SetVertexBuffers(uint startSlot, uint numBuffers, VertexBuffer** buffer)
-	{
-		_SetVertexBuffer();
-	}
-	void CommandList::SetViewPorts(ViewPort** pViewPorts,uint numViewPorts)
-	{
-		_SetViewPorts();
-	}
-	void CommandList::SetPipelineState(PipelineState* state)
-	{
-		_SetPipelineState(state);
-	}
-	void CommandList::SetRenderTargets(RenderTarget** targets, uint32 numTargets)
-	{
-		_SetRenderTargets(targets, numTargets);
-	}
-	void CommandList::DrawIndexed()
-	{
-
-	}
-	void CommandList::DrawInstanced()
-	{
-
-	}
-	void CommandList::DrawIndexedInstanced()
-	{
-
-	}
-
 	PipelineState* PipelineState::Create(RenderSystem* pRenderSys)
 	{
 		return pRenderSys->CreatePipelineState();
@@ -101,6 +53,21 @@ namespace Space
 	{
 		m_SampleDesc = desc;
 		_SetSample();
+	}
+
+	void PipelineState::SetSampleMask(uint32 mask)
+	{
+		m_SampleMask = mask;
+	}
+
+	void PipelineState::SetStencilRef(uint32 ref)
+	{
+		m_StencilRef = ref;
+	}
+
+	void PipelineState::SetBlendFactor(Float4 factor)
+	{
+		m_BlendFactor = factor;
 	}
 
 }

@@ -202,7 +202,7 @@ namespace Space
 		Max
 	};
 		
-	enum class VertexElem : uint16
+	enum class VertexElemType : uint16
 	{
 		None,
 		Float1,

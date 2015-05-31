@@ -60,6 +60,11 @@ namespace Space
 	{
 	}
 		
+	CComPtr<ID3D11PixelShader> D3D11PixelShader::GetShader() const
+	{
+		return m_pShader;
+	}
+
 	D3D11PixelShader* D3D11PixelShader::LoadBinaryFromMemory(
 		D3D11Device& device,
 		byte const* byteCodes, uint32 sizeInBytes)

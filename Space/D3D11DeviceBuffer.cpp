@@ -41,7 +41,7 @@ namespace Space
 		HRESULT hr = S_OK;
 		switch (m_Usage)
 		{
-		case RU_Default:
+		case ResourceUsage::Default:
 		{
 			D3D11_BOX box; //buffer is a 1D dimension memory.
 			box.left = startOffset;
@@ -54,8 +54,8 @@ namespace Space
 			isSuccess = true;
 		}
 		break;
-		case RU_Staging:
-		case RU_Dynamic:
+		case ResourceUsage::Staging:
+		case ResourceUsage::Dynamic:
 		{
 			D3D11_MAPPED_SUBRESOURCE mapped;
 			hr = mDevice.GetImmediateContext()->Map(m_pBuffer, 0, D3D11_MAP_WRITE, 0, &mapped);
@@ -69,7 +69,7 @@ namespace Space
 			}
 		}
 		break;
-		case RU_Immutable:
+		case ResourceUsage::Immutable:
 		default:
 			break;
 		}

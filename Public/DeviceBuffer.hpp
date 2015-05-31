@@ -28,18 +28,26 @@ namespace Space
 
 	class VertexBuffer : public Uncopyable
 	{
-	protected:
-		std::unique_ptr<DeviceBuffer> m_pBuffer = nullptr;
-
-		VertexBuffer(DeviceBuffer* pBuffer);
 	public:
 		virtual ~VertexBuffer();
 
-		static VertexBuffer* Create(RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes);
+		static VertexBuffer* Create(
+			RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes,
+			uint stride);
 
 		bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData);
 
-		DeviceBuffer* GetBuffer();
+		uint GetStride() const;
+		uint GetOffest() const;
+		void SetStride(uint stride);
+		void SetOffest(uint offset);
+		DeviceBuffer* GetBuffer() const;
+	protected:
+		VertexBuffer(DeviceBuffer* pBuffer, uint32 stride);
+
+		std::unique_ptr<DeviceBuffer> m_pBuffer = nullptr;
+		uint m_Offset = 0;
+		uint m_Stride = 0;
 	};
 
 	class IndexBuffer : public Uncopyable
@@ -47,15 +55,23 @@ namespace Space
 	public:
 		virtual ~IndexBuffer();
 
-		static IndexBuffer* Create(RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes);
+		static IndexBuffer* Create(
+			RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes,
+			DataFormat format);
 
 		bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData);
 
-		DeviceBuffer* GetBuffer();
+		DataFormat GetFormat() const;
+		uint GetOffest() const;
+		void SetDataFormat(DataFormat format);
+		void SetOffest(uint offset);
+		DeviceBuffer* GetBuffer() const;
 	protected:
-		IndexBuffer(DeviceBuffer* pBuffer);
+		IndexBuffer(DeviceBuffer* pBuffer, DataFormat format);
 
 		std::unique_ptr<DeviceBuffer> m_pBuffer = nullptr;
+		uint m_Offset = 0;
+		DataFormat m_Format = DataFormat::UNKNOWN;
 	};
 
 	class ConstantBuffer : public Uncopyable

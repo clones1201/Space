@@ -6,51 +6,55 @@
 
 namespace Space
 {
+	enum class ElementClass : uint8
+	{
+		PerVertex, PerInstance
+	};
+
 	class InputLayout
 	{
-	public:		
-		static InputLayout* Create(RenderSystem* pRenderSys);
-		virtual void Complete(byte const* pInputSignature, uint32 lengthInBytes) = 0;
+	public:
+		struct InputElement
+		{
+			VertexElemType Type;
+			ElemSemantic Semantic;
+			uint32 SemanticIdx;
+			uint32 InputSlot;
+			ElementClass ElemClass;
+			uint32 InstanceStep;
+			uint32 AlignedByteOffset; //leave this field 0, will be calculated
+		};
 
-		bool AddElem(VertexElemType type, ElemSemantic semantic, bool perVertexOrInstance);
-		bool RemoveElem(int32 idx);
-		bool IsCompleted() const;
+		typedef std::vector<InputElement> ElementArray;
 
-		VertexElemType GetElemTypeByIndex(int32 idx) const;
-		ElemSemantic GetSemanticByIndex(int32 idx) const;
-		int32 GetOffsetByIndex(int32 idx) const;
-		int32 GetSizeInByteByIndex(int32 idx) const;
+		InputLayout(std::initializer_list<InputElement> list);
+		InputLayout(InputLayout const& other) = default;
+		InputLayout& operator=(InputLayout const& other) = default;
 
-		int32 GetVertexSize() const;
+		ElementArray::iterator Begin();
+		ElementArray::iterator End();
+		ElementArray::const_iterator CBegin() const;
+		ElementArray::const_iterator CEnd() const;
 
-		int32 GetElemCount() const;
-		int32 GetPositionCount() const;
-		int32 GetTexCoordCount() const;
-		int32 GetNormalCount() const;
-		int32 GetTangentCount() const;
-		
+		void Insert(ElementArray::iterator pos, InputElement elem);
+
+		uint32 GetVertexStride(uint32 slot) const;
+		uint32 GetSize() const;
+		uint32 GetPositionCount() const;
+		uint32 GetTexCoordCount() const;
+		uint32 GetNormalCount() const;
+		uint32 GetTangentCount() const;
+
 		virtual ~InputLayout();
 	protected:
-		InputLayout();
-		void _Complete();
+		ElementArray m_LayoutArray;
+		uint32 m_PositionCount = 0;
+		uint32 m_TexCoordCount = 0;
+		uint32 m_NormalCount = 0;
+		uint32 m_TangentCount = 0;
 
-		struct Description
-		{
-			VertexElemType type;
-			ElemSemantic semantic;
-			int32 semanticId;
-			int32 offset;
-			bool perVertexOrInstance;
-		};
-		std::vector<Description> m_LayoutVector;
-		int32 m_PositionCount = 0;
-		int32 m_TexCoordCount = 0;
-		int32 m_NormalCount = 0;
-		int32 m_TangentCount = 0;
+		std::map<uint32, uint32> m_StridePerSlot;
 
-		int32 m_SizeOfVertex = 0;
-
-		bool m_IsCompleted = false;
 	};
 }
 

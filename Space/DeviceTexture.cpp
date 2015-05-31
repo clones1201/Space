@@ -4,17 +4,24 @@
 
 namespace Space
 {
+	DeviceTextureBase::DeviceTextureBase()
+	{}
+
+	DeviceTextureBase::~DeviceTextureBase()
+	{}
+
 	DeviceTexture1D::DeviceTexture1D(
 		int32 X,
 		DataFormat format,
 		ResourceUsage usage,
 		ResourceBindFlag flag,
-		int32 arraySize):
-		m_Width(X),
-		m_Type(arraySize > 1 ? TT_Texture1DArray : TT_Texture1D),
-		m_Usage(usage),
-		m_Flag(flag)
+		int32 arraySize) :
+		m_Width(X), m_ArraySize(arraySize)
 	{
+		m_Type = arraySize > 1 ? TextureType::Texture1DArray : TextureType::Texture1D;
+		m_Format = format;
+		m_Usage = usage;
+		m_Flag = flag;
 	}
 	DeviceTexture1D::~DeviceTexture1D()
 	{}
@@ -67,11 +74,12 @@ namespace Space
 		ResourceUsage usage,
 		ResourceBindFlag flag,
 		int32 arraySize) :
-		m_Width(X), m_Height(Y),
-		m_Type(arraySize > 1 ? TT_Texture2DArray : TT_Texture2D),
-		m_Usage(usage),
-		m_Flag(flag)
+		m_Width(X), m_Height(Y), m_ArraySize(arraySize)
 	{
+		m_Type = arraySize > 1 ? TextureType::Texture2DArray : TextureType::Texture2D;
+		m_Format = format;
+		m_Usage = usage;
+		m_Flag = flag;
 	}
 	DeviceTexture2D::~DeviceTexture2D()
 	{}
@@ -100,7 +108,7 @@ namespace Space
 	DeviceTexture2D* DeviceTexture2D::CreateFromFile(
 		RenderSystem* pRenderSys, std::string const &filename, DataFormat format, ResourceUsage usage, ResourceBindFlag flag)
 	{
-		return pRenderSys->CreateTexture2DFromFile(filename,format,usage,flag);
+		return pRenderSys->CreateTexture2DFromFile(filename, format, usage, flag);
 	}
 
 	int32 DeviceTexture2D::GetArraySize() const
@@ -122,7 +130,7 @@ namespace Space
 	{
 		return (m_Width);
 	}
-	
+
 	int32 DeviceTexture2D::GetHeight() const
 	{
 		return (m_Height);
@@ -134,12 +142,12 @@ namespace Space
 		ResourceUsage usage,
 		ResourceBindFlag flag
 		) :
-		m_Width(X), m_Height(Y), m_Depth(Z),
-		m_Type(TT_Texture3D),
-		m_Format(format),
-		m_Usage(usage),
-		m_Flag(flag)
+		m_Width(X), m_Height(Y), m_Depth(Z)
 	{
+		m_Type = TextureType::Texture3D;
+		m_Format = format;
+		m_Usage = usage;
+		m_Flag = flag;
 	}
 	DeviceTexture3D::~DeviceTexture3D()
 	{}
@@ -155,7 +163,7 @@ namespace Space
 	{
 		return pRenderSys->CreateTexture3D(X, Y, Z, format, usage, flag, initialData);
 	}
-	 
+
 	TextureType DeviceTexture3D::GetType() const
 	{
 		return (m_Type);
@@ -170,7 +178,7 @@ namespace Space
 	{
 		return (m_Width);
 	}
-	
+
 	int32 DeviceTexture3D::GetHeight() const
 	{
 		return (m_Height);

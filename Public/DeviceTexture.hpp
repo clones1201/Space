@@ -6,7 +6,20 @@
 
 namespace Space
 {
-	class DeviceTexture1D : virtual public Interface
+	class DeviceTextureBase
+	{
+	public:
+		virtual ~DeviceTextureBase();
+	protected:
+		DeviceTextureBase();
+
+		TextureType m_Type = TextureType::None;
+		DataFormat m_Format = DataFormat::UNKNOWN;
+		ResourceUsage m_Usage = ResourceUsage::Default;
+		ResourceBindFlag m_Flag = ResourceBindFlag::None;
+	};
+
+	class DeviceTexture1D : virtual public Interface, public DeviceTextureBase
 	{
 	public:
 		virtual ~DeviceTexture1D();
@@ -42,13 +55,9 @@ namespace Space
 			int32 arraySize);
 		int32 m_Width = 0;
 		int32 m_ArraySize = 0;
-		TextureType m_Type = TT_None;
-		DataFormat m_Format = DF_UNKNOWN;
-		ResourceUsage m_Usage = RU_Default;
-		ResourceBindFlag m_Flag = RB_None;
 	};
 
-	class DeviceTexture2D : virtual public Interface
+	class DeviceTexture2D : virtual public Interface, public DeviceTextureBase
 	{
 	public:
 		virtual ~DeviceTexture2D();
@@ -89,13 +98,9 @@ namespace Space
 			int32 arraySize);
 		int32 m_Width = 0, m_Height = 0; 
 		int32 m_ArraySize = 0;
-		TextureType m_Type = TT_None;
-		DataFormat m_Format = DF_UNKNOWN;
-		ResourceUsage m_Usage = RU_Default;
-		ResourceBindFlag m_Flag = RB_None;
 	};
 
-	class DeviceTexture3D : virtual public Interface
+	class DeviceTexture3D : virtual public Interface, public DeviceTextureBase
 	{
 	public:
 		virtual ~DeviceTexture3D();
@@ -124,10 +129,6 @@ namespace Space
 			ResourceUsage usage,
 			ResourceBindFlag flag);
 		int32 m_Width = 0, m_Height = 0, m_Depth = 0; 
-		TextureType m_Type = TT_None;
-		DataFormat m_Format = DF_UNKNOWN;
-		ResourceUsage m_Usage = RU_Default;
-		ResourceBindFlag m_Flag = RB_None;
 	};
 
 }

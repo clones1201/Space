@@ -72,30 +72,37 @@ namespace Space
 			min = Float3((float*)&(pAiPart->mVertices[0]));
 			max = Float3((float*)&(pAiPart->mVertices[0]));
 						
-			part->m_pInputLayout.reset(InputLayout::Create(pRenderSys));
+			part->m_pInputLayout.reset(new InputLayout{
+				{ VertexElemType::Float3, ElemSemantic::Position, 0, 0, ElementClass::PerVertex, 0 },
+				{ VertexElemType::Float3, ElemSemantic::Normal, 0, 0, ElementClass::PerVertex, 0 },
+				{ VertexElemType::Float3, ElemSemantic::Tangent, 0, 0, ElementClass::PerVertex, 0 },
+			}); 
 			auto layout = part->m_pInputLayout;
-
-			layout->AddElem(VET_Float3, ES_Position);
-			layout->AddElem(VET_Float3, ES_Normal);
-			layout->AddElem(VET_Float3, ES_Tangent);
 			for (int32 i = 0; i < numUVChannels; ++i)
-				layout->AddElem(VET_Float2, ES_TexCoord);
+				layout->Insert(layout->End(),
+				{ VertexElemType::Float2, ElemSemantic::TexCoord, i, 0, ElementClass::PerVertex, 0 });
 			
-			uint32 stride = layout->GetVertexSize();
+			uint32 stride = layout->GetVertexStride(0);
 			byte* vertices = new byte[stride * numVertices];
 			uint16* indices = new uint16[3 * numFaces];
+
+			auto elemPosition = layout->Begin();
+			auto elemNormal = elemPosition + 1;
+			auto elemTangent = elemNormal + 1;
 
 #define Get(V,i,stride,offset) (V[stride * i] + offset)
 			for (int32 i = 0; i < numVertices; ++i)
 			{
-				*(Float3*)Get(vertices, i, stride, layout->GetOffsetByIndex(0)) = Float3((float*)&(pAiPart->mVertices[i]));
-				*(Float3*)Get(vertices, i, stride, layout->GetOffsetByIndex(1)) = Float3((float*)&(pAiPart->mTangents[i]));
-				*(Float3*)Get(vertices, i, stride, layout->GetOffsetByIndex(2)) = Float3((float*)&(pAiPart->mNormals[i]));
+				*(Float3*)Get(vertices, i, stride, elemPosition->AlignedByteOffset) = Float3((float*)&(pAiPart->mVertices[i]));
+				*(Float3*)Get(vertices, i, stride, elemNormal->AlignedByteOffset) = Float3((float*)&(pAiPart->mTangents[i]));
+				*(Float3*)Get(vertices, i, stride, elemNormal->AlignedByteOffset) = Float3((float*)&(pAiPart->mNormals[i]));
 				
+				auto elemTexCoord = elemTangent + 1;
 				for (int32 j = 0; j < numUVChannels; ++j)
 				{
 					aiVector3D texcoord = pAiPart->mTextureCoords[j][i];
-					*(Float2*)Get(vertices, i, stride, layout->GetOffsetByIndex(3)) = Float2((float*)&(pAiPart->mTextureCoords[j][i]));
+					*(Float2*)Get(vertices, i, stride, elemTexCoord->AlignedByteOffset) = Float2((float*)&(pAiPart->mTextureCoords[j][i]));
+					++ elemTexCoord;
 				}
 
 #if	UV_MIRROR
@@ -122,8 +129,10 @@ namespace Space
 				indices[3 * i + 2] = face->mIndices[2];
 			}
 		 
-			part->m_pVertexBuffer.reset(VertexBuffer::Create(pRenderSys, vertices, layout->GetVertexSize() * numVertices));
-			part->m_pIndexBuffer.reset(IndexBuffer::Create(pRenderSys, (byte*)indices, sizeof(uint16) * 3 * numFaces));
+			part->m_pVertexBuffer.reset(
+				VertexBuffer::Create(pRenderSys, vertices, layout->GetVertexStride(0) * numVertices,layout->GetVertexStride(0)));
+			part->m_pIndexBuffer.reset(
+				IndexBuffer::Create(pRenderSys, (byte*)indices, sizeof(uint16) * 3 * numFaces,DataFormat::D16_UNORM));
 
 			delete vertices;
 			delete indices;

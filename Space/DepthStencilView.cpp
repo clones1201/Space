@@ -12,8 +12,8 @@ namespace Space
 		{
 		default:
 			return nullptr;
-		case DF_D24_UNORM_S8_UINT:
-		case DF_D32_FLOAT:
+		case DataFormat::D24_UNORM_S8_UINT:
+		case DataFormat::D32_FLOAT:
 			break;
 		}
 		return pRenderSys->CreateDepthStencilView(pTexture);

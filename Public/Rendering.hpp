@@ -166,43 +166,32 @@ namespace Space
 		static CommandList* Create(RenderSystem* pRenderSys);
 		virtual ~CommandList();
 		
-		void ClearDepth();
-		void ClearStencil();
-		void ClearRenderTargetView(RenderTarget* pTarget, Float4 clearColor);
+		virtual void ClearDepth(DepthStencilView* pDepth, float depth) = 0;
+		virtual void ClearStencil(DepthStencilView* pStencil, uint8 stencil) = 0;
+		virtual void ClearRenderTargetView(RenderTarget* pTarget, Float4 clearColor) = 0;
 
-		void Reset();
-		void Close();
+		virtual void Reset() = 0;
+		virtual void Close() = 0;
 	
-		void SetIndexBuffer(IndexBuffer* buffer);
-		void SetVertexBuffers(uint startSlot,uint numBuffers,VertexBuffer** buffer);
-		void SetRenderTargets(RenderTarget const* targets, uint32 numTargets, DepthStencilView* pDepth);
-		void SetPipelineState(PipelineState const* state);
+		virtual void SetIndexBuffer(IndexBuffer const* buffer) = 0;
+		virtual void SetVertexBuffers(
+			uint startSlot,uint numBuffers,VertexBuffer *const* buffer) = 0;
+		virtual void SetRenderTargets(
+			RenderTarget *const* targets, uint32 numTargets, DepthStencilView const* pDepth) = 0;
+		virtual void SetPipelineState(PipelineState const* state) = 0;
 		
-		void SetViewPorts(ViewPort const* pViewPorts,uint numViewPorts);
-		void SetScissorRects(Rect const* rects, uint32 numRects);
+		virtual void SetViewPorts(ViewPort const* pViewPorts,uint numViewPorts) = 0;
+		virtual void SetScissorRects(Rect const* rects, uint32 numRects) = 0;
 		
-		void DrawIndexed();
-		void DrawInstanced();
-		void DrawIndexedInstanced();
+		virtual void DrawIndexed(uint startIndex,uint numPrimitive) = 0;
+		virtual void DrawIndexedInstanced(
+			uint startIndex,uint numPrimitive, uint startInstance, uint numInstance) = 0;
 	protected:
-		virtual void _ClearDepthStencilView() = 0;
-		virtual void _ClearRenderTargetView(RenderTarget* pTarget, Float4 clearColor) = 0;
-		virtual void _Reset() = 0;
-		virtual void _Close() = 0;
-		virtual void _SetIndexBuffer() = 0; 
-		virtual void _SetViewPorts(ViewPort const* pViewPorts, uint numViewPorts) = 0;
-		virtual void _SetScissorRects(Rect const* rects, uint32 numRects) = 0;
-		virtual void _SetPipelineState(PipelineState const* state) = 0;
-		virtual void _SetRenderTargets(RenderTarget const* targets, uint32 numTargets) = 0;
-		virtual void _DrawIndexed() = 0;
-		virtual void _DrawInstanced() = 0;
-		virtual void _DrawIndexedInstanced() = 0;
+		IndexBuffer const* m_pIndexBuffer = nullptr;
+		std::vector<VertexBuffer const*> m_VertexBufferArray;
 
-		IndexBuffer* m_pIndexBuffer;
-		VertexBuffer* m_pVertexBuffer;
 
 	private:
-
 	};
 	 
 	class PipelineState
@@ -217,14 +206,7 @@ namespace Space
 		void SetBlendState(BlendDesc desc);
 		void SetRasterizerState(RasterizerDesc desc);
 		void SetDepthStencilState(DepthStencilDesc desc);
-		// seems that D3D12 use a unified multi-sample setting
-		// while D3D11 set this in each texture2d (or texture3d)
-		// this method takes no effect in D3D11
-		void SetSample(SampleDesc desc);
-
-		void SetBlendState(BlendDesc desc) const;
-		void SetRasterizerState(RasterizerDesc desc);
-		void SetDepthStencilState(DepthStencilDesc desc);
+	
 		// seems that D3D12 use a unified multi-sample setting
 		// while D3D11 set this in each texture2d (or texture3d)
 		// this method takes no effect in D3D11
@@ -246,6 +228,10 @@ namespace Space
 		virtual void _SetRasterizerState() = 0;
 		virtual void _SetDepthStencilState() = 0;
 		virtual void _SetSample() = 0;
+
+		InputLayout* m_pInput;
+		byte const* m_InputSignature;
+		uint32 m_LengthOfSignature;
 
 		BlendDesc m_BlendStateDesc;
 		RasterizerDesc m_RasterizerDesc;

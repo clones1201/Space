@@ -146,66 +146,66 @@ namespace Space
 		switch (format)
 		{
 		default:
-		case DF_UNKNOWN:
+		case DataFormat::UNKNOWN:
 			return 0;
 			//half2, short2
-		case DF_R16G16_TYPELESS:
-		case DF_R16G16_FLOAT:
-		case DF_R16G16_UNORM:
-		case DF_R16G16_UINT:
-		case DF_R16G16_SNORM:
-		case DF_R16G16_SINT:
+		case DataFormat::R16G16_TYPELESS:
+		case DataFormat::R16G16_FLOAT:
+		case DataFormat::R16G16_UNORM:
+		case DataFormat::R16G16_UINT:
+		case DataFormat::R16G16_SNORM:
+		case DataFormat::R16G16_SINT:
 			return 4;
 			//hafl4: short4
-		case DF_R16G16B16A16_TYPELESS:
-		case DF_R16G16B16A16_FLOAT:
-		case DF_R16G16B16A16_UNORM:
-		case DF_R16G16B16A16_UINT:
-		case DF_R16G16B16A16_SNORM:
-		case DF_R16G16B16A16_SINT:
+		case DataFormat::R16G16B16A16_TYPELESS:
+		case DataFormat::R16G16B16A16_FLOAT:
+		case DataFormat::R16G16B16A16_UNORM:
+		case DataFormat::R16G16B16A16_UINT:
+		case DataFormat::R16G16B16A16_SNORM:
+		case DataFormat::R16G16B16A16_SINT:
 			return 8;
 			//float1: uint1: int1
-		case DF_R32_TYPELESS:
-		case DF_R32_FLOAT:
-		case DF_R32_UINT:
-		case DF_R32_SINT:
+		case DataFormat::R32_TYPELESS:
+		case DataFormat::R32_FLOAT:
+		case DataFormat::R32_UINT:
+		case DataFormat::R32_SINT:
 			return 4;
 			//float2: uint2: int2
-		case DF_R32G32_TYPELESS:
-		case DF_R32G32_FLOAT:
-		case DF_R32G32_UINT:
-		case DF_R32G32_SINT:
+		case DataFormat::R32G32_TYPELESS:
+		case DataFormat::R32G32_FLOAT:
+		case DataFormat::R32G32_UINT:
+		case DataFormat::R32G32_SINT:
 			return 8;
 			//float3: uint3: int3
-		case DF_R32G32B32_TYPELESS:
-		case DF_R32G32B32_FLOAT:
-		case DF_R32G32B32_UINT:
-		case DF_R32G32B32_SINT:
+		case DataFormat::R32G32B32_TYPELESS:
+		case DataFormat::R32G32B32_FLOAT:
+		case DataFormat::R32G32B32_UINT:
+		case DataFormat::R32G32B32_SINT:
 			return 12;
 			//float4: uint4: int4
-		case DF_R32G32B32A32_TYPELESS:
-		case DF_R32G32B32A32_FLOAT:
-		case DF_R32G32B32A32_UINT:
-		case DF_R32G32B32A32_SINT:
+		case DataFormat::R32G32B32A32_TYPELESS:
+		case DataFormat::R32G32B32A32_FLOAT:
+		case DataFormat::R32G32B32A32_UINT:
+		case DataFormat::R32G32B32A32_SINT:
 			return 16;
 			//UByte4: 
-		case DF_B8G8R8A8_TYPELESS:
-		case DF_B8G8R8A8_UNORM:
-		case DF_B8G8R8A8_UNORM_SRGB:
-		case DF_B8G8R8X8_TYPELESS:
-		case DF_B8G8R8X8_UNORM:
-		case DF_B8G8R8X8_UNORM_SRGB:
+		case DataFormat::B8G8R8A8_TYPELESS:
+		case DataFormat::B8G8R8A8_UNORM:
+		case DataFormat::B8G8R8A8_UNORM_SRGB:
+		case DataFormat::B8G8R8X8_TYPELESS:
+		case DataFormat::B8G8R8X8_UNORM:
+		case DataFormat::B8G8R8X8_UNORM_SRGB:
 			return 4;
 			//depth: stencil
-		case DF_D16_UNORM:
+		case DataFormat::D16_UNORM:
 			return 2;
-		case DF_D24_UNORM_S8_UINT:
-		case DF_D32_FLOAT:
+		case DataFormat::D24_UNORM_S8_UINT:
+		case DataFormat::D32_FLOAT:
 			return 4;
 		}
 	}
 
-#define ElementSize(type) case VET_##type: return sizeof(type)
+#define ElementSize(type) case VertexElemType::type: return sizeof(type)
 
 	int32 GetElementSize(VertexElemType type)
 	{
@@ -234,8 +234,8 @@ namespace Space
 			ElementSize(Half2);
 			ElementSize(Half4);
 			ElementSize(Color);
-		case VET_None:
-		case VET_MAX:
+		case VertexElemType::None:
+		case VertexElemType::MAX:
 		default:
 			return 0;
 		}

@@ -87,20 +87,20 @@ namespace Space
 		{
 			switch (m_Usage)
 			{
-			case RU_Default:
+			case ResourceUsage::Default:
 				if (m_pLock != nullptr)
 				{
 					throw std::exception("lock twice is unacceptable");
 				}
 				m_pLock = new byte[sizeof(m_Width *  GetFormatSize(m_Format))];
 				return m_pLock;
-			case RU_Dynamic:
-			case RU_Staging:
+			case ResourceUsage::Dynamic:
+			case ResourceUsage::Staging:
 
 				mDevice.GetImmediateContext()->Map(m_pTexture1D, 0, D3D11_MAP_READ_WRITE, 0, &m_Subres);
 
 				return (byte*)(m_Subres.pData);
-			case RU_Immutable:
+			case ResourceUsage::Immutable:
 			default:
 				return nullptr;
 			}
@@ -111,7 +111,7 @@ namespace Space
 		{
 			switch (m_Usage)
 			{
-			case RU_Default:
+			case ResourceUsage::Default:
 				if (m_pLock == nullptr)
 				{
 					throw std::exception("Unlock twice is unacceptable");
@@ -129,11 +129,11 @@ namespace Space
 				delete[] m_pLock;
 				m_pLock = nullptr;
 				break;
-			case RU_Dynamic:
-			case RU_Staging:
+			case ResourceUsage::Dynamic:
+			case ResourceUsage::Staging:
 				mDevice.GetImmediateContext()->Unmap(m_pTexture1D, 0);
 				break;
-			case RU_Immutable:
+			case ResourceUsage::Immutable:
 			default:
 				break;
 			}
@@ -224,20 +224,20 @@ namespace Space
 		{
 			switch (m_Usage)
 			{
-			case RU_Default:
+			case ResourceUsage::Default:
 				if (m_pLock != nullptr)
 				{
 					throw std::exception("lock twice is unacceptable");
 				}
 				m_pLock = new byte[sizeof(m_Width * m_Height * GetFormatSize(m_Format))];
 				return m_pLock;
-			case RU_Dynamic:
-			case RU_Staging:
+			case ResourceUsage::Dynamic:
+			case ResourceUsage::Staging:
 
 				mDevice.GetImmediateContext()->Map(m_pTexture2D, 0, D3D11_MAP_READ_WRITE, 0, &m_Subres);
 
 				return (byte*)(m_Subres.pData);
-			case RU_Immutable:
+			case ResourceUsage::Immutable:
 			default:
 				return nullptr;
 			}
@@ -248,7 +248,7 @@ namespace Space
 		{
 			switch (m_Usage)
 			{
-			case RU_Default:
+			case ResourceUsage::Default:
 				if (m_pLock == nullptr)
 				{
 					throw std::exception("Unlock twice is unacceptable");
@@ -266,11 +266,11 @@ namespace Space
 				delete[] m_pLock;
 				m_pLock = nullptr;
 				break;
-			case RU_Dynamic:
-			case RU_Staging:
+			case ResourceUsage::Dynamic:
+			case ResourceUsage::Staging:
 				mDevice.GetImmediateContext()->Unmap(m_pTexture2D, 0);
 				break;
-			case RU_Immutable:
+			case ResourceUsage::Immutable:
 			default:
 				break;
 			}
@@ -348,20 +348,20 @@ namespace Space
 		{
 			switch (m_Usage)
 			{
-			case RU_Default:
+			case ResourceUsage::Default:
 				if (m_pLock != nullptr)
 				{
 					throw std::exception("lock twice is unacceptable");
 				}
 				m_pLock = new byte[sizeof( m_Width * m_Height * m_Depth * GetFormatSize(m_Format) )];
 				return m_pLock;
-			case RU_Dynamic:
-			case RU_Staging:
+			case ResourceUsage::Dynamic:
+			case ResourceUsage::Staging:
 
 				mDevice.GetImmediateContext()->Map(m_pTexture3D, 0, D3D11_MAP_READ_WRITE, 0, &m_Subres);
 
 				return (byte*)(m_Subres.pData);
-			case RU_Immutable:
+			case ResourceUsage::Immutable:
 			default:
 				return nullptr;
 			}
@@ -372,7 +372,7 @@ namespace Space
 		{
 			switch (m_Usage)
 			{
-			case RU_Default:
+			case ResourceUsage::Default:
 				if (m_pLock == nullptr)
 				{
 					throw std::exception("Unlock twice is unacceptable");
@@ -390,11 +390,11 @@ namespace Space
 				delete [] m_pLock;
 				m_pLock = nullptr;
 				break;
-			case RU_Dynamic:
-			case RU_Staging:
+			case ResourceUsage::Dynamic:
+			case ResourceUsage::Staging:
 				mDevice.GetImmediateContext()->Unmap(m_pTexture3D, 0);
 				break;
-			case RU_Immutable:
+			case ResourceUsage::Immutable:
 			default:
 				break;
 			}

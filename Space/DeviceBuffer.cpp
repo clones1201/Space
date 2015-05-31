@@ -5,14 +5,14 @@
 #include "D3D11DeviceBuffer.hpp"
 
 namespace Space
-{ 
+{
 	DeviceBuffer::DeviceBuffer(BufferType type, ResourceUsage usage, uint32 lengthInBytes)
 		:m_Type(type), m_Usage(usage), m_LengthInBytes(lengthInBytes)
 	{}
 
 	DeviceBuffer::~DeviceBuffer()
 	{}
-	
+
 	uint32 DeviceBuffer::GetLengthInBytes() const
 	{
 		return m_LengthInBytes;
@@ -26,17 +26,25 @@ namespace Space
 		return m_Type;
 	}
 
-	DeviceBuffer* DeviceBuffer::Create(RenderSystem* pRenderSys, BufferType type, ResourceUsage usage, byte const* initialData, uint32 lengthInBytes)
+	DeviceBuffer* DeviceBuffer::Create(
+		RenderSystem* pRenderSys, BufferType type, ResourceUsage usage,
+		byte const* initialData, uint32 lengthInBytes)
 	{
-		TRY_CATCH_LOG(return pRenderSys->CreateBuffer(type, usage, initialData, lengthInBytes),
+		TRY_CATCH_LOG(
+			return pRenderSys->CreateBuffer(
+			type, usage, initialData, lengthInBytes),
 			return nullptr);
 	}
 
-	VertexBuffer* VertexBuffer::Create(RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes)
+	VertexBuffer* VertexBuffer::Create
+		(RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes,
+		uint32 stride)
 	{
 		try
 		{
-			return new VertexBuffer(DeviceBuffer::Create(pRenderSys, BT_VertexBuffer, RU_Default, initialData, lengthInBytes));
+			return new VertexBuffer(
+				DeviceBuffer::Create(pRenderSys, BufferType::VertexBuffer, ResourceUsage::Default, initialData, lengthInBytes),
+				stride);
 		}
 		catch (std::exception &e)
 		{
@@ -45,9 +53,9 @@ namespace Space
 		}
 	}
 
-	VertexBuffer::VertexBuffer(DeviceBuffer* pBuffer)
-		:m_pBuffer(pBuffer)
-	{}  
+	VertexBuffer::VertexBuffer(DeviceBuffer* pBuffer, uint32 stride)
+		:m_pBuffer(pBuffer), m_Stride(stride)
+	{}
 
 	VertexBuffer::~VertexBuffer()
 	{}
@@ -57,21 +65,41 @@ namespace Space
 		return m_pBuffer->Update(startOffset, lengthInBytes, pData);
 	}
 
-	DeviceBuffer* VertexBuffer::GetBuffer()
+	uint  VertexBuffer::GetStride() const
+	{
+		return m_Stride;
+	}
+	uint  VertexBuffer::GetOffest() const
+	{
+		return m_Offset;
+	}
+	void  VertexBuffer::SetStride(uint stride)
+	{
+		assert(stride >= 0);
+		m_Stride = stride;
+	}
+	void  VertexBuffer::SetOffest(uint offset)
+	{
+		assert(offset >= 0);
+		m_Offset = offset;
+	}
+
+	DeviceBuffer* VertexBuffer::GetBuffer() const
 	{
 		return m_pBuffer.get();
 	}
 
-	IndexBuffer* IndexBuffer::Create(RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes)
+	IndexBuffer* IndexBuffer::Create(RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes, DataFormat format)
 	{
 		TRY_CATCH_LOG(
 			return new IndexBuffer(
-				DeviceBuffer::Create(pRenderSys, BT_IndexBuffer, RU_Default, initialData, lengthInBytes)),
+			DeviceBuffer::Create(pRenderSys, BufferType::IndexBuffer, ResourceUsage::Default, initialData, lengthInBytes),
+			format),
 			return nullptr);
 	}
 
-	IndexBuffer::IndexBuffer(DeviceBuffer* pBuffer)
-		:m_pBuffer(pBuffer)
+	IndexBuffer::IndexBuffer(DeviceBuffer* pBuffer,DataFormat format)
+		:m_pBuffer(pBuffer), m_Format(format)
 	{
 	}
 	IndexBuffer::~IndexBuffer()
@@ -82,7 +110,24 @@ namespace Space
 		return m_pBuffer->Update(startOffset, lengthInBytes, pData);
 	}
 
-	DeviceBuffer* IndexBuffer::GetBuffer()
+	DataFormat IndexBuffer::GetFormat() const
+	{
+		return m_Format;
+	}
+	uint IndexBuffer::GetOffest() const
+	{
+		return m_Offset;
+	}
+	void IndexBuffer::SetDataFormat(DataFormat format)
+	{
+		m_Format = format;
+	}
+	void IndexBuffer::SetOffest(uint offset)
+	{
+		m_Offset = offset;
+	}
+
+	DeviceBuffer* IndexBuffer::GetBuffer() const
 	{
 		return m_pBuffer.get();
 	}
@@ -91,20 +136,20 @@ namespace Space
 	{
 		TRY_CATCH_LOG(
 			return new ConstantBuffer(
-			DeviceBuffer::Create(pRenderSys, BT_ConstantBuffer, RU_Default, initialData, lengthInBytes)),
+			DeviceBuffer::Create(pRenderSys, BufferType::ConstantBuffer, ResourceUsage::Default, initialData, lengthInBytes)),
 			return nullptr);
 	}
 
 	ConstantBuffer::ConstantBuffer(DeviceBuffer* pBuffer)
 		:m_pBuffer(pBuffer)
 	{
-		m_pShadowData = 
-			(byte*)_aligned_malloc(pBuffer->GetLengthInBytes(),16);
+		m_pShadowData =
+			(byte*)_aligned_malloc(pBuffer->GetLengthInBytes(), 16);
 	}
 	ConstantBuffer::~ConstantBuffer()
 	{
 		if (m_pShadowData != nullptr)
-			delete [] m_pShadowData;
+			delete[] m_pShadowData;
 	}
 
 	void ConstantBuffer::UpdateToDevice()
@@ -120,7 +165,7 @@ namespace Space
 			return true;
 		return false;
 	}
-	
+
 	byte const* ConstantBuffer::GetBufferPointer() const
 	{
 		return m_pShadowData;
@@ -130,14 +175,14 @@ namespace Space
 	{
 		return m_pBuffer.get();
 	}
-	
+
 	TextureBuffer* TextureBuffer::Create(RenderSystem* pRenderSys,
 		byte const* initialData, uint32 lengthInBytes,
 		uint32 sizeOfElem, uint32 numElements)
 	{
 		TRY_CATCH_LOG(return new TextureBuffer(
 			DeviceBuffer::Create(pRenderSys,
-			BT_TextureBuffer, RU_Default, initialData, lengthInBytes),
+			BufferType::TextureBuffer, ResourceUsage::Default, initialData, lengthInBytes),
 			sizeOfElem, numElements),
 			return nullptr);
 	}
@@ -154,7 +199,7 @@ namespace Space
 	{
 		return m_pBuffer->Update(startOffset, lengthInBytes, pData);
 	}
-		
+
 	DeviceBuffer* TextureBuffer::GetBuffer()
 	{
 		return m_pBuffer.get();

@@ -10,13 +10,13 @@ namespace Space
 	{
 		switch (type)
 		{
-		case BufferType::BT_VertexBuffer:
+		case BufferType::VertexBuffer:
 			return D3D11_BIND_VERTEX_BUFFER;
-		case BufferType::BT_IndexBuffer:
+		case BufferType::IndexBuffer:
 			return D3D11_BIND_INDEX_BUFFER;
-		case BufferType::BT_ConstantBuffer:
+		case BufferType::ConstantBuffer:
 			return D3D11_BIND_CONSTANT_BUFFER;
-		case BufferType::BT_TextureBuffer:
+		case BufferType::TextureBuffer:
 			return D3D11_BIND_SHADER_RESOURCE;
 		}
 		return 0;
@@ -26,13 +26,13 @@ namespace Space
 	{
 		switch (usage)
 		{
-		case RU_Default:
+		case ResourceUsage::Default:
 			return D3D11_USAGE_DEFAULT;
-		case RU_Dynamic:
+		case ResourceUsage::Dynamic:
 			return D3D11_USAGE_DYNAMIC;
-		case RU_Immutable:
+		case ResourceUsage::Immutable:
 			return D3D11_USAGE_IMMUTABLE;
-		case RU_Staging:
+		case ResourceUsage::Staging:
 			return D3D11_USAGE_STAGING;
 		default:
 			return D3D11_USAGE_DEFAULT;
@@ -91,7 +91,7 @@ namespace Space
 
 	DXGI_FORMAT GetDXGIFormat(DataFormat format)
 	{
-		return g_FormatTable[format];
+		return g_FormatTable[(uint)format];
 	}
 
 	struct InverseFormatTable
@@ -100,7 +100,7 @@ namespace Space
 
 		InverseFormatTable()
 		{
-			for (uint i = DF_UNKNOWN; i < DF_Max; ++i)
+			for (uint i = (uint)DataFormat::UNKNOWN; i < (uint)DataFormat::Max; ++i)
 			{
 				DXGIFormatTable[g_FormatTable[i]] = (DataFormat)i;
 			}
@@ -108,7 +108,7 @@ namespace Space
 
 		DataFormat GetByDXGIFormat(DXGI_FORMAT format)
 		{
-			TRY_CATCH_OUT_OF_RANGE(return DXGIFormatTable.at(format),return DF_UNKNOWN);
+			TRY_CATCH_OUT_OF_RANGE(return DXGIFormatTable.at(format),return DataFormat::UNKNOWN);
 		}
 	};
 
@@ -122,38 +122,38 @@ namespace Space
 
 	D3D11_BIND_FLAG GetD3D11BindFlag(ResourceBindFlag flag)
 	{
-		D3D11_BIND_FLAG ret = (D3D11_BIND_FLAG)0;
-		if (flag & RB_ShaderResource)
+		auto ret = 0;
+		if ((uint8)flag & (uint8)ResourceBindFlag::ShaderResource)
 		{
-			ret = (D3D11_BIND_FLAG) (ret | D3D11_BIND_SHADER_RESOURCE);
+			ret = ret | D3D11_BIND_SHADER_RESOURCE;
 		}
-		if (flag & RB_DepthStencil)
+		if ((uint8)flag & (uint8)ResourceBindFlag::DepthStencil)
 		{
-			ret = (D3D11_BIND_FLAG)(ret | D3D11_BIND_DEPTH_STENCIL);
+			ret = ret | D3D11_BIND_DEPTH_STENCIL;
 		}
-		if (flag & RB_RenderTarget)
+		if ((uint8)flag & (uint8)ResourceBindFlag::RenderTarget)
 		{
-			ret = (D3D11_BIND_FLAG)(ret | D3D11_BIND_RENDER_TARGET);
+			ret = ret | D3D11_BIND_RENDER_TARGET;
 		}
-		return ret;
+		return (D3D11_BIND_FLAG)ret;
 	}
 
 	ResourceBindFlag GetBindFlag(UINT flag)
 	{
-		ResourceBindFlag ret = RB_None;
+		auto ret = (uint8)ResourceBindFlag::None;
 		if (flag & D3D11_BIND_SHADER_RESOURCE)
 		{
-			ret = (ResourceBindFlag)(ret | RB_ShaderResource);
+			ret = (ret | (uint)ResourceBindFlag::ShaderResource);
 		}
 		if (flag & D3D11_BIND_DEPTH_STENCIL)
 		{
-			ret = (ResourceBindFlag)(ret | RB_DepthStencil);
+			ret = (ret | (uint)ResourceBindFlag::DepthStencil);
 		}
 		if (flag & D3D11_BIND_RENDER_TARGET)
 		{
-			ret = (ResourceBindFlag)(ret | RB_RenderTarget);
+			ret = (ret | (uint)ResourceBindFlag::RenderTarget);
 		}
-		return ret;
+		return (ResourceBindFlag)ret;
 	}
 	
 #define MAP_ELEM_FORMAT(type, format) format

@@ -31,8 +31,7 @@ namespace Space
 		virtual RenderTarget* CreateRenderTarget(DeviceTexture2D* pTexture) = 0;
 		virtual ShaderResource* CreateShaderResource(DeviceTexture2D* pTexture) = 0;
 		virtual ShaderResource* CreateShaderResource(TextureBuffer* pTBuffer) = 0;
-		virtual InputLayout* CreateInputLayout() = 0;
-
+		
 		virtual CommandList* CreateCommandList() = 0;
 		virtual PipelineState* CreatePipelineState() = 0;
 

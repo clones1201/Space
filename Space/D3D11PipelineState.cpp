@@ -1,4 +1,6 @@
 #include "Log.h"
+#include "InputLayout.hpp"
+#include "D3D11Shared.hpp"
 #include "D3D11DeviceBuffer.hpp"
 #include "D3D11ShaderResource.hpp"
 #include "D3D11Shader.hpp"
@@ -62,6 +64,9 @@ namespace Space
 		assert(nullptr != dynamic_cast<D3D11VertexShader*>(shader->GetVertexShader()));
 		assert(nullptr != dynamic_cast<D3D11PixelShader*>(shader->GetPixelShader()));
 
+		m_InputSignature = shader->GetVertexShader()->GetByteCodes();
+		m_LengthOfSignature = shader->GetVertexShader()->GetSizeInBytes();
+
 		m_pVS = static_cast<D3D11VertexShader*>(shader->GetVertexShader())
 			->GetShader();
 		m_pPS = static_cast<D3D11PixelShader*>(shader->GetPixelShader())
@@ -74,6 +79,11 @@ namespace Space
 			m_VSConstantBuffers, m_VSSRVs, shader->GetVertexShader());
 		GetAllD3D11ConstantBufferAndShaderResource(
 			m_PSConstantBuffers, m_PSSRVs, shader->GetPixelShader());
+
+		if (m_pInput != nullptr)
+		{
+			_CreateInputLayout();
+		}
 	}
 
 	void D3D11PipelineState::_ClearAllState()
@@ -92,40 +102,53 @@ namespace Space
 
 	void D3D11PipelineState::SetInputLayout(InputLayout* input)
 	{
-		std::vector<D3D11_INPUT_ELEMENT_DESC> elemArray;
-		elemVector.reserve(m_LayoutVector.size());
-		for (auto layout = m_LayoutVector.begin();
-				layout != m_LayoutVector.end();
-				++layout)
-			{
-				auto desc = D3D11_INPUT_ELEMENT_DESC{
-					layout->offset,
-					GetSemanticName(layout->semantic),
-					layout->semanticId,
-					D3D11_INPUT_PER_VERTEX_DATA,
-					GetElemDXGIFormat(layout->type),
-				};
-				m_D3D11ElemVector.push_back(desc);
-			}
+		if (input == nullptr) return;
 
-			ID3D11InputLayout* pInputLayout = nullptr;
-			HRESULT hr = mDevice->CreateInputLayout(
-				m_D3D11ElemVector.data(), m_D3D11ElemVector.size(),
-				pInputSignature, lengthInBytes,
-				&pInputLayout);
-			if (FAILED(hr))
-			{
-				Log(TEXT("CreateInputLayout failed"));
-				return;
-			}
-			m_pInputLayout = pInputLayout;
-	} 
+		m_ElemArray.clear();
+		m_ElemArray.reserve(input->GetSize());
+		for (auto iter = input->Begin();
+			iter != input->End(); ++iter)
+		{
+			auto desc = D3D11_INPUT_ELEMENT_DESC{
+				GetSemanticName(iter->Semantic),
+				iter->SemanticIdx,
+				GetElemDXGIFormat((uint16)iter->Type),
+				iter->InputSlot,
+				iter->AlignedByteOffset,
+				iter->ElemClass ==
+				ElementClass::PerVertex ?
+			D3D11_INPUT_PER_VERTEX_DATA : D3D11_INPUT_PER_INSTANCE_DATA,
+										  iter->InstanceStep
+			};
+			m_ElemArray.push_back(desc);
+		}
+		m_pInput = input;
+		if (m_pVS != nullptr)
+			_CreateInputLayout();
+	}
+
+	void D3D11PipelineState::_CreateInputLayout()
+	{
+		assert(m_InputSignature != nullptr && m_LengthOfSignature != 0);
+
+		ID3D11InputLayout* pInputLayout = nullptr;
+		HRESULT hr = device->CreateInputLayout(
+			m_ElemArray.data(), m_ElemArray.size(),
+			m_InputSignature, m_LengthOfSignature,
+			&pInputLayout);
+		if (FAILED(hr))
+		{
+			Log(TEXT("CreateInputLayout failed"));
+			return;
+		}
+		m_pInputLayout = pInputLayout;
+	}
 	void D3D11PipelineState::_SetBlendState()
 	{
 		D3D11_BLEND_DESC desc;
 		desc.AlphaToCoverageEnable = m_BlendStateDesc.AlphaToCoverageEnable;
 		desc.IndependentBlendEnable = m_BlendStateDesc.IndependentBlendEnable;
-		for (uint i = 0; i < 8; i < 0)
+		for (uint i = 0; i < 8; i ++)
 		{
 			desc.RenderTarget[i] = D3D11_RENDER_TARGET_BLEND_DESC{
 				(BOOL)m_BlendStateDesc.RenderTarget[i].BlendEnable,

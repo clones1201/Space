@@ -74,7 +74,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)Public\;$(VCInstallDir)UnitTest\include\;$(FBXSDK_DIR)\include\;$(DXTK_DIR)\inc\;$(ASSIMP_DIR)\include\;$(RAPIDJSON_DIR)\include\;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Public\;$(VCInstallDir)UnitTest\include\;$(DXTK_DIR)\Inc\;$(ASSIMP_DIR)\include\;$(RAPIDJSON_DIR)\include\</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_UNICODE;UNICODE;SPACE_GAME;SPACE_EXPORTS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4251;</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -84,7 +84,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;$(DXTK_DIR)\Bin\Desktop_2013\Win32\Debug\;$(FBXSDK_DIR)\lib\vs2013\x86\debug\;$(ASSIMP_DIR)\lib\Release\;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxgi.lib;DirectXTK.lib;assimp.lib;libfbxsdk.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxgi.lib;DirectXTK.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -155,7 +155,6 @@
     <ClInclude Include="..\Public\D3D11Device.hpp" />
     <ClInclude Include="..\Public\D3D11DeviceBuffer.hpp" />
     <ClInclude Include="..\Public\D3D11DeviceTexture.hpp" />
-    <ClInclude Include="..\Public\D3D11InputLayout.hpp" />
     <ClInclude Include="..\Public\D3D11Prerequisites.hpp" />
     <ClInclude Include="..\Public\D3D11RenderSystem.hpp" />
     <ClInclude Include="..\Public\D3D11RenderTarget.hpp" />
@@ -199,7 +198,6 @@
     <ClCompile Include="D3D11Device.cpp" />
     <ClCompile Include="D3D11DeviceBuffer.cpp" />
     <ClCompile Include="D3D11DeviceTexture.cpp" />
-    <ClCompile Include="D3D11InputLayout.cpp" />
     <ClCompile Include="D3D11PipelineState.cpp" />
     <ClCompile Include="D3D11RenderSystem.cpp" />
     <ClCompile Include="D3D11RenderTarget.cpp" />
