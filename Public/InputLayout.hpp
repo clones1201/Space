@@ -12,7 +12,7 @@ namespace Space
 		static InputLayout* Create(RenderSystem* pRenderSys);
 		virtual void Complete(byte const* pInputSignature, uint32 lengthInBytes) = 0;
 
-		bool AddElem(VertexElemType type, ElemSemantic semantic);
+		bool AddElem(VertexElemType type, ElemSemantic semantic, bool perVertexOrInstance);
 		bool RemoveElem(int32 idx);
 		bool IsCompleted() const;
 
@@ -40,6 +40,7 @@ namespace Space
 			ElemSemantic semantic;
 			int32 semanticId;
 			int32 offset;
+			bool perVertexOrInstance;
 		};
 		std::vector<Description> m_LayoutVector;
 		int32 m_PositionCount = 0;

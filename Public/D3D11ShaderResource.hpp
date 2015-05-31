@@ -14,11 +14,19 @@ namespace Space
 		static D3D11ShaderResource* Create(D3D11Device& device, DeviceTexture2D* pTexture);
 		static D3D11ShaderResource* Create(D3D11Device& device, TextureBuffer* pTBuffer);
 
-		virtual ID3D11ShaderResourceView* GetShaderResourceView() const = 0;
+		CComPtr<ID3D11ShaderResourceView> GetShaderResourceView() const;
 
 		virtual ~D3D11ShaderResource();
 	protected:
-		D3D11ShaderResource();
+		D3D11ShaderResource(D3D11Device& device, TextureBuffer* pTBuffer);
+		D3D11ShaderResource(D3D11Device& device, DeviceTexture1D* pTexture); 
+		D3D11ShaderResource(D3D11Device& device, DeviceTexture2D* pTexture);
+		D3D11ShaderResource(D3D11Device& device, DeviceTexture3D* pTexture);
+
+	private:
+		CComPtr<ID3D11ShaderResourceView> m_pView = nullptr;
+
+		D3D11_SHADER_RESOURCE_VIEW_DESC m_Desc;
 	};
 }
 

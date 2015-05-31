@@ -26,8 +26,7 @@ namespace Space
 			ResourceUsage usage,
 			ResourceBindFlag flag,
 			byte const* initialData);
-		//static DeviceTexture1D* CreateFromFile(std::string const &filename);
-
+		
 		virtual byte* Lock() = 0;
 		virtual void Unlock() = 0;
 
@@ -101,14 +100,6 @@ namespace Space
 	public:
 		virtual ~DeviceTexture3D();
 
-		/*static DeviceTexture3D* CreateArray(
-			RenderSystem* pRenderSys,
-			int32 X, int32 Y, int32 Z,
-			DataFormat format,
-			ResourceUsage usage,
-			ResourceBindFlag flag,
-			int32 arraySize,
-			byte const* initialData);*/
 		static DeviceTexture3D* Create(
 			RenderSystem* pRenderSys,
 			int32 X, int32 Y, int32 Z,
@@ -116,8 +107,7 @@ namespace Space
 			ResourceUsage usage,
 			ResourceBindFlag flag,
 			byte const* initialData);
-		//static DeviceTexture3D* CreateFromFile(std::string const &filename);
-
+		
 		virtual byte* Lock() = 0;
 		virtual void Unlock() = 0;
 

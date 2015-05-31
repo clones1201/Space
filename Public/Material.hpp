@@ -152,8 +152,9 @@ namespace Space
 		static Shader* Create(RenderSystem* pRenderSys, std::wstring const& name);
 
 		void SetShaderResourcePool(ShaderResourcePool* pPool);
-
-		void Apply();
+		
+		VertexShader* GetVertexShader() const;
+		PixelShader* GetPixelShader() const;
 
 		virtual ~Shader();
 	protected:
@@ -168,21 +169,21 @@ namespace Space
 		ShaderResourcePool * pResourcePool;
 	};
 
-	typedef SPACE_API enum _MaterialDomain
+	SPACE_API enum class MaterialDomain : char
 	{
-		MD_Surface = 0,
-		MD_PostProcess,
-		MD_Max
-	}MaterialDomain;
+		Surface = 0,
+		PostProcess,
+		Max
+	};
 
-	typedef SPACE_API enum _MaterialBlendMode
+	SPACE_API enum class MaterialBlendMode : char
 	{
-		MB_Opaque = 0,
-		MB_Masked,
-		MB_Translucent,
-		MB_Additive,
-		MB_Max
-	}MaterialBlendMode;
+		Opaque = 0,
+		Masked,
+		Translucent,
+		Additive,
+		Max
+	};
 	
 	class SPACE_API Material : virtual public Uncopyable
 	{
@@ -207,7 +208,9 @@ namespace Space
 		//ScalarParameter& GetScalarParameter(Name const& name);
 		//VectorParameter& GetVectorParameter(Name const& name);
 
-		void Apply();
+		//void Apply();
+		Shader* GetShader();
+
 		virtual ~Material();
 	protected:
 		Material(RenderSystem* pRenderSys, std::string const& name);

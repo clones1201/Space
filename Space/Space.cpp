@@ -6,10 +6,9 @@ using namespace Space;
 int main(int argc, char* argv[])
 {
 	{
-		auto renderSys = TypeTrait<RenderSystem>::Ptr(Core::CreateD3DRenderSystem());
+		auto renderSys = std::shared_ptr<RenderSystem>(Core::CreateD3DRenderSystem());
 
-		std::unique_ptr<Material> pMaterial;
-		pMaterial.reset(Material::Create(renderSys.get(), "default"));
+		auto pMaterial = std::unique_ptr<Material>(Material::Create(renderSys.get(), "default"));
 	}
 	_CrtDumpMemoryLeaks();
 	return 0;

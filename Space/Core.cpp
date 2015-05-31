@@ -12,6 +12,6 @@ namespace Space
 	}
 	RenderSystem* Core::CreateGLRenderSystem()
 	{
-		throw new std::exception("Not Implemented");
+		throw std::exception("Not Implemented");
 	}
 }

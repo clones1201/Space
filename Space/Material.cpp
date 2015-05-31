@@ -309,7 +309,7 @@ namespace Space
 
 	inline MaterialDomain GetMaterialDomainByString(std::string const& name)
 	{
-		for (int32 i = 0; i < MD_Max; ++i)
+		for (int32 i = 0; i < (int32)MaterialDomain::Max; ++i)
 		{
 			if (g_DomainStringArrayA[i] == name)
 			{
@@ -319,7 +319,7 @@ namespace Space
 	}
 	inline MaterialDomain GetMaterialDomainByString(std::wstring const& name)
 	{
-		for (int32 i = 0; i < MD_Max; ++i)
+		for (int32 i = 0; i < (int32)MaterialDomain::Max; ++i)
 		{
 			if (g_DomainStringArrayW[i] == name)
 			{
@@ -330,7 +330,7 @@ namespace Space
 
 	inline MaterialBlendMode GetMaterialBlendModeByString(std::string const& name)
 	{
-		for (int32 i = 0; i < MD_Max; ++i)
+		for (int32 i = 0; i < (int32) MaterialBlendMode::Max; ++i)
 		{
 			if (g_BlendModeStringArrayA[i] == name)
 			{
@@ -340,7 +340,7 @@ namespace Space
 	}
 	inline MaterialBlendMode GetMaterialBlendModeByString(std::wstring const& name)
 	{
-		for (int32 i = 0; i < MD_Max; ++i)
+		for (int32 i = 0; i < (int32) MaterialBlendMode::Max; ++i)
 		{
 			if (g_BlendModeStringArrayW[i] == name)
 			{
@@ -395,6 +395,16 @@ namespace Space
 
 	Shader::~Shader()
 	{}
+	 
+	VertexShader* Shader::GetVertexShader() const
+	{
+		return m_pVS.get();
+	}
+
+	PixelShader* Shader::GetPixelShader() const
+	{
+		return m_pPS.get();
+	}
 
 	// pre-defined constant buffers
 	struct CommonVariables
@@ -633,7 +643,7 @@ namespace Space
 		g_Time = time;
 	}
 
-	void Material::Apply()
+	Shader* Material::GetShader()
 	{
 		Matrix world = LoadFloat4x4(&g_World);
 		Matrix view = LoadFloat4x4(&g_View);
@@ -651,7 +661,8 @@ namespace Space
 		
 		SelectShader();
 
-		if (m_CurrentShader != nullptr) m_CurrentShader->Apply();
+		if (m_CurrentShader != nullptr) 
+			return m_CurrentShader;
 	}
 
 }

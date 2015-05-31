@@ -162,6 +162,12 @@
     <ClInclude Include="..\Public\ShaderResourcePool.hpp">
       <Filter>Public</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Rendering.hpp">
+      <Filter>Public\RenderSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\D3D11Rendering.hpp">
+      <Filter>Public\RenderSystem\D3D11</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Basic.cpp">
@@ -269,8 +275,14 @@
     <ClCompile Include="Material.cpp">
       <Filter>Private</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
+    <ClCompile Include="Rendering.cpp">
+      <Filter>Private\RenderSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D11CommandList.cpp">
+      <Filter>Private\RenderSystem\D3D11\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D11PipelineState.cpp">
+      <Filter>Private\RenderSystem\D3D11\Source</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

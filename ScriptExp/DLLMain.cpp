@@ -1,11 +1,11 @@
 #define SCRIPT_API __declspec(dllexport)
 
-#include "Behavior.hpp"
+//#include "Behavior.hpp"
 
 namespace Space
 {
 
-	void SCRIPT_API Register(BehaviorManager)
+	/*void SCRIPT_API Register(BehaviorManager)
 	{
 
 	}
@@ -13,5 +13,5 @@ namespace Space
 	class SCRIPT_API Script : public Behavior
 	{
 
-	};
+	};*/
 }

@@ -12,13 +12,6 @@ namespace UnitTest
 	TEST_CLASS(UtilityTest)
 	{
 	public:
-		TEST_METHOD(UinGeneratorTest)
-		{
-			UidGenerator uids;
-
-
-		}
-
 		TEST_METHOD(NameTest)
 		{
 			Name name0(TEXT("name 0"));
@@ -52,14 +45,7 @@ namespace UnitTest
 			name14 = name13;
 			Assert::AreEqual(TEXT("name 13"), name14.ToWString().c_str());
 		}
-
-		TEST_METHOD(FBXMeshLoadTest)
-		{
-
-
-
-		}
-
+		
 	};
 
 }

@@ -1,13 +1,13 @@
+#include "assimp/cimport.h"
+#include "assimp/scene.h"
+#include "assimp/postprocess.h"
+
 #include "Log.h"
 #include "Utility.hpp"
 
 #include "DeviceBuffer.hpp"
 #include "InputLayout.hpp"
 #include "Mesh.hpp"
-
-#include "assimp/cimport.h"
-#include "assimp/scene.h"
-#include "assimp/postprocess.h"
 
 namespace Space
 {

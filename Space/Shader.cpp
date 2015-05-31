@@ -5,6 +5,66 @@
 
 namespace Space
 {	
+	ShaderBase::ShaderBase()
+	{
+	}
+
+	ShaderBase::~ShaderBase()
+	{
+	}
+
+	void ShaderBase::ClearAllSlots()
+	{
+		m_ConstantBufferTable.clear();
+		m_ShaderResourceTable.clear();
+		m_MaxCBSlot = 0;
+		m_MaxSRSlot = 0;
+	}
+
+	void ShaderBase::SetConstantBuffer(uint slots, ConstantBuffer* buffer)
+	{
+		assert(m_MaxCBSlot >= 0 && slots < 4096);
+		m_MaxCBSlot = std::max(slots, m_MaxCBSlot);
+		m_ConstantBufferTable[slots] = buffer;
+	}
+
+	void ShaderBase::SetShaderResource(uint slots, ShaderResource* resource)
+	{
+		assert(m_MaxSRSlot >= 0 && slots < 4096);
+		m_MaxSRSlot = std::max(slots, m_MaxSRSlot);
+		m_ShaderResourceTable[slots] = resource;
+	}
+
+	uint ShaderBase::GetConstantBufferCount() const
+	{
+		assert(m_MaxCBSlot >= 0);
+		return m_MaxCBSlot;
+	}
+
+	uint ShaderBase::GetShaderResourceCount() const
+	{
+		assert(m_MaxSRSlot >= 0);
+		return m_MaxSRSlot;
+	}
+
+	ConstantBuffer* ShaderBase::GetConstantBuffer(uint slots) const
+	{
+		TRY_CATCH_OUT_OF_RANGE(
+			return m_ConstantBufferTable.at(slots),
+			return nullptr
+			);
+	}
+
+	ShaderResource* ShaderBase::GetShaderResource(uint slots) const
+	{
+		TRY_CATCH_OUT_OF_RANGE(
+			return m_ShaderResourceTable.at(slots),
+			return nullptr
+			);
+	}
+
+	/* VertexShader implement */
+
 	VertexShader* VertexShader::LoadBinaryFromMemory(RenderSystem* pRenderSys,
 		byte const* byteCodes, uint32 sizeInBytes)
 	{
@@ -19,12 +79,12 @@ namespace Space
 
 	byte const* VertexShader::GetByteCodes() const
 	{
-		return m_ByteCodes;
+		return m_ByteCodes.data();
 	}
 
 	uint32 VertexShader::GetSizeInBytes() const
 	{
-		return m_SizeInBytes;
+		return m_ByteCodes.size();
 	}
 
 	PixelShader* PixelShader::LoadBinaryFromMemory(RenderSystem* pRenderSys,
@@ -41,12 +101,12 @@ namespace Space
 
 	byte const* PixelShader::GetByteCodes() const
 	{
-		return m_ByteCodes;
+		return m_ByteCodes.data();
 	}
 
 	uint32 PixelShader::GetSizeInBytes() const
 	{
-		return m_SizeInBytes;
+		return m_ByteCodes.size();
 	}
 
 }

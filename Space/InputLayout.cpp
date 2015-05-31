@@ -5,6 +5,8 @@
 
 namespace Space
 {
+	
+	
 	bool InputLayout::AddElem(VertexElemType type, ElemSemantic semantic)
 	{
 		int32 idx = 0;

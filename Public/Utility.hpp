@@ -142,8 +142,4 @@ namespace std
 	};
 }
 
-#include "rapidjson/rapidjson.h"
-#include "rapidjson/writer.h"
-#include "rapidjson/document.h"
-
 #endif
