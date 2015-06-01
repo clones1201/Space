@@ -8,6 +8,11 @@ namespace Space
 {
 	class RenderWindow : virtual public Interface
 	{
+	public:
+		virtual bool Initialize() = 0;
+
+		virtual DeviceTexture2D* GetBackBuffer() throw() = 0;
+		virtual void Present() = 0;
 	protected:
 		TypeTrait<Window>::Ptr m_pWindow;
 		RenderWindow(const std::string& name, int32 width, int32 height, bool fullscreen) throw();
@@ -15,10 +20,6 @@ namespace Space
 		std::string m_Name;
 		int32 m_Width, m_Height;
 		bool m_Fullscreen;
-	public:
-		virtual bool _Initialize() = 0;
-
-		virtual DeviceTexture2D* GetBackBuffer() throw() = 0; 
 	};
 }
 

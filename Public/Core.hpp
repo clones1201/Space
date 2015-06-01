@@ -15,9 +15,7 @@ namespace Space
 	public:
 		static RenderSystem* CreateD3DRenderSystem();
 		static RenderSystem* CreateGLRenderSystem();
-
-		static Core* GetInstance();
-
+		 
 	};
 }
 

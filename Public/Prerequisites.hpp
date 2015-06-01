@@ -28,6 +28,9 @@
 
 #include <atomic>
 #include <mutex>
+#include <thread>
+#include <condition_variable>
+#include <future>
 #include <algorithm>
 #include <functional>
 #include <vector>

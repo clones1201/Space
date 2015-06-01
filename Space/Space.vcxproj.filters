@@ -165,6 +165,7 @@
     <ClInclude Include="..\Public\D3D11Rendering.hpp">
       <Filter>Public\RenderSystem\D3D11</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Scene.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Basic.cpp">
@@ -251,23 +252,14 @@
     <ClCompile Include="Win32Window.cpp">
       <Filter>Private\Global\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
     <ClCompile Include="InputLayout.cpp">
       <Filter>Private\RenderSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="Space.cpp">
-      <Filter>Private</Filter>
     </ClCompile>
     <ClCompile Include="Renderable.cpp">
       <Filter>Private\RenderSystem</Filter>
     </ClCompile>
     <ClCompile Include="ShaderReflection.cpp">
       <Filter>Private\RenderSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="Material.cpp">
-      <Filter>Private</Filter>
     </ClCompile>
     <ClCompile Include="Rendering.cpp">
       <Filter>Private\RenderSystem</Filter>
@@ -277,6 +269,18 @@
     </ClCompile>
     <ClCompile Include="D3D11PipelineState.cpp">
       <Filter>Private\RenderSystem\D3D11\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Private\Global\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Private\Global\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Space.cpp">
+      <Filter>Private\Global\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Private\Global\Source</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

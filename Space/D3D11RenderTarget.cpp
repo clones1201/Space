@@ -39,7 +39,7 @@ namespace Space
 			
 			ZeroMemory(&m_RTVDesc, sizeof(m_RTVDesc));
 			m_RTVDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-			m_RTVDesc.Texture2D.MipSlice = 1;
+			m_RTVDesc.Texture2D.MipSlice = 0;
 			m_RTVDesc.Format = texDesc.Format;
 
 			ID3D11RenderTargetView* pRenderTargetView = nullptr;

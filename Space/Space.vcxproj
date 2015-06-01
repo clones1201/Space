@@ -170,6 +170,7 @@
     <ClInclude Include="..\Public\Renderable.hpp" />
     <ClInclude Include="..\Public\DeviceTexture.hpp" />
     <ClInclude Include="..\Public\Renderer.hpp" />
+    <ClInclude Include="..\Public\Scene.hpp" />
     <ClInclude Include="..\Public\ShaderCommon.hpp" />
     <ClInclude Include="..\Public\ShaderReflection.hpp" />
     <ClInclude Include="..\Public\ShaderResourcePool.hpp" />
@@ -215,6 +216,7 @@
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Renderable.cpp" />
+    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Rendering.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
     <ClCompile Include="RenderTarget.cpp" />

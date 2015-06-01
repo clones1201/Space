@@ -7,11 +7,11 @@
 #include "RenderTarget.hpp"
 #include "RenderWindow.hpp"
 #include "Core.hpp"
-#include "Game.hpp"
 
 #include "Shader.hpp"
 #include "Mesh.hpp"
 #include "ShaderReflection.hpp"
 #include "Material.hpp"
+#include "Rendering.hpp"
 
 #endif
