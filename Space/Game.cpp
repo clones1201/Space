@@ -5,7 +5,7 @@ namespace Space
 	SimpleGame::SimpleGame()
 	{
 		m_pRenderSys.reset(
-			Core::CreateD3DRenderSystem());
+			Core::GetInstance()->CreateD3DRenderSystem());
 		m_pGraphicCommandList.reset(
 			m_pRenderSys->CreateCommandList());
 		m_pRenderWindow.reset(
@@ -17,7 +17,7 @@ namespace Space
 
 		m_pMaterial.reset(Material::Create(m_pRenderSys.get(), "default"));
 		m_pMesh.reset(Mesh::CreateFromFBX(m_pRenderSys.get(), "bunny.fbx"));
-	
+
 		m_pSimpleRenderer.reset(
 			MeshMaterialRenderer::Create(m_pRenderSys.get()));
 		m_pSimpleRenderer->SetRenderTarget(m_pRenderTarget.get());
@@ -30,45 +30,50 @@ namespace Space
 	}
 
 	void SimpleGame::Run()
-	{		
-		MainLoop();
-
-		m_RenderThread.join();
+	{
+#if SPACE_PLATFORM == SPACE_WIN32
+		// Main message loop
+		MSG msg = { 0 };
+		while (WM_QUIT != msg.message)
+		{
+			if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+			{
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+#elif
+		while(true)
+		{			
+#endif
+			MainLoop();
+		}
 	}
 
 	void SimpleGame::MainLoop()
 	{
-		while (true)
-		{
-			if (m_CloseFlag != 0)
-				break;
-			
-			auto cmdList = std::async(std::launch::async,
-				[this]{ return this->RenderOneFrame(); }
-				);
-			Update();
+		auto cmdList = std::async(std::launch::async,
+			[this]{ return this->RenderOneFrame(); }
+		);
+		Update();
 
-			m_pRenderSys->ExecuteCommandList(cmdList.get());
-			m_pRenderWindow->Present();
-		}
+		m_pRenderSys->ExecuteCommandList(cmdList.get());
+		m_pRenderWindow->Present();
 	}
 
 	CommandList* SimpleGame::RenderOneFrame()
 	{
 		m_pGraphicCommandList->ClearRenderTargetView(
 			m_pRenderTarget.get(),
-			Float4{0.12f,0.15f,0.55f,1.0f});
+			Float4{ 0.12f, 0.15f, 0.55f, 1.0f });
 
 		m_pSimpleRenderer->Render(m_pGraphicCommandList.get());
-		
+
 		m_pGraphicCommandList->Close();
 		return m_pGraphicCommandList.get();
 	}
 
 	void SimpleGame::Close()
 	{
-		m_CloseFlag = 1;
-		m_Fence.notify_all();
 	}
 
 	void SimpleGame::Update()

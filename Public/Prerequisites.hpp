@@ -95,6 +95,10 @@ namespace Space
 	class Game;
 	class Window;
 	class WindowUtility;
+	class EventListener;
+	class EventDispatcher;
+	class MouseListener;
+	class KeyboardListener;
 
 	class RenderSystem;
 	class DeviceBuffer;

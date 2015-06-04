@@ -166,6 +166,9 @@
       <Filter>Public\RenderSystem\D3D11</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Scene.hpp" />
+    <ClInclude Include="..\Public\Event.hpp">
+      <Filter>Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Basic.cpp">
@@ -280,6 +283,9 @@
       <Filter>Private\Global\Source</Filter>
     </ClCompile>
     <ClCompile Include="Renderer.cpp">
+      <Filter>Private\Global\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Event.cpp">
       <Filter>Private\Global\Source</Filter>
     </ClCompile>
   </ItemGroup>

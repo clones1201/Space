@@ -6,7 +6,7 @@
 namespace Space
 {
 	template <typename _Type>
-	class TypeTraitBase
+	class SPACE_API TypeTraitBase
 	{
 	public:
 		typedef typename std::remove_reference< _Type >::type*	RawPtr;
@@ -17,12 +17,18 @@ namespace Space
 		typedef typename std::shared_ptr< typename std::remove_reference< _Type >::type const > ConstPtr;
 	};
 
-	template < typename _Type > class TypeTrait : public TypeTraitBase < _Type > {};
+	template < typename _Type > class SPACE_API TypeTrait : public TypeTraitBase < _Type > {};
 
-	class SPACE_API Object
+	class SPACE_API Object{
+	public:
+		virtual ~Object(){}
+	};
+
+	template <class _Type>
+	class SPACE_API SharedPtrObject : virtual public std::enable_shared_from_this < _Type >
 	{
 	public:
-		virtual ~Object();
+		virtual ~SharedPtrObject(){}
 	};
 
 	class SPACE_API Uncopyable{
@@ -33,6 +39,7 @@ namespace Space
 		Uncopyable(const Uncopyable&) = delete;
 		Uncopyable& operator=(const Uncopyable&) = delete;
 	};
+
 
 	class SPACE_API Interface : private Uncopyable
 	{
@@ -49,12 +56,24 @@ namespace Space
 		RefCountObject();
 	public:
 		virtual ~RefCountObject();
-		int32 AddRef();
-		int32 Release();
+		inline int32 AddRef()
+		{
+			return m_RefCount++;
+		}
+		inline int32 Release()
+		{
+			int32 ret = m_RefCount--;
+			if (m_RefCount == 0)
+			{
+				assert(nullptr != this);
+				delete this;
+			}
+			return ret;
+		}
 	};
 
 	template<typename Type>
-	class RefCountPtr
+	class SPACE_API RefCountPtr
 	{
 	public:
 		RefCountPtr(Type* p) :p(p){}

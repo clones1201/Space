@@ -149,6 +149,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Behavior.hpp" />
+    <ClInclude Include="..\Public\Event.hpp" />
     <ClInclude Include="..\Public\Rendering.hpp" />
     <ClInclude Include="..\Public\D3D11Rendering.hpp" />
     <ClInclude Include="..\Public\D3D11DepthStencilView.hpp" />
@@ -210,6 +211,7 @@
     <ClCompile Include="DepthStencilView.cpp" />
     <ClCompile Include="DeviceBuffer.cpp" />
     <ClCompile Include="DeviceTexture.cpp" />
+    <ClCompile Include="Event.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="InputLayout.cpp" />
     <ClCompile Include="Log.cpp" />

@@ -5,6 +5,23 @@
 
 namespace Space
 {
+	std::unique_ptr<Core> Core::m_Instance;
+
+	std::once_flag g_CoreCreationOnceFlag;
+	Core* Core::GetInstance()
+	{
+		std::call_once(g_CoreCreationOnceFlag,
+			[&]{
+			m_Instance.reset(new Core);
+		});
+		return m_Instance.get();
+	}
+
+	Core::Core()
+	{
+		m_EventDispatcher.reset(new EventDispatcher);
+	}
+
 
 	RenderSystem* Core::CreateD3DRenderSystem()
 	{
@@ -13,5 +30,10 @@ namespace Space
 	RenderSystem* Core::CreateGLRenderSystem()
 	{
 		throw std::exception("Not Implemented");
+	}
+	
+	EventDispatcher* Core::GetEventDispatcher() const
+	{
+		return m_EventDispatcher.get();
 	}
 }

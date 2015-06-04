@@ -149,7 +149,7 @@ namespace Space
 		if (nullptr != pList->GetList())
 		{
 			mDevice.GetImmediateContext()
-				->ExecuteCommandList(pList->GetList(), false);
+				->ExecuteCommandList(pList->GetList(), true);
 		}
 	}
 

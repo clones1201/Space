@@ -33,12 +33,15 @@ namespace Space
 		m_Width = rc.right - rc.left;
 		m_Height = rc.bottom - rc.top;
 
-		m_hWnd = CreateWindowW(L"RenderWindow", L"RenderWindow", WS_OVERLAPPEDWINDOW,
+		m_hWnd = CreateWindow(TEXT("RenderWindow"), TEXT("RenderWindow"), WS_OVERLAPPEDWINDOW,
 			CW_USEDEFAULT, CW_USEDEFAULT, m_Width, m_Height, NULL, NULL, m_hInstance,
 			reinterpret_cast<LPVOID>(this));
 		if (!m_hWnd){
 			throw std::exception("RenderWindow CreateWindow Failed");
 		}
+
+		//SetWindowLongPtr(m_hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
+
 		m_hDC = GetDC(m_hWnd);
 	}
 
@@ -98,6 +101,20 @@ namespace Space
 		case WM_DESTROY:
 			PostQuitMessage(0);
 			break;
+		case WM_MOUSEMOVE:
+		{
+			auto x = GET_X_LPARAM(lParam);
+			auto y = GET_Y_LPARAM(lParam);	
+			
+			m_EventDispatcher->RaiseMouseMoveEvent(
+				MouseEventArgs{
+				x,y,0,
+				(MK_LBUTTON == (MK_LBUTTON & wParam)),
+				(MK_RBUTTON == (MK_RBUTTON & wParam)),
+				(MK_MBUTTON == (MK_MBUTTON & wParam))}
+				);
+		}	
+		break;
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
 		}
