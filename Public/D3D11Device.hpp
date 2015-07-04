@@ -10,26 +10,40 @@ namespace Space
 	class D3D11Device : public Uncopyable
 	{
 	public:
-		D3D11Device(D3D11Device &&param);
-		D3D11Device& operator=(D3D11Device&& param);
-
-		ID3D11Device* Get() const throw();
-		ID3D11DeviceContext* GetImmediateContext() const throw();
-		ID3D11Device* operator->() const throw();
-		IDXGIFactory* GetDXGIFactory() const throw();
-
-		bool IsValid() const throw();
-		
+		inline ID3D11Device* Get() const
+		{
+			return m_pDevice;
+		}
+		inline ID3D11DeviceContext* GetImmediateContext() const
+		{
+			return m_pImmediateContext;
+		}
+		inline ID3D11Device* operator->() const
+		{
+			return m_pDevice;
+		}
+		inline IDXGIFactory* GetDXGIFactory() const
+		{
+			return m_pDXGIFactory;
+		}
+		  
 		~D3D11Device();
 
-		D3D11Device() throw();
+		D3D11Device();
 	private:
-		class Impl;
-		std::unique_ptr<Impl> impl;
+		CComPtr<ID3D11Device> m_pDevice = nullptr;
+		CComPtr<ID3D11DeviceContext> m_pImmediateContext = nullptr;
+		CComPtr<IDXGIFactory> m_pDXGIFactory = nullptr;
 
-		friend class D3D11RenderSystem;
-		friend class D3D11RenderSystemImpl;
+#ifdef _DEBUG
+		CComPtr<ID3D11Debug> m_pDebug = nullptr;
+#endif
+
+		D3D_DRIVER_TYPE m_DriverType = D3D_DRIVER_TYPE_UNKNOWN;
+		D3D_FEATURE_LEVEL m_FeatureLevel = D3D_FEATURE_LEVEL_11_0;		 
 	};
+
+	typedef std::shared_ptr<D3D11Device> D3D11DevicePtr;
 }
 
 #endif

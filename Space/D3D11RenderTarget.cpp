@@ -11,7 +11,7 @@ namespace Space
 	class D3D11RenderTargetImpl : public D3D11RenderTarget
 	{
 	private:
-		D3D11Device& mDevice;
+		D3D11DevicePtr mDevice;
 
 		D3D11_RENDER_TARGET_VIEW_DESC m_RTVDesc;
 
@@ -19,7 +19,7 @@ namespace Space
 		//CComPtr<ID3D11Texture2D> m_pBackBuffer = nullptr; 
 
 	public:
-		D3D11RenderTargetImpl(D3D11Device& device, DeviceTexture2D* pBackBuffer)
+		D3D11RenderTargetImpl(D3D11DevicePtr device, DeviceTexture2D* pBackBuffer)
 			:mDevice(device)
 		{
 			auto pD3DDeviceTexture2D = dynamic_cast<D3D11DeviceTexture2D*>(pBackBuffer);
@@ -43,7 +43,7 @@ namespace Space
 			m_RTVDesc.Format = texDesc.Format;
 
 			ID3D11RenderTargetView* pRenderTargetView = nullptr;
-			HRESULT hr = mDevice->CreateRenderTargetView(pBuffer, &m_RTVDesc, &pRenderTargetView);
+			HRESULT hr = mDevice->Get()->CreateRenderTargetView(pBuffer, &m_RTVDesc, &pRenderTargetView);
 			if (FAILED(hr))
 			{
 				throw std::exception("CreateRenderTargetView failed.");
@@ -58,7 +58,7 @@ namespace Space
 
 	};
 
-	D3D11RenderTarget* D3D11RenderTarget::Create(D3D11Device& device,DeviceTexture2D* pBackBuffer)
+	D3D11RenderTarget* D3D11RenderTarget::Create(D3D11DevicePtr device,DeviceTexture2D* pBackBuffer)
 	{
 		try
 		{

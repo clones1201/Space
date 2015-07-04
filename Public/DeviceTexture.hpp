@@ -10,6 +10,23 @@ namespace Space
 	{
 	public:
 		virtual ~DeviceTextureBase();
+
+		inline TextureType GetType() const
+		{
+			return m_Type;
+		}
+		inline DataFormat GetFormat() const
+		{
+			return m_Format;
+		}
+		inline ResourceUsage GetUsage() const
+		{
+			return m_Usage;
+		}
+		inline ResourceBindFlag GetBindFlag() const
+		{
+			return m_Flag;
+		}
 	protected:
 		DeviceTextureBase();
 
@@ -43,10 +60,14 @@ namespace Space
 		virtual byte* Lock() = 0;
 		virtual void Unlock() = 0;
 
-		int32 GetArraySize() const;
-		TextureType GetType() const;
-		DataFormat GetFormat() const;
-		int32 GetWidth() const;
+		inline int32 GetArraySize() const
+		{
+			return m_ArraySize;
+		}
+		inline int32 GetWidth() const
+		{
+			return m_Width;
+		}
 	protected:
 		DeviceTexture1D(int32 X, 
 			DataFormat format, 
@@ -56,6 +77,7 @@ namespace Space
 		int32 m_Width = 0;
 		int32 m_ArraySize = 0;
 	};
+	typedef std::shared_ptr<DeviceTexture1D> DeviceTexture1DPtr;
 
 	class DeviceTexture2D : virtual public Interface, public DeviceTextureBase
 	{
@@ -84,12 +106,19 @@ namespace Space
 		virtual byte* Lock() = 0;
 		virtual void Unlock() = 0;
 
-		int32 GetArraySize() const;
-		TextureType GetType() const;
-		DataFormat GetFormat() const;
-		int32 GetWidth() const;
-		int32 GetHeight() const;
-
+		inline int32 GetArraySize() const
+		{
+			return m_ArraySize;
+		}
+		inline int32 GetWidth() const
+		{
+			return m_Width;
+		}
+		inline int32 GetHeight() const
+		{
+			return m_Height;
+		}
+		 
 	protected:
 		DeviceTexture2D(int32 X, int32 Y,
 			DataFormat format,
@@ -99,6 +128,7 @@ namespace Space
 		int32 m_Width = 0, m_Height = 0; 
 		int32 m_ArraySize = 0;
 	};
+	typedef std::shared_ptr<DeviceTexture2D> DeviceTexture2DPtr;
 
 	class DeviceTexture3D : virtual public Interface, public DeviceTextureBase
 	{
@@ -116,12 +146,18 @@ namespace Space
 		virtual byte* Lock() = 0;
 		virtual void Unlock() = 0;
 
-		int32 GetArraySize() const;
-		TextureType GetType() const;
-		DataFormat GetFormat() const;
-		int32 GetWidth() const;
-		int32 GetHeight() const;
-		int32 GetDepth() const;
+		inline int32 GetWidth() const
+		{
+			return m_Width;
+		}
+		inline int32 GetHeight() const
+		{
+			return m_Height;
+		}
+		inline int32 GetDepth() const
+		{
+			return m_Depth;
+		}
 
 	protected:
 		DeviceTexture3D(int32 X, int32 Y, int32 Z,
@@ -130,6 +166,7 @@ namespace Space
 			ResourceBindFlag flag);
 		int32 m_Width = 0, m_Height = 0, m_Depth = 0; 
 	};
+	typedef std::shared_ptr<DeviceTexture3D> DeviceTexture3DPtr;
 
 }
 

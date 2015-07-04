@@ -39,6 +39,8 @@ namespace Space
 		bool m_Fullscreen;
 		//std::function<void(*)> Resize;
 	};
+
+	typedef std::shared_ptr<Window> WindowPtr;
 }
 
 #endif

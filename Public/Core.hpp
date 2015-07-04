@@ -26,7 +26,7 @@ namespace Space
 		static std::unique_ptr<Core> m_Instance;
 
 		std::unique_ptr<EventDispatcher> m_EventDispatcher = nullptr;
-	};
+	}; 
 }
 
 

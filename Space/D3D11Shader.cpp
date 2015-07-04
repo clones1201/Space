@@ -6,13 +6,13 @@
 namespace Space
 {
 	D3D11VertexShader::D3D11VertexShader(
-		D3D11Device &device, byte const* byteCodes, uint32 sizeInBytes)
+		D3D11DevicePtr device, byte const* byteCodes, uint32 sizeInBytes)
 		: mDevice(device)
 	{
 		m_ByteCodes = std::vector<byte>(byteCodes, byteCodes + sizeInBytes);
 
 		ID3D11VertexShader* pVS = nullptr;
-		HRESULT hr = mDevice->CreateVertexShader(
+		HRESULT hr = mDevice->Get()->CreateVertexShader(
 			m_ByteCodes.data(), m_ByteCodes.size(), nullptr, &pVS);
 		if (FAILED(hr))
 		{
@@ -31,7 +31,7 @@ namespace Space
 	}
 
 	D3D11VertexShader* D3D11VertexShader::LoadBinaryFromMemory(
-		D3D11Device& device,
+		D3D11DevicePtr device,
 		byte const* byteCodes, uint32 sizeInBytes)
 	{
 		TRY_CATCH_LOG(
@@ -41,13 +41,13 @@ namespace Space
 	}
 
 	D3D11PixelShader::D3D11PixelShader(
-		D3D11Device &device, byte const* byteCodes, uint32 sizeInBytes)
+		D3D11DevicePtr device, byte const* byteCodes, uint32 sizeInBytes)
 		: mDevice(device){
 
 		m_ByteCodes = std::vector<byte>(byteCodes, byteCodes + sizeInBytes);
 
 		ID3D11PixelShader* pPS = nullptr;
-		HRESULT hr = mDevice->CreatePixelShader(
+		HRESULT hr = mDevice->Get()->CreatePixelShader(
 			m_ByteCodes.data(), m_ByteCodes.size(), nullptr, &pPS);
 		if (FAILED(hr))
 		{
@@ -66,7 +66,7 @@ namespace Space
 	}
 
 	D3D11PixelShader* D3D11PixelShader::LoadBinaryFromMemory(
-		D3D11Device& device,
+		D3D11DevicePtr device,
 		byte const* byteCodes, uint32 sizeInBytes)
 	{
 		TRY_CATCH_LOG(

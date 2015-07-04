@@ -13,8 +13,14 @@ namespace Space
 	public:
 		virtual void Show();
 
-		HWND GetHandle() const;
-		HDC GetDeviceContext() const;
+		inline HWND GetHandle() const
+		{
+			return m_hWnd;
+		}
+		inline HDC GetDeviceContext() const
+		{
+			return m_hDC;
+		}
 
 		~Win32Window();
 	private:
@@ -32,6 +38,8 @@ namespace Space
 		
 		friend class Window;
 	};
+	
+	typedef std::shared_ptr<Win32Window> Win32WindowPtr;
 #endif
 }
 

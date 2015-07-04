@@ -9,7 +9,7 @@
 namespace Space
 {
 	D3D11RenderWindow::D3D11RenderWindow(
-		D3D11Device& device, 
+		D3D11DevicePtr device, 
 		const std::string& name, int32 width, int32 height, bool fullscreen)
 		:mDevice(device), RenderWindow(name, width, height, fullscreen)
 	{
@@ -43,7 +43,7 @@ namespace Space
 		sd.Windowed = RenderWindow::m_Fullscreen ? TRUE : FALSE;
 
 		IDXGISwapChain* pSwapChain = nullptr;
-		HRESULT hr = mDevice.GetDXGIFactory()->CreateSwapChain(mDevice.Get(), &sd, &(pSwapChain));
+		HRESULT hr = mDevice->GetDXGIFactory()->CreateSwapChain(mDevice->Get(), &sd, &(pSwapChain));
 		if (FAILED(hr)){
 			DebugLog("RenderWindow Initialize Failed");
 			return false;
@@ -85,7 +85,7 @@ namespace Space
 	}
 
 
-	D3D11RenderWindow* D3D11RenderWindow::Create(D3D11Device& mDevice, const std::string& name, int32 width, int32 height, bool fullscreen)
+	D3D11RenderWindow* D3D11RenderWindow::Create(D3D11DevicePtr mDevice, const std::string& name, int32 width, int32 height, bool fullscreen)
 	{
 		try
 		{

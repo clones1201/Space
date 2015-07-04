@@ -15,6 +15,7 @@ namespace Space
 	protected:
 		ShaderResource();
 	};
+	typedef std::shared_ptr<ShaderResource> ShaderResourcePtr;
 }
 
 #endif

@@ -43,6 +43,8 @@ namespace Space
 
 	};
 
+	typedef std::shared_ptr<EventListener> EventListenerPtr;
+
 	struct SPACE_API MouseEventArgs
 	{
 		int32 X, Y, Delta;
@@ -83,6 +85,8 @@ namespace Space
 
 	};
 
+	typedef std::shared_ptr<MouseListener> MouseListenerPtr;
+
 	enum class SPACE_API KeyCode
 	{
 		A,B,C,D,E,F
@@ -112,7 +116,9 @@ namespace Space
 		std::map<KeyCode, bool> m_IsPressedMap;
 	};
 	
-	class EventDispatcher : virtual public Uncopyable
+	typedef std::shared_ptr<KeyboardListener> KeybordListenerPtr;
+
+	class SPACE_API EventDispatcher : virtual public Uncopyable
 	{
 	public:
 		void AddEventListener(EventListener* listener);
@@ -133,6 +139,8 @@ namespace Space
 		std::vector<std::shared_ptr<EventListener>> m_ListenerArray;
 		friend class Core;
 	};
+
+	typedef std::shared_ptr<EventDispatcher> EventDispatcherPtr;
 
 }
 

@@ -43,7 +43,7 @@ namespace Space
 		D3D11RenderSystem();
 
 	private:
-		D3D11Device mDevice;
+		D3D11DevicePtr mDevice;
 	};
 
 }

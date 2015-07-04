@@ -6,13 +6,15 @@
 
 namespace Space
 {
-	class RenderTarget : virtual public Interface
+	class SPACE_API RenderTarget : virtual public Interface
 	{
 	public:		
 		virtual ~RenderTarget();
 
 	protected:
 	};
+
+	typedef std::shared_ptr<RenderTarget> RenderTargetPtr;
 }
 
 #endif 

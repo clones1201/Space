@@ -6,7 +6,6 @@
 
 namespace Space
 {
-
 	class DepthStencilView : virtual public Interface
 	{
 	public:
@@ -14,6 +13,8 @@ namespace Space
 			RenderSystem* pRenderSys, DeviceTexture2D* pTexture);
 		virtual ~DepthStencilView();
 	};
+
+	typedef std::shared_ptr<DepthStencilView> DepthStencilViewPtr;
 }
 
 #endif

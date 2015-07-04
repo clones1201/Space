@@ -37,6 +37,7 @@ namespace Space
 
 		virtual void ExecuteCommandList(CommandList* list) = 0;
 	};
+	typedef std::shared_ptr<RenderSystem> RenderSystemPtr;
 }
 
 #endif

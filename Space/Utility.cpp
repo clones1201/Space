@@ -322,24 +322,7 @@ namespace Space
 	{
 		return wstr2str(*(m_impl->pStr));
 	}
-	bool Name::operator==(const Name&param) const
-	{
-		return m_impl == param.m_impl;
-	}
-	bool Name::operator<(const Name&param) const
-	{
-		return m_impl < param.m_impl;
-	}
-	bool Name::operator>(const Name&param) const
-	{
-		return m_impl > param.m_impl;
-	}
-	int32 Name::GetHashCode() const
-	{
-		std::hash<TypeTrait<Name::Impl>::Ptr> hasher;
-		return (int32)hasher(m_impl);
-	}
-
+	
 	std::ostream& Name::Write(std::ostream& archiver) const
 	{
 		Space::Write(archiver, ToString());

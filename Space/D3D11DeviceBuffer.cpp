@@ -4,7 +4,7 @@
 
 namespace Space
 {
-	D3D11DeviceBuffer::D3D11DeviceBuffer(D3D11Device& device, BufferType type,
+	D3D11DeviceBuffer::D3D11DeviceBuffer(D3D11DevicePtr device, BufferType type,
 		ResourceUsage usage, byte const* initialData, uint32 lengthInBytes)
 		:mDevice(device), DeviceBuffer(type, usage, lengthInBytes)
 	{
@@ -19,7 +19,7 @@ namespace Space
 		data.pSysMem = initialData;
 
 		ID3D11Buffer* pBuffer = nullptr;
-		HRESULT hr = mDevice->CreateBuffer(
+		HRESULT hr = mDevice->Get()->CreateBuffer(
 			&desc,
 			initialData != nullptr ? &data : nullptr,
 			&pBuffer);
@@ -49,7 +49,7 @@ namespace Space
 			box.front = 0; box.back = 1;
 			box.top = 0; box.bottom = 1;
 
-			mDevice.GetImmediateContext()->UpdateSubresource(m_pBuffer, 0, &box, pData, 0, 0);
+			mDevice->GetImmediateContext()->UpdateSubresource(m_pBuffer, 0, &box, pData, 0, 0);
 
 			isSuccess = true;
 		}
@@ -58,14 +58,14 @@ namespace Space
 		case ResourceUsage::Dynamic:
 		{
 			D3D11_MAPPED_SUBRESOURCE mapped;
-			hr = mDevice.GetImmediateContext()->Map(m_pBuffer, 0, D3D11_MAP_WRITE, 0, &mapped);
+			hr = mDevice->GetImmediateContext()->Map(m_pBuffer, 0, D3D11_MAP_WRITE, 0, &mapped);
 			if (SUCCEEDED(hr))
 			{
 				auto error = memcpy_s((byte*)mapped.pData + startOffset, m_LengthInBytes, pData, lengthInBytes);
 
 				if (error == 0) isSuccess = true;
 
-				mDevice.GetImmediateContext()->Unmap(m_pBuffer, 0);
+				mDevice->GetImmediateContext()->Unmap(m_pBuffer, 0);
 			}
 		}
 		break;
@@ -81,7 +81,7 @@ namespace Space
 		return m_pBuffer.p;
 	}
 
-	D3D11DeviceBuffer* D3D11DeviceBuffer::Create(D3D11Device& device, BufferType type, ResourceUsage usage, byte const* initialData, uint32 lengthInBytes)
+	D3D11DeviceBuffer* D3D11DeviceBuffer::Create(D3D11DevicePtr device, BufferType type, ResourceUsage usage, byte const* initialData, uint32 lengthInBytes)
 	{
 		TRY_CATCH_LOG(
 			return new D3D11DeviceBuffer(device, type, usage, initialData, lengthInBytes),

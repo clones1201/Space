@@ -40,23 +40,6 @@ namespace Space
 		}
 	}
 
-	InputLayout::ElementArray::iterator InputLayout::Begin()
-	{
-		return std::move(m_LayoutArray.begin());
-	}
-	InputLayout::ElementArray::iterator InputLayout::End()
-	{
-		return std::move(m_LayoutArray.end());
-	}
-	InputLayout::ElementArray::const_iterator InputLayout::CBegin() const
-	{
-		return std::move(m_LayoutArray.cbegin());
-	}
-	InputLayout::ElementArray::const_iterator InputLayout::CEnd() const
-	{
-		return std::move(m_LayoutArray.cend());
-	}
-
 	void InputLayout::Insert(ElementArray::iterator pos, InputElement elem)
 	{
 		m_LayoutArray.insert(pos, elem);
@@ -70,18 +53,6 @@ namespace Space
 	uint32 InputLayout::GetSize() const
 	{
 		return m_LayoutArray.size();
-	}
-	uint32 InputLayout::GetPositionCount() const
-	{
-		return m_PositionCount;
-	}
-	uint32 InputLayout::GetTexCoordCount() const
-	{
-		return m_TexCoordCount;
-	}
-	uint32 InputLayout::GetNormalCount() const
-	{
-		return m_NormalCount;
 	}
 
 	InputLayout::~InputLayout()

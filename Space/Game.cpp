@@ -78,7 +78,6 @@ namespace Space
 
 	void SimpleGame::Update()
 	{
-
 	}
 
 }

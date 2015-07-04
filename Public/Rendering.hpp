@@ -6,7 +6,7 @@
 
 namespace Space
 {
-	struct ViewPort
+	struct SPACE_API ViewPort
 	{
 		float TopLeftX;
 		float TopLeftY;
@@ -16,7 +16,7 @@ namespace Space
 		float MaxDepth;
 	};
 
-	struct Rect
+	struct SPACE_API Rect
 	{
 		long left;
 		long top;
@@ -24,20 +24,20 @@ namespace Space
 		long bottom;
 	};
 
-	enum class FillMode
+	enum class SPACE_API FillMode : uint8
 	{
 		WireFrame = 2,
 		Solid = 3
 	};
 
-	enum class CullMode
+	enum class SPACE_API CullMode : uint8
 	{
 		None = 1,
 		Front = 2,
 		Back = 3
 	};
 
-	struct RasterizerDesc
+	struct SPACE_API RasterizerDesc
 	{
 		FillMode FillMode;
 		CullMode CullMode;
@@ -51,13 +51,13 @@ namespace Space
 		bool AntialiasedLineEnable;
 	};
 
-	enum class DepthWriteMask
+	enum class SPACE_API DepthWriteMask : uint8
 	{
 		Zero = 0,
 		All = 1
 	};
 
-	enum class ComparisonFunc
+	enum class SPACE_API ComparisonFunc : uint8
 	{
 		Never = 1,
 		Less = 2,
@@ -69,7 +69,7 @@ namespace Space
 		Always = 8
 	};
 	
-	enum StencilOp
+	enum class SPACE_API StencilOp : uint8
 	{
 		Keep = 1,
 		Zero = 2,
@@ -81,7 +81,7 @@ namespace Space
 		Decr = 8
 	};
 
-	struct DepthStincilOpDesc
+	struct SPACE_API DepthStincilOpDesc
 	{
 		StencilOp StencilFailOp;
 		StencilOp StencilDepthFailOp;
@@ -89,7 +89,7 @@ namespace Space
 		ComparisonFunc StencilFunc;
 	};
 
-	struct DepthStencilDesc
+	struct SPACE_API DepthStencilDesc
 	{
 		bool DepthEnable;
 		DepthWriteMask DepthWriteMask;
@@ -101,7 +101,7 @@ namespace Space
 		DepthStincilOpDesc BackFace;
 	};
 
-	enum class Blend
+	enum class SPACE_API Blend : uint8
 	{
 		Zero = 1,
 		One = 2,
@@ -122,7 +122,7 @@ namespace Space
 		InvSrc1Alpha = 19
 	};
 
-	enum class BlendOperator
+	enum class SPACE_API BlendOperator : uint8
 	{
 		Add = 1,
 		Subtract = 2,
@@ -131,7 +131,7 @@ namespace Space
 		Max = 5
 	};
 	
-	struct RenderTargetBlendDesc
+	struct SPACE_API RenderTargetBlendDesc
 	{
 		bool BlendEnable;
 		Blend SrcBlend;
@@ -143,13 +143,13 @@ namespace Space
 		uint8 RenderTargetWriteMask;
 	};
 
-	struct SampleDesc
+	struct SPACE_API SampleDesc
 	{
 		uint Count;
 		uint Quality;
 	};
 
-	struct BlendDesc
+	struct SPACE_API BlendDesc
 	{
 		bool AlphaToCoverageEnable;
 		bool IndependentBlendEnable;
@@ -160,7 +160,7 @@ namespace Space
 	class PipelineState;
 	class CommandQueue;
 
-	class CommandList : virtual public Uncopyable
+	class SPACE_API CommandList : virtual public Uncopyable
 	{
 	public:
 		static CommandList* Create(RenderSystem* pRenderSys);
@@ -189,12 +189,12 @@ namespace Space
 	protected:
 		IndexBuffer const* m_pIndexBuffer = nullptr;
 		std::vector<VertexBuffer const*> m_VertexBufferArray;
-
-
+		
 	private:
 	};
+	typedef std::shared_ptr<CommandList> CommandListPtr;
 	 
-	class PipelineState
+	class SPACE_API PipelineState
 	{
 	public:
 		static PipelineState* Create(RenderSystem* pRenderSys);
@@ -247,6 +247,7 @@ namespace Space
 
 	};
 
+	typedef std::shared_ptr<PipelineState> PipelineStatePtr;
 }
 
 #endif

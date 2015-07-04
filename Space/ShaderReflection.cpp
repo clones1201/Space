@@ -22,18 +22,6 @@ namespace Space
 	ShaderReflection::~ShaderReflection()
 	{}
 
-	uint32 ShaderReflection::GetConstantBufferCount() const
-	{
-		return m_ConstBuffers.size();
-	}
-	uint32 ShaderReflection::GetBindResourceCount() const
-	{
-		return m_Resources.size();
-	}
-	uint32 ShaderReflection::GetInstructionCount() const
-	{
-		return m_InstructionCount;
-	}
 	ShaderReflection* ShaderReflection::CreateD3D(
 		VertexShader* pShader)
 	{
@@ -62,43 +50,6 @@ namespace Space
 		TRY_CATCH_LOG(return m_Variables.at(index).get(), return nullptr);
 	}
 
-	ShaderReflection* ShaderReflectionConstantBuffer::GetShaderReflection()
-	{
-		return pReflection;
-	}
-	uint32 ShaderReflectionConstantBuffer::GetSizeInBytes() const
-	{
-		return m_Size;
-	}
-	uint32 ShaderReflectionConstantBuffer::GetVariableCount() const
-	{
-		return m_Variables.size();
-	}
-	Name ShaderReflectionConstantBuffer::GetName() const
-	{
-		return m_Name;
-	}
-
-	void ShaderReflectionConstantBuffer::SetBuffer(ConstantBuffer* pBuffer)
-	{
-		if (pBuffer != nullptr)
-			this->pBuffer = pBuffer;
-	}
-
-	void ShaderReflectionConstantBuffer::UnSetBuffer()
-	{
-		pBuffer = nullptr;
-		/*for (auto iter = m_Variables.begin(); iter != m_Variables.end(); ++iter)
-		{
-			(*iter)->UnSetBuffer();
-		}*/
-	}
-
-	ConstantBuffer* ShaderReflectionConstantBuffer::GetBuffer() const
-	{
-		return pBuffer;
-	}
-	
 	//
 	// ShaderReflectionVariable Implement
 	//
@@ -115,43 +66,6 @@ namespace Space
 
 	ShaderReflectionVariable::~ShaderReflectionVariable()
 	{}
-
-	ShaderReflectionConstantBuffer* ShaderReflectionVariable::GetParentConstantBuffer() const
-	{
-		return pParentCB;
-	}
-	ShaderReflectionVariable* ShaderReflectionVariable::GetParentVariable() const
-	{
-		return pParentVariable;
-	}	 
-	uint32 ShaderReflectionVariable::GetStartOffset() const
-	{
-		return m_StartOffset;
-	}
-	uint32 ShaderReflectionVariable::GetMemberCount() const
-	{
-		return m_Members.size();
-	}
-	ShaderVariableType ShaderReflectionVariable::GetType() const
-	{
-		return m_Type;
-	}
-	ShaderVariableClass ShaderReflectionVariable::GetClass() const
-	{
-		return m_Class;
-	}
-	uint32 ShaderReflectionVariable::GetColumnsCount() const
-	{
-		return m_Columns;
-	}
-	uint32 ShaderReflectionVariable::GetRowsCount() const
-	{
-		return m_Rows;
-	}
-	Name ShaderReflectionVariable::GetName() const
-	{
-		return m_Name;
-	}
 
 	std::string ShaderReflectionVariable::AsString() const
 	{
@@ -267,41 +181,7 @@ namespace Space
 	
 	ShaderReflectionBindResource::~ShaderReflectionBindResource()
 	{}
-
-	ShaderReflection* ShaderReflectionBindResource::GetShaderReflection() const
-	{
-		return m_pReflection;
-	}
-
-	Name ShaderReflectionBindResource::GetName() const
-	{
-		return m_Name;
-	}
-	ShaderInputType ShaderReflectionBindResource::GetType() const
-	{
-		return m_Type;
-	}
-	uint32 ShaderReflectionBindResource::GetBindPoint() const
-	{
-		return m_BindPoint;
-	}
-	uint32 ShaderReflectionBindResource::GetBindCount() const
-	{
-		return m_BindCount;
-	}
-	ResourceReturnType ShaderReflectionBindResource::GetReturnType() const
-	{
-		return m_ReturnType;
-	}
-	ResourceDimension ShaderReflectionBindResource::GetDimension() const
-	{
-		return m_Dimension;
-	}
-	void ShaderReflectionBindResource::SetShaderResource(ShaderResource* pResource)
-	{
-		if (pResource != nullptr)
-			m_pResourceView = pResource;
-	}
+		
 	void SetSampler()
 	{}
 	ShaderResource* ShaderReflectionBindResource::GetShaderResource() const

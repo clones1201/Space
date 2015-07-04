@@ -18,6 +18,8 @@ namespace Space
 		RenderTarget* m_pRenderTarget = nullptr;
 	};
 
+	typedef std::shared_ptr<Renderer> RendererPtr;
+
 	class MaterialRenderer : public Renderer
 	{	
 	public:
@@ -28,6 +30,8 @@ namespace Space
 
 		Material* m_pMaterial;
 	};
+
+	typedef std::shared_ptr<MaterialRenderer> MaterialRendererPtr;
 
 	class MeshMaterialRenderer : public MaterialRenderer
 	{
@@ -43,7 +47,7 @@ namespace Space
 
 		Mesh* m_pMesh = nullptr;
 	};
-
+	typedef std::shared_ptr<MeshMaterialRenderer> MeshMaterialRendererPtr;
 
 }
 

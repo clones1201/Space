@@ -12,14 +12,14 @@ namespace Space
 	{}
 
 	StaticBoolParameter::StaticBoolParameter(
-		StaticParameterSet* pSet,std::string const& name, uint8 bit)
-		:StaticBoolParameter(pSet,Name(name), bit)
+		StaticParameterSet* pSet, std::string const& name, uint8 bit)
+		:StaticBoolParameter(pSet, Name(name), bit)
 	{
 	}
 
 	StaticBoolParameter::StaticBoolParameter(
 		StaticParameterSet* pSet, std::wstring const& name, uint8 bit)
-		:StaticBoolParameter(pSet,Name(name),bit)
+		: StaticBoolParameter(pSet, Name(name), bit)
 	{
 	}
 
@@ -29,44 +29,19 @@ namespace Space
 	{
 	}
 
-	Name StaticBoolParameter::GetName() const
-	{
-		return m_Name;
-	}
-	
-	void StaticBoolParameter::SetName(Name const& name)
-	{
-		m_Name = name;
-	}
-
-	bool StaticBoolParameter::GetValue() const
-	{
-		return pSet->_GetBoolValueFromBits(m_Bit);
-	}
-
-	void StaticBoolParameter::SetValue(bool value)
-	{
-		pSet->_SetBoolValueToBits(m_Bit, value);
-	}
-
-	bool StaticBoolParameter::operator==(StaticBoolParameter const& other) const
-	{
-		return (m_Bit == other.m_Bit) && (m_Name == other.m_Name);
-	}
-
 	//Definitions of class StaticMaskParameter
-		
+
 	StaticMaskParameter::StaticMaskParameter(
 		StaticParameterSet* pSet, std::string const& name,
 		uint8 bitR, uint8 bitG, uint8 bitB, uint8 bitA)
-		:StaticMaskParameter(pSet, Name(name),bitR, bitG, bitB, bitA)
+		:StaticMaskParameter(pSet, Name(name), bitR, bitG, bitB, bitA)
 	{
 	}
 
 	StaticMaskParameter::StaticMaskParameter(
 		StaticParameterSet* pSet, std::wstring const& name,
 		uint8 bitR, uint8 bitG, uint8 bitB, uint8 bitA)
-		: StaticMaskParameter(pSet,Name(name),bitR,bitG,bitB,bitA)
+		: StaticMaskParameter(pSet, Name(name), bitR, bitG, bitB, bitA)
 	{
 	}
 
@@ -81,61 +56,9 @@ namespace Space
 	{
 	}
 
-	Name StaticMaskParameter::GetName() const
-	{
-		return Name(m_Name);
-	}
-	void StaticMaskParameter::SetName(Name const& name)
-	{
-		m_Name = name;
-	}
-	bool StaticMaskParameter::GetMaskR() const
-	{
-		return pSet->_GetBoolValueFromBits(m_BitR);
-	}
-	bool StaticMaskParameter::GetMaskG() const
-	{
-		return pSet->_GetBoolValueFromBits(m_BitG);
-	}
-	bool StaticMaskParameter::GetMaskB() const
-	{
-		return pSet->_GetBoolValueFromBits(m_BitB);
-	}
-	bool StaticMaskParameter::GetMaskA() const
-	{
-		return pSet->_GetBoolValueFromBits(m_BitA);
-	}
-
-	void StaticMaskParameter::SetMaskR(bool value)
-	{
-		pSet->_SetBoolValueToBits(m_BitR, value);
-	}
-	void StaticMaskParameter::SetMaskG(bool value)
-	{
-		pSet->_SetBoolValueToBits(m_BitG, value);
-	}
-	void StaticMaskParameter::SetMaskB(bool value)
-	{
-		pSet->_SetBoolValueToBits(m_BitB, value);
-	}
-	void StaticMaskParameter::SetMaskA(bool value)
-	{
-		pSet->_SetBoolValueToBits(m_BitA, value);
-	}
-	
-	bool StaticMaskParameter::operator==(StaticMaskParameter const& other) const
-	{
-		return 
-			(m_BitR == other.m_BitR) && 
-			(m_BitG == other.m_BitG) &&
-			(m_BitB == other.m_BitB) &&
-			(m_BitA == other.m_BitA) &&
-			(m_Name == other.m_Name);
-	}
-
 	// Definitions of class StaticParameterSet
 	StaticParameterSet::StaticParameterSet(){}
-	
+
 	std::vector<StaticParameterSet> StaticParameterSet::GetAllStaticParameterSet()
 	{
 		std::vector<StaticParameterSet> ret;
@@ -161,19 +84,21 @@ namespace Space
 	void StaticParameterSet::AddSwitch(Name const& name,
 		bool defaultValue)
 	{
-		assert(m_BitCount + 1 < 32);
+		//assert(m_BitCount + 1 < 32);
+		if (m_BitCount + 1 >= 32) throw std::exception("Static Parameter Set is Full.");
 		StaticBoolParameter newParam = StaticBoolParameter(
 			this, name, m_BitCount);
 		m_BitCount++;
 		newParam.SetValue(defaultValue);
 		m_SwitchParameters.insert(
-			std::pair<Name,StaticBoolParameter>(name,newParam));
+			std::pair<Name, StaticBoolParameter>(name, newParam));
 	}
 	void StaticParameterSet::AddMask(Name const& name,
 		bool maskR, bool maskG,
 		bool maskB, bool maskA)
 	{
-		assert(m_BitCount + 4 < 32);
+		//assert(m_BitCount + 4 < 32);
+		if (m_BitCount + 4 >= 32) throw std::exception("Static Parameter Set is Full.");
 		StaticMaskParameter newParam = StaticMaskParameter(
 			this, name, m_BitCount, m_BitCount + 1, m_BitCount + 2, m_BitCount + 3);
 		m_BitCount += 4;
@@ -185,96 +110,7 @@ namespace Space
 			std::pair<Name, StaticMaskParameter>(name, newParam));
 	}
 
-	int32 StaticParameterSet::GetSwitchCount() const
-	{
-		return m_SwitchParameters.size();
-	}
-	int32 StaticParameterSet::GetMaskCount() const
-	{
-		return m_MaskParameters.size();
-	}
-
-	StaticBoolParameter& StaticParameterSet::GetSwitchByName(Name name)
-	{
-		return m_SwitchParameters.at(name);
-	}
-	StaticMaskParameter& StaticParameterSet::GetMaskByName(Name name)
-	{
-		return m_MaskParameters.at(name);
-	} 
-
-	StaticParameterSet::SwitchIterator StaticParameterSet::SwitchBegin()
-	{
-		return m_SwitchParameters.begin();
-	}
-	StaticParameterSet::ConstSwitchIterator StaticParameterSet::CSwitchBegin() const
-	{
-		return m_SwitchParameters.cbegin();
-	}
-	StaticParameterSet::SwitchIterator StaticParameterSet::SwitchEnd()
-	{
-		return m_SwitchParameters.end();
-	}
-	StaticParameterSet::ConstSwitchIterator StaticParameterSet::CSwitchEnd() const
-	{
-		return m_SwitchParameters.cend();
-	}
-
-	StaticParameterSet::MaskIterator StaticParameterSet::MaskBegin()
-	{
-		return m_MaskParameters.begin();
-	}
-	StaticParameterSet::ConstMaskIterator StaticParameterSet::CMaskBegin() const
-	{
-		return m_MaskParameters.cbegin();
-	}
-	StaticParameterSet::MaskIterator StaticParameterSet::MaskEnd()
-	{
-		return m_MaskParameters.end();
-	}
-	StaticParameterSet::ConstMaskIterator StaticParameterSet::CMaskEnd() const
-	{
-		return m_MaskParameters.cend();
-	}
-
-	uint32 StaticParameterSet::GetHashCode() const
-	{
-		std::hash<uint32> hasher;
-		return hasher(m_Bits);
-	}
-
-	uint32 StaticParameterSet::_GetBits() const
-	{
-		return m_Bits;
-	}
-
-	void StaticParameterSet::_SetBits(uint32 bits)
-	{
-		m_Bits = bits;
-	}
-
-	bool StaticParameterSet::_GetBoolValueFromBits(uint8 bit) const
-	{
-		return (bool)((m_Bits >> bit) & 0x00000001);
-	}
-	void StaticParameterSet::_SetBoolValueToBits(uint8 bit, bool value)
-	{
-		value? 
-			m_Bits &= (1 << bit):
-			m_Bits |= ~(1 << bit);
-	} 
-
-	bool StaticParameterSet::operator==(StaticParameterSet const& other) const
-	{
-		return
-			(m_BitCount == other.m_BitCount) &&
-			(m_Bits == m_Bits) &&
-			(m_SwitchParameters == other.m_SwitchParameters) &&
-			(m_MaskParameters == other.m_MaskParameters);
-	}
-
 	// Definitions of class Material
-
 	static char* g_DomainStringArrayA[] = {
 		"Surface",
 		"PostProcess"
@@ -332,7 +168,7 @@ namespace Space
 
 	inline MaterialBlendMode GetMaterialBlendModeByString(std::string const& name)
 	{
-		for (int32 i = 0; i < (int32) MaterialBlendMode::Max; ++i)
+		for (int32 i = 0; i < (int32)MaterialBlendMode::Max; ++i)
 		{
 			if (g_BlendModeStringArrayA[i] == name)
 			{
@@ -343,7 +179,7 @@ namespace Space
 	}
 	inline MaterialBlendMode GetMaterialBlendModeByString(std::wstring const& name)
 	{
-		for (int32 i = 0; i < (int32) MaterialBlendMode::Max; ++i)
+		for (int32 i = 0; i < (int32)MaterialBlendMode::Max; ++i)
 		{
 			if (g_BlendModeStringArrayW[i] == name)
 			{
@@ -352,7 +188,7 @@ namespace Space
 		}
 		return MaterialBlendMode::Opaque;
 	}
-	
+
 	Shader* Shader::Create(RenderSystem* pRenderSys, std::wstring const& name)
 	{
 		return Create(pRenderSys, wstr2str(name));
@@ -399,7 +235,7 @@ namespace Space
 
 	Shader::~Shader()
 	{}
-	 
+
 	VertexShader* Shader::GetVertexShader() const
 	{
 		return m_pVS.get();
@@ -419,13 +255,6 @@ namespace Space
 		Float4x4 _PCT;
 	};
 
-	std::once_flag Material::g_CommonCreationFlag;
-	std::unique_ptr<ConstantBuffer> Material::g_CommonVariablesBuffer; 
-	Float4x4 Material::g_World;
-	Float4x4 Material::g_View;
-	Float4x4 Material::g_Projection;
-	float Material::g_Time;
-	
 	Material* Material::Create(RenderSystem* pRenderSys, std::wstring const& name)
 	{
 		return Create(pRenderSys, wstr2str(name));
@@ -441,21 +270,20 @@ namespace Space
 
 	Material::Material(RenderSystem* pRenderSys, std::string const& name)
 	{
-		std::call_once(g_CommonCreationFlag, [&]()
-		{
-			CommonVariables variables;
-			variables._MV._11 = 1.0f;
-			variables._MV._22 = 1.0f;
-			variables._MV._33 = 1.0f;
-			
-			variables._PCT._11 = 1.0f;
-			variables._PCT._22 = 1.0f;
-			variables._PCT._33 = 1.0f;
-			variables._PCT._44 = 0.0f;
 
-			g_CommonVariablesBuffer.reset(ConstantBuffer::Create(pRenderSys,
-				(byte const*)&variables, sizeof(CommonVariables)));
-		});
+		CommonVariables variables;
+		variables._MV._11 = 1.0f;
+		variables._MV._22 = 1.0f;
+		variables._MV._33 = 1.0f;
+
+		variables._PCT._11 = 1.0f;
+		variables._PCT._22 = 1.0f;
+		variables._PCT._33 = 1.0f;
+		variables._PCT._44 = 0.0f;
+
+		g_CommonVariablesBuffer.reset(ConstantBuffer::Create(pRenderSys,
+			(byte const*)&variables, sizeof(CommonVariables)));
+
 
 		std::string materialPath = GetAssetsPath() + "Material/" + name + "/";
 		std::string DescriptionPath = materialPath + "ContentDesc.json";
@@ -515,7 +343,7 @@ namespace Space
 		}
 		m_ParameterSet.Clear();
 		m_DefaultParameterSet.Clear();
-		for (auto iter = nodeStaticParameters.Begin(); 
+		for (auto iter = nodeStaticParameters.Begin();
 			iter != nodeStaticParameters.End(); ++iter)
 		{
 			Value& nodeParam = *iter;
@@ -531,7 +359,7 @@ namespace Space
 				m_DefaultParameterSet.GetSwitchByName(name)
 					.SetValue(
 					!nodeDefaultValue.IsNull() && nodeDefaultValue.IsBool() ?
-					nodeDefaultValue.GetBool():
+					nodeDefaultValue.GetBool() :
 					false);
 			}
 			else if (nodeType.GetString() == std::string("Mask"))
@@ -542,7 +370,7 @@ namespace Space
 				{
 					continue;
 				}
-				
+
 				auto iterR = nodeValue.Begin();
 				auto iterG = iterR + 1;
 				auto iterB = iterG + 1;
@@ -582,13 +410,13 @@ namespace Space
 		{
 			Value& nodeShader = *iter;
 			Value& nodeShaderName = nodeShader["Name"];
-			
+
 			Shader* shader = Shader::Create(pRenderSys,
 				materialPath + nodeShaderName.GetString());
 
-			m_Shaders.insert( std::pair<Name,std::unique_ptr<Shader>>(
-					Name(nodeShaderName.GetString()),
-					std::unique_ptr<Shader>(shader)));
+			m_Shaders.insert(std::pair<Name, std::unique_ptr<Shader>>(
+				Name(nodeShaderName.GetString()),
+				std::unique_ptr<Shader>(shader)));
 
 			Value& nodeParamSet = nodeShader["ParameterSet"];
 			if (nodeParamSet.IsArray())
@@ -599,8 +427,8 @@ namespace Space
 					StaticParameterSet paramSet = m_DefaultParameterSet;
 					paramSet._SetBits(iter->GetUint());
 					m_ShaderMap.insert(
-						std::pair<StaticParameterSet,Shader*>(
-						paramSet,shader));
+						std::pair<StaticParameterSet, Shader*>(
+						paramSet, shader));
 				}
 			}
 		}
@@ -655,14 +483,14 @@ namespace Space
 
 		Matrix worldView = world * view;
 		projection.r[3].m128_f32[3] = g_Time;
-	
+
 		CommonVariables variables;
-		StoreFloat4x3(&variables._MV,worldView);
+		StoreFloat4x3(&variables._MV, worldView);
 		StoreFloat4x4(&variables._PCT, projection);
 		g_CommonVariablesBuffer->Update(0, sizeof(CommonVariables),
 			(byte const*)&variables);
 		g_CommonVariablesBuffer->UpdateToDevice();
-		
+
 		SelectShader();
 
 		return m_CurrentShader;

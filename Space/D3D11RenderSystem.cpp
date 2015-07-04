@@ -26,15 +26,15 @@ namespace Space
 	}
 
 	D3D11RenderSystem::D3D11RenderSystem()
-		:mDevice()
+		:mDevice(new D3D11Device())
 	{
-		if (!mDevice.IsValid())
+		if (mDevice == nullptr)
 		{
 			//try second time
-			mDevice = D3D11Device();
+			mDevice.reset(new D3D11Device());
 		}
 
-		if (!mDevice.IsValid())
+		if (mDevice == nullptr)
 		{
 			throw std::exception("D3D11Device failed.");
 		}
@@ -148,7 +148,7 @@ namespace Space
 		auto pList = static_cast<D3D11CommandList*>(list);
 		if (nullptr != pList->GetList())
 		{
-			mDevice.GetImmediateContext()
+			mDevice->GetImmediateContext()
 				->ExecuteCommandList(pList->GetList(), true);
 		}
 	}

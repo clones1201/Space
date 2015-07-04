@@ -4,25 +4,35 @@
 #include "Prerequisites.hpp"
 #include "Basic.hpp"
 
+#include "DeviceBuffer.hpp"
+#include "InputLayout.hpp"
+
 namespace Space
 {
 
 	class MeshPart : public Uncopyable
 	{
 	public:
-
-
+		inline float GetSize() const
+		{
+			return m_Size;
+		}
+		inline Float3 GetCenter() const
+		{
+			return m_Center;
+		}
 	private:
-		TypeTrait<VertexBuffer>::Ptr m_pVertexBuffer;
-		TypeTrait<IndexBuffer>::Ptr m_pIndexBuffer;
+		VertexBufferPtr m_pVertexBuffer;
+		IndexBufferPtr m_pIndexBuffer;
 
-		TypeTrait<InputLayout>::Ptr m_pInputLayout;
+		InputLayoutPtr m_pInputLayout;
 		
 		float m_Size;
 		Float3 m_Center;
 		
 		friend class Mesh;
 	};
+	typedef std::shared_ptr<MeshPart> MeshPartPtr;
 
 	class Mesh : public Uncopyable
 	{
@@ -40,9 +50,10 @@ namespace Space
 		void RemovePart(MeshPart* pPart);
 	protected:
 		
-		std::list<TypeTrait<MeshPart>::Ptr> m_PartCollection;
+		std::list<MeshPartPtr> m_PartCollection;
 	};
 
+	typedef std::shared_ptr<Mesh> MeshPtr;
 }
 
 #endif

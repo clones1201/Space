@@ -31,19 +31,43 @@ namespace Space
 		InputLayout(InputLayout const& other) = default;
 		InputLayout& operator=(InputLayout const& other) = default;
 
-		ElementArray::iterator Begin();
-		ElementArray::iterator End();
-		ElementArray::const_iterator CBegin() const;
-		ElementArray::const_iterator CEnd() const;
+		inline ElementArray::iterator Begin()
+		{
+			return m_LayoutArray.begin();
+		}
+		inline ElementArray::iterator End()
+		{
+			return m_LayoutArray.end();
+		}
+		inline ElementArray::const_iterator CBegin() const
+		{
+			return m_LayoutArray.cbegin();
+		}
+		inline ElementArray::const_iterator CEnd() const
+		{
+			return m_LayoutArray.cend();
+		}
 
 		void Insert(ElementArray::iterator pos, InputElement elem);
-
 		uint32 GetVertexStride(uint32 slot) const;
 		uint32 GetSize() const;
-		uint32 GetPositionCount() const;
-		uint32 GetTexCoordCount() const;
-		uint32 GetNormalCount() const;
-		uint32 GetTangentCount() const;
+
+		inline uint32 GetPositionCount() const
+		{
+			return m_PositionCount;
+		}
+		inline uint32 GetTexCoordCount() const
+		{
+			return m_TexCoordCount;
+		}
+		inline uint32 GetNormalCount() const
+		{
+			return m_NormalCount;
+		}
+		inline uint32 GetTangentCount() const
+		{
+			return m_TangentCount;
+		}
 
 		virtual ~InputLayout();
 	protected:
@@ -56,6 +80,7 @@ namespace Space
 		std::map<uint32, uint32> m_StridePerSlot;
 
 	};
+	typedef std::shared_ptr<InputLayout> InputLayoutPtr;
 }
 
 #endif

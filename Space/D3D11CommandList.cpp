@@ -8,7 +8,7 @@
 
 namespace Space
 {
-	D3D11CommandList* D3D11CommandList::Create(D3D11Device& device)
+	D3D11CommandList* D3D11CommandList::Create(D3D11DevicePtr device)
 	{
 		TRY_CATCH_LOG(
 			return new D3D11CommandList(device),
@@ -16,11 +16,11 @@ namespace Space
 		);
 	}
 
-	D3D11CommandList::D3D11CommandList(D3D11Device& device)
+	D3D11CommandList::D3D11CommandList(D3D11DevicePtr device)
 		:device(device)
 	{
 		m_pDeferredContext = nullptr;
-		HRESULT hr = device->CreateDeferredContext(0, &m_pDeferredContext);
+		HRESULT hr = device->Get()->CreateDeferredContext(0, &m_pDeferredContext);
 		if (FAILED(hr))
 		{
 			throw std::exception("CreateDeferredContext failed.");

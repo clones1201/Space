@@ -8,7 +8,7 @@
 
 namespace Space
 {
-	D3D11PipelineState* D3D11PipelineState::Create(D3D11Device& device)
+	D3D11PipelineState* D3D11PipelineState::Create(D3D11DevicePtr device)
 	{
 		TRY_CATCH_LOG(
 			return new D3D11PipelineState(device),
@@ -16,7 +16,7 @@ namespace Space
 		);
 	}
 
-	D3D11PipelineState::D3D11PipelineState(D3D11Device& device)
+	D3D11PipelineState::D3D11PipelineState(D3D11DevicePtr device)
 		:device(device){
 	}
 
@@ -132,7 +132,7 @@ namespace Space
 		assert(m_InputSignature != nullptr && m_LengthOfSignature != 0);
 
 		ID3D11InputLayout* pInputLayout = nullptr;
-		HRESULT hr = device->CreateInputLayout(
+		HRESULT hr = device->Get()->CreateInputLayout(
 			m_ElemArray.data(), m_ElemArray.size(),
 			m_InputSignature, m_LengthOfSignature,
 			&pInputLayout);
@@ -162,7 +162,7 @@ namespace Space
 			};
 		}
 		m_pBlendState = nullptr;
-		HRESULT hr = device->CreateBlendState(&desc, &(m_pBlendState));
+		HRESULT hr = device->Get()->CreateBlendState(&desc, &(m_pBlendState));
 		if (FAILED(hr))
 		{
 			throw std::exception("CreateBlendState failed.");
@@ -183,7 +183,7 @@ namespace Space
 			(BOOL)m_RasterizerDesc.AntialiasedLineEnable,
 		};
 		m_pRasterizerState = nullptr;
-		HRESULT hr = device->CreateRasterizerState(&desc, &(m_pRasterizerState));
+		HRESULT hr = device->Get()->CreateRasterizerState(&desc, &(m_pRasterizerState));
 		if (FAILED(hr))
 		{
 			throw std::exception("CreateRasterizerState faild.");
@@ -213,7 +213,7 @@ namespace Space
 		};
 
 		m_pDepthStencilState = nullptr;
-		HRESULT hr = device->CreateDepthStencilState(&desc, &(m_pDepthStencilState));
+		HRESULT hr = device->Get()->CreateDepthStencilState(&desc, &(m_pDepthStencilState));
 		if (FAILED(hr))
 		{
 			throw std::exception("CreateDepthStencilState failed.");

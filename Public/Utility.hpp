@@ -99,10 +99,32 @@ namespace Space
 		Name(Name && param);
 		std::wstring ToWString() const;
 		std::string ToString() const;
-		bool operator==(Name const& param) const;
-		bool operator<(Name const& param) const;
-		bool operator>(Name const& param) const;
-		int32 GetHashCode() const;
+		inline bool operator==(const Name&param) const
+		{
+			return m_impl == param.m_impl;
+		}
+		inline bool operator<(const Name&param) const
+		{
+			return m_impl < param.m_impl;
+		}
+		inline bool operator>(const Name&param) const
+		{
+			return m_impl > param.m_impl;
+		}
+		inline uint32 GetHashCode() const
+		{
+			std::hash<std::shared_ptr<Name::Impl>> hasher;
+			return (uint32)hasher(m_impl);
+		}
+
+		class Hasher
+		{
+		public:
+			inline size_t operator()(Name const& param) const
+			{
+				return param.GetHashCode();
+			}
+		};
 
 		std::ostream& Write(std::ostream& archiver) const;
 		std::istream& Read(std::istream& archiver);
@@ -127,19 +149,6 @@ namespace Space
 	char const* GetSemanticName(ElemSemantic semantic);
 
 
-}
-
-namespace std
-{
-	template<>
-	class std::hash < Space::Name >
-	{
-	public:
-		size_t operator()(Space::Name const& param) const
-		{
-			return param.GetHashCode();
-		}
-	};
 }
 
 #endif

@@ -6,7 +6,7 @@
 
 namespace Space
 {
-	class RenderWindow : virtual public Interface
+	class SPACE_API RenderWindow : virtual public Interface
 	{
 	public:
 		virtual bool Initialize() = 0;
@@ -21,6 +21,7 @@ namespace Space
 		int32 m_Width, m_Height;
 		bool m_Fullscreen;
 	};
+	typedef std::shared_ptr<RenderWindow> RenderWindowPtr;
 }
 
 #endif

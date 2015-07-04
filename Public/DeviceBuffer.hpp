@@ -25,6 +25,7 @@ namespace Space
 		BufferType GetBufferType() const;
 		virtual bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData) = 0;
 	}; 
+	typedef std::shared_ptr<DeviceBuffer> DeviceBufferPtr;
 
 	class VertexBuffer : public Uncopyable
 	{
@@ -49,6 +50,7 @@ namespace Space
 		uint m_Offset = 0;
 		uint m_Stride = 0;
 	};
+	typedef std::shared_ptr<VertexBuffer> VertexBufferPtr;
 
 	class IndexBuffer : public Uncopyable
 	{
@@ -73,6 +75,7 @@ namespace Space
 		uint m_Offset = 0;
 		DataFormat m_Format = DataFormat::UNKNOWN;
 	};
+	typedef std::shared_ptr<IndexBuffer> IndexBufferPtr;
 
 	class ConstantBuffer : public Uncopyable
 	{ 
@@ -95,6 +98,7 @@ namespace Space
 		friend class ShaderVariableAccessor;
 		friend class ConstantBufferAccessor;
 	};
+	typedef std::shared_ptr<ConstantBuffer> ConstantBufferPtr;
 
 	class TextureBuffer : public Uncopyable
 	{
@@ -118,6 +122,7 @@ namespace Space
 		uint32 m_SizeOfElem;
 		uint32 m_NumElements;
 	};
+	typedef std::shared_ptr<TextureBuffer> TextureBufferPtr;
 }
 
 #endif

@@ -16,9 +16,18 @@ namespace Space
 	public:
 		virtual ~ShaderReflection();
 
-		uint32 GetConstantBufferCount() const;
-		uint32 GetBindResourceCount() const;
-		uint32 GetInstructionCount() const;
+		inline uint32 GetConstantBufferCount() const
+		{
+			return m_ConstBuffers.size();
+		}
+		inline uint32 GetBindResourceCount() const
+		{
+			return m_Resources.size();
+		}
+		inline uint32 GetInstructionCount() const
+		{
+			return m_InstructionCount;
+		}
 
 		static ShaderReflection* CreateD3D(VertexShader* pShader);
 		static ShaderReflection* CreateD3D(PixelShader* pShader);
@@ -53,15 +62,42 @@ namespace Space
 		virtual ~ShaderReflectionConstantBuffer();
 
 		ShaderReflectionVariable* GetVariableByIndex(int32 index) const;
-		uint32 GetSizeInBytes() const;
-		uint32 GetVariableCount() const;
-		Name GetName() const;
 
-		ShaderReflection* GetShaderReflection();
+		inline uint32 GetSizeInBytes() const
+		{
+			return m_Size;
+		}
+		inline uint32 GetVariableCount() const
+		{
+			return m_Variables.size();
+		}
+		inline Name GetName() const
+		{
+			return m_Name;
+		}
 
-		void SetBuffer(ConstantBuffer* pBuffer);
-		void UnSetBuffer();
-		ConstantBuffer* GetBuffer() const;
+		inline ShaderReflection* GetShaderReflection()
+		{
+			return pReflection;
+		}
+
+		void SetBuffer(ConstantBuffer* pBuffer)
+		{
+			if (pBuffer != nullptr)
+				this->pBuffer = pBuffer;
+		}
+		void UnSetBuffer()
+		{
+			pBuffer = nullptr;
+			/*for (auto iter = m_Variables.begin(); iter != m_Variables.end(); ++iter)
+			{
+			(*iter)->UnSetBuffer();
+			}*/
+		}
+		inline ConstantBuffer* GetBuffer() const
+		{
+			return pBuffer;
+		}
 	protected:
 		ShaderReflectionConstantBuffer(
 			ShaderReflection* pReflection);
@@ -142,22 +178,51 @@ namespace Space
 	public:
 		virtual ~ShaderReflectionVariable();
 
-		ShaderReflectionConstantBuffer* GetParentConstantBuffer() const;
-		ShaderReflectionVariable* GetParentVariable() const;
-		uint32 GetStartOffset() const;
-		uint32 GetSizeInBytes() const;
-		uint32 GetMemberCount() const;
+		inline ShaderReflectionConstantBuffer* GetParentConstantBuffer() const
+		{
+			return pParentCB;
+		}
+		inline ShaderReflectionVariable* GetParentVariable() const
+		{
+			return pParentVariable;
+		}
+		inline uint32 GetStartOffset() const
+		{
+			return m_StartOffset;
+		}
+		uint32 GetSizeInBytes() const
+		{
+			return m_Size;
+		}
+		inline uint32 GetMemberCount() const
+		{
+			return m_Members.size();
+		}
 		/* bool, float, sampler, etc.*/
-		ShaderVariableType GetType() const;
+		inline ShaderVariableType GetType() const
+		{
+			return m_Type;
+		}
 		/* matrix, vector, struct, etc. */
-		ShaderVariableClass GetClass() const;
+		inline ShaderVariableClass GetClass() const
+		{
+			return m_Class;
+		}
 
 		/* for matrices, 1 for other numeric, 0 if not applicable */
-		uint32 GetColumnsCount() const;
+		inline uint32 GetColumnsCount() const
+		{
+			return m_Columns;
+		}
 		/* for vectors & matrices, 1 for other numeric, 0 if not applicable */
-		uint32 GetRowsCount() const;
-
-		Name GetName() const;
+		inline uint32 GetRowsCount() const
+		{
+			return m_Rows;
+		}
+		inline Name GetName() const
+		{
+			return m_Name;
+		}
 
 		std::string AsString() const;
 		bool AsBool() const;
@@ -232,14 +297,34 @@ namespace Space
 	public:
 		virtual ~ShaderReflectionBindResource();
 
-		ShaderReflection* GetShaderReflection() const;
-
-		Name GetName() const;
-		ShaderInputType GetType() const;
-		uint32 GetBindPoint() const;
-		uint32 GetBindCount() const;
-		ResourceReturnType GetReturnType() const;
-		ResourceDimension GetDimension() const;
+		inline ShaderReflection* GetShaderReflection() const
+		{
+			return m_pReflection;
+		}
+		inline Name GetName() const
+		{
+			return m_Name;
+		}
+		inline ShaderInputType GetType() const
+		{
+			return m_Type;
+		}
+		inline uint32 GetBindPoint() const
+		{
+			return m_BindPoint;
+		}
+		inline uint32 GetBindCount() const
+		{
+			return m_BindCount;
+		}
+		inline ResourceReturnType GetReturnType() const
+		{
+			return m_ReturnType;
+		}
+		inline ResourceDimension GetDimension() const
+		{
+			return m_Dimension;
+		}
 
 		void SetShaderResource(ShaderResource* pResource);
 		void SetSampler();

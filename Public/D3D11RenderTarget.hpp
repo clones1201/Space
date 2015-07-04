@@ -14,7 +14,7 @@ namespace Space
 	public:
 		virtual ID3D11RenderTargetView* GetRenderTargetView() const throw() = 0;
 		
-		static D3D11RenderTarget* Create(D3D11Device& mDevice, DeviceTexture2D* pBackBuffer);
+		static D3D11RenderTarget* Create(D3D11DevicePtr device, DeviceTexture2D* pBackBuffer);
 	protected:
 	};
 

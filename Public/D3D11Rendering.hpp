@@ -14,7 +14,7 @@ namespace Space
 	class D3D11CommandList : public CommandList
 	{
 	public:
-		static D3D11CommandList* Create(D3D11Device& device);
+		static D3D11CommandList* Create(D3D11DevicePtr device);
 		
 		CComPtr<ID3D11CommandList> GetList() const;
 
@@ -39,7 +39,7 @@ namespace Space
 	protected:		
 
 	private:
-		D3D11CommandList(D3D11Device& device);
+		D3D11CommandList(D3D11DevicePtr device);
 
 		std::vector<D3D11_VIEWPORT> m_Viewports;
 		std::vector<D3D11_RECT> m_ScissorRects;
@@ -47,8 +47,9 @@ namespace Space
 		CComPtr<ID3D11DeviceContext> m_pDeferredContext = nullptr;
 		CComPtr<ID3D11CommandList> m_pCommandList = nullptr;
 
-		D3D11Device& device;
+		D3D11DevicePtr device;
 	};
+	typedef std::shared_ptr<D3D11CommandList> D3D11CommandListPtr;
 
 	typedef std::vector<CComPtr<ID3D11Buffer>> D3D11BufferArray;
 	typedef std::vector<CComPtr<ID3D11ShaderResourceView>> D3D11SRVArray;
@@ -56,7 +57,7 @@ namespace Space
 	class D3D11PipelineState : public PipelineState
 	{
 	public:
-		static D3D11PipelineState* Create(D3D11Device& device);
+		static D3D11PipelineState* Create(D3D11DevicePtr device);
 
 		D3D11PipelineState(D3D11PipelineState const& other) = default;
 		D3D11PipelineState& operator=(D3D11PipelineState const& other) = default;
@@ -66,7 +67,7 @@ namespace Space
 	protected:
 	
 	private:
-		D3D11PipelineState(D3D11Device& device);
+		D3D11PipelineState(D3D11DevicePtr device);
 		virtual void _ClearAllState();
 
 		virtual void _SetBlendState();
@@ -96,7 +97,7 @@ namespace Space
 		D3D11SRVArray m_DSSRVs;
 		D3D11SRVArray m_PSSRVs;
 
-		D3D11Device& device;
+		D3D11DevicePtr device;
 
 		CComPtr<ID3D11BlendState> m_pBlendState = nullptr;
 		
@@ -107,6 +108,7 @@ namespace Space
 		
 		friend class D3D11CommandList;
 	};
+	typedef std::shared_ptr<D3D11PipelineState> D3D11PipelineStatePtr;
 }
 
 #endif

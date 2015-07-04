@@ -77,15 +77,6 @@ namespace Space
 		return 0;
 	}
 
-	HWND Win32Window::GetHandle() const
-	{
-		return m_hWnd;
-	}
-	HDC Win32Window::GetDeviceContext() const
-	{
-		return m_hDC;
-	}
-
 	LRESULT Win32Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		PAINTSTRUCT ps;

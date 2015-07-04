@@ -20,12 +20,29 @@ namespace Space
 		void SetShaderResource(uint slots, ShaderResource* resource);
 
 		// get the max number of the slot
-		uint GetConstantBufferCount() const;
+		inline uint GetConstantBufferCount() const
+		{
+			assert(m_MaxCBSlot >= 0);
+			return m_MaxCBSlot;
+		}
 		// get the max number of the slot
-		uint GetShaderResourceCount() const;
+		inline uint GetShaderResourceCount() const
+		{
+			assert(m_MaxSRSlot >= 0);
+			return m_MaxSRSlot;
+		}
 
 		ConstantBuffer* GetConstantBuffer(uint slot) const;
 		ShaderResource* GetShaderResource(uint slot) const;
+
+		inline byte const* GetByteCodes() const
+		{
+			return m_ByteCodes.data();
+		}
+		inline uint32 GetSizeInBytes() const
+		{
+			return m_ByteCodes.size();
+		}
 	protected:
 		ShaderBase();
 
@@ -44,14 +61,12 @@ namespace Space
 	{  
 	public:
 		static VertexShader* LoadBinaryFromMemory(RenderSystem* pRenderSys, byte const* byteCodes, uint32 sizeInBytes);
-		byte const* GetByteCodes() const;
-		uint32 GetSizeInBytes() const;
-		 
+				 
 		virtual ~VertexShader();
 	protected:		
 		VertexShader();  
 	};
-
+	typedef std::shared_ptr<VertexShader> VertexShaderPtr;
 	/*class GeometryShader : virtual public Interface
 	{
 	public:
@@ -65,14 +80,12 @@ namespace Space
 	{
 	public:
 		static PixelShader* LoadBinaryFromMemory(RenderSystem* pRenderSys, byte const* byteCodes, uint32 sizeInBytes);
-		byte const* GetByteCodes() const;
-		uint32 GetSizeInBytes() const;
-		 
+				 
 		virtual ~PixelShader();
 	protected:
 		PixelShader(); 
 	};
-
+	typedef std::shared_ptr<PixelShader> PixelShaderPtr;
 }
 
 #endif
