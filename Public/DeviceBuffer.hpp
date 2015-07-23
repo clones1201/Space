@@ -9,21 +9,31 @@ namespace Space
 {
 	class DeviceBuffer : virtual public Interface 
 	{
+	public:
+		virtual ~DeviceBuffer();
+
+		static DeviceBuffer* Create(RenderSystem* pRenderSys,BufferType type,ResourceUsage usage, byte const* initialData, uint32 lengthInBytes);
+
+		inline uint32 GetLengthInBytes() const
+		{
+			return m_LengthInBytes;
+		}
+		inline ResourceUsage GetUsage() const
+		{
+			return m_Usage;
+		}
+		inline BufferType GetBufferType() const
+		{
+			return m_Type;
+		}
+		virtual bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData) = 0;
+	
 	protected:
 		DeviceBuffer(BufferType type, ResourceUsage usage, uint32 lengthInBytes);
 
 		BufferType m_Type;
 		ResourceUsage m_Usage;
 		uint32 m_LengthInBytes;
-	public:
-		virtual ~DeviceBuffer();
-
-		static DeviceBuffer* Create(RenderSystem* pRenderSys,BufferType type,ResourceUsage usage, byte const* initialData, uint32 lengthInBytes);
-
-		uint32 GetLengthInBytes() const;
-		ResourceUsage GetUsage() const;
-		BufferType GetBufferType() const;
-		virtual bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData) = 0;
 	}; 
 	typedef std::shared_ptr<DeviceBuffer> DeviceBufferPtr;
 
@@ -38,11 +48,32 @@ namespace Space
 
 		bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData);
 
-		uint GetStride() const;
-		uint GetOffest() const;
-		void SetStride(uint stride);
-		void SetOffest(uint offset);
-		DeviceBuffer* GetBuffer() const;
+		inline uint GetStride() const
+		{
+			return m_Stride;
+		}
+		inline uint GetOffest() const
+		{
+			return m_Offset;
+		}
+		inline void SetStride(uint stride)
+		{
+			assert(stride >= 0);
+			m_Stride = stride;
+		}
+		inline void SetOffest(uint offset)
+		{
+			assert(offset >= 0);
+			m_Offset = offset;
+		}
+		inline DeviceBuffer* GetBuffer() const
+		{
+			return m_pBuffer.get();
+		}
+		inline uint32 GetLengthInBytes() const
+		{
+			return m_pBuffer->GetLengthInBytes();
+		}
 	protected:
 		VertexBuffer(DeviceBuffer* pBuffer, uint32 stride);
 
@@ -63,11 +94,33 @@ namespace Space
 
 		bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData);
 
-		DataFormat GetFormat() const;
-		uint GetOffest() const;
-		void SetDataFormat(DataFormat format);
-		void SetOffest(uint offset);
-		DeviceBuffer* GetBuffer() const;
+
+		inline DataFormat GetFormat() const
+		{
+			return m_Format;
+		}
+		inline uint GetOffest() const
+		{
+			return m_Offset;
+		}
+		inline void SetDataFormat(DataFormat format)
+		{
+			m_Format = format;
+		}
+		inline void SetOffest(uint offset)
+		{
+			m_Offset = offset;
+		}
+
+		inline DeviceBuffer* GetBuffer() const
+		{
+			return m_pBuffer.get();
+		}
+
+		inline uint32 GetLengthInBytes() const
+		{
+			return m_pBuffer->GetLengthInBytes();
+		}
 	protected:
 		IndexBuffer(DeviceBuffer* pBuffer, DataFormat format);
 
@@ -86,9 +139,19 @@ namespace Space
 
 		void UpdateToDevice();
 		bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData);		
-		byte const* GetBufferPointer() const;
+		inline byte const* GetBufferPointer() const
+		{
+			return m_pShadowData;
+		}
+		inline DeviceBuffer* GetBuffer()
+		{
+			return m_pBuffer.get();
+		}
 
-		DeviceBuffer* GetBuffer();
+		inline uint32 GetLengthInBytes() const
+		{
+			return m_pBuffer->GetLengthInBytes();
+		}
 	protected:
 		ConstantBuffer(DeviceBuffer* pBuffer);
 		

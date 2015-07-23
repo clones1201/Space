@@ -57,6 +57,7 @@ namespace Space
 	typedef DirectX::PackedVector::XMSHORT4 Short4;
 	typedef DirectX::PackedVector::XMSHORTN2 ShortN2; // A 2D vector for storing signed, normalized values as signed 16 - bit integers(type int16_t).
 	typedef DirectX::PackedVector::XMSHORTN4 ShortN4;
+	typedef DirectX::PackedVector::HALF Half;
 	typedef DirectX::PackedVector::XMHALF2 Half2;
 	typedef DirectX::PackedVector::XMHALF4 Half4;
 	typedef DirectX::PackedVector::XMCOLOR Color;
@@ -64,11 +65,11 @@ namespace Space
 	typedef DirectX::XMVECTOR Vector;
 	typedef DirectX::XMMATRIX Matrix;
 	
-#define Pi DirectX::XM_PI;
-#define _2Pi DirectX::XM_2PI;
-#define _1DIVPI DirectX::XM_1DIVPI;
-#define PiDiv2 DirectX::XM_PIDIV2;
-#define PiDiv4 DirectX::XM_PIDIV4;
+	const auto Pi = DirectX::XM_PI;
+	const auto _2Pi    = DirectX::XM_2PI;
+	const auto _1DIVPI = DirectX::XM_1DIVPI;
+	const auto PiDiv2  = DirectX::XM_PIDIV2;
+	const auto PiDiv4  = DirectX::XM_PIDIV4;
 
 #define ColorSRGBToRGB XMColorSRGBToRGB 
 #define ColorRGBToSRGB XMColorRGBToSRGB 

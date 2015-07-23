@@ -1,11 +1,8 @@
+#include "Log.h"
 #include "D3D11Shared.hpp"
 
 namespace Space
 {
-	D3D11DeviceCreateFailedExcepion::D3D11DeviceCreateFailedExcepion()
-		:std::exception("D3D11 Device Create Failed"){
-	}
-
 	UINT GetD3D11BufferBindFlags(BufferType type)
 	{
 		switch (type)
@@ -42,6 +39,13 @@ namespace Space
 	static DXGI_FORMAT g_FormatTable[] = 
 	{
 		DXGI_FORMAT_UNKNOWN,
+		//half, short
+		DXGI_FORMAT_R16_TYPELESS,
+		DXGI_FORMAT_R16_FLOAT,
+		DXGI_FORMAT_R16_UNORM,
+		DXGI_FORMAT_R16_UINT,
+		DXGI_FORMAT_R16_SNORM,
+		DXGI_FORMAT_R16_SINT,
 		//half2, short2
 		DXGI_FORMAT_R16G16_TYPELESS,
 		DXGI_FORMAT_R16G16_FLOAT,

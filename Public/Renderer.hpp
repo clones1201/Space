@@ -10,7 +10,15 @@ namespace Space
 	class Renderer : virtual public Uncopyable
 	{
 	public:
-		void SetRenderTarget(RenderTarget* target); 
+		inline void SetRenderTarget(RenderTarget* target)
+		{
+			m_pRenderTarget = target;
+		}
+
+		inline RenderTarget* GetRenderTarget() const
+		{
+			return m_pRenderTarget;
+		}
 	protected:
 		Renderer(RenderSystem* pRenderSys);
 
@@ -37,11 +45,8 @@ namespace Space
 	{
 	public:
 		static MeshMaterialRenderer* Create(RenderSystem* pRenderSys);
-
-		Mesh* GetMesh() const;
-		void SetMesh(Mesh* pMesh);
-
-		void Render(CommandList* list);
+		
+		void Render(CommandList* list, Mesh* pMesh);
 	protected:
 		MeshMaterialRenderer(RenderSystem* pRenderSys);
 

@@ -28,9 +28,6 @@
     <Filter Include="Private\Global\Source">
       <UniqueIdentifier>{3dbb7bfa-a62a-48d7-aa29-5376d397c03f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Private\Shaders">
-      <UniqueIdentifier>{a40fb895-9d5e-4152-9880-08b9b9eb10bc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Public\RenderSystem">
       <UniqueIdentifier>{82622c70-4e78-4bbe-9a9e-cd8287d66f91}</UniqueIdentifier>
     </Filter>
@@ -39,6 +36,9 @@
     </Filter>
     <Filter Include="Test">
       <UniqueIdentifier>{8a04b477-c589-44dd-a54b-b28f0bdced46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Private\Extra">
+      <UniqueIdentifier>{aee2fa6a-3e6f-403f-a33f-40e3085668f3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -165,8 +165,13 @@
     <ClInclude Include="..\Public\D3D11Rendering.hpp">
       <Filter>Public\RenderSystem\D3D11</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Scene.hpp" />
     <ClInclude Include="..\Public\Event.hpp">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Scene.hpp">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GameObject.hpp">
       <Filter>Public</Filter>
     </ClInclude>
   </ItemGroup>
@@ -288,5 +293,10 @@
     <ClCompile Include="Event.cpp">
       <Filter>Private\Global\Source</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Extra\StandardInputSignature.hlsl">
+      <Filter>Private\Extra</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

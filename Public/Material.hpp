@@ -309,10 +309,22 @@ namespace Space
 		MaterialDomain GetDomain() const;
 		MaterialBlendMode GetBlendMode() const;
 
-		void SetWorld(Float4x4 world);
-		void SetView(Float4x4 view);
-		void SetProjection(Float4x4 projection);
-		void SetGameTime(float time);
+		inline void SetWorld(Float4x4 world)
+		{
+			m_World = world;
+		}
+		inline void SetView(Float4x4 view)
+		{
+			m_View = view;
+		}
+		inline void SetProjection(Float4x4 projection)
+		{
+			m_Projection = projection;
+		}
+		inline void SetGameTime(float time)
+		{
+			m_Time = time;
+		}
 
 		// TODO 
 		//TextureParameter& GetTextureParameter(Name const& name);
@@ -336,11 +348,11 @@ namespace Space
 		StaticParameterSet m_ParameterSet;
 		StaticParameterSet m_DefaultParameterSet;
 
-		std::unique_ptr<ConstantBuffer> g_CommonVariablesBuffer;
-		Float4x4 g_World;
-		Float4x4 g_View;
-		Float4x4 g_Projection;
-		float g_Time;
+		std::unique_ptr<ConstantBuffer> m_CommonVariablesBuffer;
+		Float4x4 m_World;
+		Float4x4 m_View;
+		Float4x4 m_Projection;
+		float m_Time;
 
 		Shader* m_CurrentShader = nullptr;
 

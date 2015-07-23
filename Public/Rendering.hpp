@@ -202,19 +202,49 @@ namespace Space
 		virtual ~PipelineState();
 
 		virtual void SetShaders(Shader* shader) = 0;
-		virtual void SetInputLayout(InputLayout* input) = 0;
-		void SetBlendState(BlendDesc desc);
-		void SetRasterizerState(RasterizerDesc desc);
-		void SetDepthStencilState(DepthStencilDesc desc);
+		virtual void SetInputLayout(InputLayout* input,
+			byte const* pInputSignature, uint32 signatureSizeInBytes) = 0;
+		inline void SetPrimitiveTopology(PrimitiveTopology topology)
+		{
+			m_PrimitiveTopology = topology;
+		}
+		inline void SetBlendState(BlendDesc desc)
+		{
+			m_BlendStateDesc = desc;
+			_SetBlendState();
+		}
+		inline void SetRasterizerState(RasterizerDesc desc)
+		{
+			m_RasterizerDesc = desc;
+			_SetRasterizerState();
+		}
+		inline void SetDepthStencilState(DepthStencilDesc desc)
+		{
+			m_DepthStencilDesc = desc;
+			_SetDepthStencilState();
+		}
 	
 		// seems that D3D12 use a unified multi-sample setting
 		// while D3D11 set this in each texture2d (or texture3d)
 		// this method takes no effect in D3D11
-		void SetSample(SampleDesc desc);
+		inline void SetSample(SampleDesc desc)
+		{
+			m_SampleDesc = desc;
+			_SetSample();
+		}
 			
-		void SetBlendFactor(Float4 factor);
-		void SetSampleMask(uint32 mask);
-		void SetStencilRef(uint32 ref);
+		inline void SetBlendFactor(Float4 factor)
+		{
+			m_BlendFactor = factor;
+		}
+		inline void SetSampleMask(uint32 mask)
+		{
+			m_SampleMask = mask;
+		}
+		inline void SetStencilRef(uint32 ref)
+		{
+			m_StencilRef = ref;
+		}
 
 		void ClearAllState();
 	protected: 
@@ -237,7 +267,7 @@ namespace Space
 		RasterizerDesc m_RasterizerDesc;
 		DepthStencilDesc m_DepthStencilDesc;
 		SampleDesc m_SampleDesc;
-		PrimitiveTopology m_PrimTopology;
+		PrimitiveTopology m_PrimitiveTopology;
 		
 		Float4 m_BlendFactor = { 1.0f, 1.0f, 1.0f, 1.0f };
 		uint32 m_SampleMask;

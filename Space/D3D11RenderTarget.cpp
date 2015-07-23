@@ -8,22 +8,14 @@
 
 namespace Space
 {	
-	class D3D11RenderTargetImpl : public D3D11RenderTarget
+	D3D11RenderTarget::D3D11RenderTarget(
+		D3D11DevicePtr device, DeviceTexture2D* pBackBuffer)
+		:mDevice(device), 
+		RenderTarget(pBackBuffer->GetWidth(), pBackBuffer->GetHeight())
 	{
-	private:
-		D3D11DevicePtr mDevice;
+			assert(nullptr != dynamic_cast<D3D11DeviceTexture2D*>(pBackBuffer));
 
-		D3D11_RENDER_TARGET_VIEW_DESC m_RTVDesc;
-
-		CComPtr<ID3D11RenderTargetView> m_pRenderTargetView = nullptr;
-		//CComPtr<ID3D11Texture2D> m_pBackBuffer = nullptr; 
-
-	public:
-		D3D11RenderTargetImpl(D3D11DevicePtr device, DeviceTexture2D* pBackBuffer)
-			:mDevice(device)
-		{
-			auto pD3DDeviceTexture2D = dynamic_cast<D3D11DeviceTexture2D*>(pBackBuffer);
-
+			auto pD3DDeviceTexture2D = static_cast<D3D11DeviceTexture2D*>(pBackBuffer);
 			if (pD3DDeviceTexture2D == nullptr)
 				throw std::exception("Wrong DeviceTexture2D pointer type");
 
@@ -51,13 +43,6 @@ namespace Space
 			m_pRenderTargetView = pRenderTargetView;
 		}
  
-		virtual ID3D11RenderTargetView* GetRenderTargetView() const
-		{
-			return (m_pRenderTargetView.p);
-		}
-
-	};
-
 	D3D11RenderTarget* D3D11RenderTarget::Create(D3D11DevicePtr device,DeviceTexture2D* pBackBuffer)
 	{
 		try
@@ -65,7 +50,7 @@ namespace Space
 			if (pBackBuffer == nullptr)
 				throw std::exception("Null DeviceTexture2D pointer");
 
-			return new D3D11RenderTargetImpl(device, pBackBuffer);
+			return new D3D11RenderTarget(device, pBackBuffer);
 		}
 		catch (std::exception &e)
 		{

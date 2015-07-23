@@ -24,14 +24,14 @@ namespace Space
 	void ShaderBase::SetConstantBuffer(uint slots, ConstantBuffer* buffer)
 	{
 		assert(m_MaxCBSlot >= 0 && slots < 4096);
-		m_MaxCBSlot = std::max(slots, m_MaxCBSlot);
+		m_MaxCBSlot = std::max((int32)slots, m_MaxCBSlot);
 		m_ConstantBufferTable[slots] = buffer;
 	}
 
 	void ShaderBase::SetShaderResource(uint slots, ShaderResource* resource)
 	{
 		assert(m_MaxSRSlot >= 0 && slots < 4096);
-		m_MaxSRSlot = std::max(slots, m_MaxSRSlot);
+		m_MaxSRSlot = std::max((int32)slots, m_MaxSRSlot);
 		m_ShaderResourceTable[slots] = resource;
 	}
 	

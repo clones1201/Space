@@ -63,7 +63,8 @@ namespace Space
 		D3D11PipelineState& operator=(D3D11PipelineState const& other) = default;
 
 		virtual void SetShaders(Shader* shader);
-		virtual void SetInputLayout(InputLayout* input); 
+		virtual void SetInputLayout(InputLayout* input,
+			byte const* pInputSignature, uint32 signatureSizeInBytes);
 	protected:
 	
 	private:
@@ -78,7 +79,7 @@ namespace Space
 		// so this method has no effect
 		virtual void _SetSample();
 
-		void _CreateInputLayout();
+		void _CreateInputLayout(byte const* pInputSignature, uint32 signatureSizeInBytes);
 
 		CComPtr<ID3D11VertexShader> m_pVS = nullptr;
 		CComPtr<ID3D11GeometryShader> m_pGS = nullptr;
@@ -105,6 +106,8 @@ namespace Space
 		CComPtr<ID3D11InputLayout> m_pInputLayout = nullptr;
 		CComPtr<ID3D11RasterizerState> m_pRasterizerState = nullptr;
 		CComPtr<ID3D11DepthStencilState> m_pDepthStencilState = nullptr;
+		
+		static std::vector<CComPtr<ID3D11InputLayout>> m_InputLayoutArray;
 		
 		friend class D3D11CommandList;
 	};

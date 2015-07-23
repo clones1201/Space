@@ -6,57 +6,56 @@
 namespace Space
 {
 	std::once_flag logOnceFlag; 
-	std::unique_ptr<Logger> Logger::instance;
+	std::unique_ptr<Logger> Logger::Instance;
 	Logger* Logger::GetInstance(LogType type){
 		std::call_once(logOnceFlag, [type](){
 			switch (type){
 			case FileLog:
-				instance.reset(new Logger(new FileLogWriter()));
+				Instance.reset(new Logger(new FileLogWriter()));
 				break;
 			case StdLog:
-				instance.reset(new Logger(new StdLogWriter()));
+				Instance.reset(new Logger(new StdLogWriter()));
 				break;
 			}
 		});
-		return instance.get();
+		return Instance.get();
 	}
-	Logger::Logger(LogWriter* writer) : writer(writer)
+	Logger::Logger(LogWriter* writer) : m_pWriter(writer)
 	{}
 	Logger::~Logger()
 	{
-		delete writer;
 	}
 	void Logger::Printf(const wchar_t* format, ...)
 	{
 		va_list args;
 		va_start(args, format);
-		writer->Printf(format, args);
+		m_pWriter->Printf(format, args);
 		va_end(args);
 	}
 	void Logger::Printf(const char* format, ...)
 	{
 		va_list args;
 		va_start(args, format);
-		writer->Printf(format, args);
+		m_pWriter->Printf(format, args);
 		va_end(args);
 	}
 	void Logger::DebugPrintf(int32 line, const char* filename, const char* format, ...)
 	{
 		va_list args;
 		va_start(args, format);
-		writer->DebugPrintf(line, filename, format, args);
+		m_pWriter->DebugPrintf(line, filename, format, args);
 		va_end(args);
 	}
 	void Logger::DebugPrintf(int32 line, const wchar_t* filename, const wchar_t* format, ...)
 	{
 		va_list args;
 		va_start(args, format);
-		writer->DebugPrintf(line, filename, format, args);
+		m_pWriter->DebugPrintf(line, filename, format, args);
 		va_end(args);
 	}
 	void Logger::Flush()
 	{
-		writer->Flush();
+		m_pWriter->Flush();
 	}
 
 	void FileLogWriter::Printf(const wchar_t* format, va_list args)

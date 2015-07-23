@@ -12,20 +12,7 @@ namespace Space
 
 	DeviceBuffer::~DeviceBuffer()
 	{}
-
-	uint32 DeviceBuffer::GetLengthInBytes() const
-	{
-		return m_LengthInBytes;
-	}
-	ResourceUsage DeviceBuffer::GetUsage() const
-	{
-		return m_Usage;
-	}
-	BufferType DeviceBuffer::GetBufferType() const
-	{
-		return m_Type;
-	}
-
+	
 	DeviceBuffer* DeviceBuffer::Create(
 		RenderSystem* pRenderSys, BufferType type, ResourceUsage usage,
 		byte const* initialData, uint32 lengthInBytes)
@@ -64,31 +51,7 @@ namespace Space
 	{
 		return m_pBuffer->Update(startOffset, lengthInBytes, pData);
 	}
-
-	uint  VertexBuffer::GetStride() const
-	{
-		return m_Stride;
-	}
-	uint  VertexBuffer::GetOffest() const
-	{
-		return m_Offset;
-	}
-	void  VertexBuffer::SetStride(uint stride)
-	{
-		assert(stride >= 0);
-		m_Stride = stride;
-	}
-	void  VertexBuffer::SetOffest(uint offset)
-	{
-		assert(offset >= 0);
-		m_Offset = offset;
-	}
-
-	DeviceBuffer* VertexBuffer::GetBuffer() const
-	{
-		return m_pBuffer.get();
-	}
-
+	
 	IndexBuffer* IndexBuffer::Create(RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes, DataFormat format)
 	{
 		TRY_CATCH_LOG(
@@ -109,29 +72,7 @@ namespace Space
 	{
 		return m_pBuffer->Update(startOffset, lengthInBytes, pData);
 	}
-
-	DataFormat IndexBuffer::GetFormat() const
-	{
-		return m_Format;
-	}
-	uint IndexBuffer::GetOffest() const
-	{
-		return m_Offset;
-	}
-	void IndexBuffer::SetDataFormat(DataFormat format)
-	{
-		m_Format = format;
-	}
-	void IndexBuffer::SetOffest(uint offset)
-	{
-		m_Offset = offset;
-	}
-
-	DeviceBuffer* IndexBuffer::GetBuffer() const
-	{
-		return m_pBuffer.get();
-	}
-
+	
 	ConstantBuffer* ConstantBuffer::Create(RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes)
 	{
 		TRY_CATCH_LOG(
@@ -149,7 +90,7 @@ namespace Space
 	ConstantBuffer::~ConstantBuffer()
 	{
 		if (m_pShadowData != nullptr)
-			delete[] m_pShadowData;
+			_aligned_free(m_pShadowData);
 	}
 
 	void ConstantBuffer::UpdateToDevice()
@@ -165,17 +106,7 @@ namespace Space
 			return true;
 		return false;
 	}
-
-	byte const* ConstantBuffer::GetBufferPointer() const
-	{
-		return m_pShadowData;
-	}
-
-	DeviceBuffer* ConstantBuffer::GetBuffer()
-	{
-		return m_pBuffer.get();
-	}
-
+		
 	TextureBuffer* TextureBuffer::Create(RenderSystem* pRenderSys,
 		byte const* initialData, uint32 lengthInBytes,
 		uint32 sizeOfElem, uint32 numElements)

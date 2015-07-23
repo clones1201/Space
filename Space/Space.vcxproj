@@ -150,6 +150,7 @@
   <ItemGroup>
     <ClInclude Include="..\Public\Behavior.hpp" />
     <ClInclude Include="..\Public\Event.hpp" />
+    <ClInclude Include="..\Public\GameObject.hpp" />
     <ClInclude Include="..\Public\Rendering.hpp" />
     <ClInclude Include="..\Public\D3D11Rendering.hpp" />
     <ClInclude Include="..\Public\D3D11DepthStencilView.hpp" />
@@ -232,6 +233,16 @@
     <ClCompile Include="Utility.cpp" />
     <ClCompile Include="Win32Window.cpp" />
     <ClCompile Include="Window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Extra\StandardInputSignature.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug-Game|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug-Game|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug-Game|Win32'">DummyVertexShader</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug-Game|Win32'">5.0</ShaderModel>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

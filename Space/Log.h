@@ -46,10 +46,10 @@ namespace Space
 	class Logger
 	{
 	private:
-		LogWriter* writer;
+		std::unique_ptr<LogWriter> m_pWriter;
 		Logger(LogWriter* writer);
 
-		static std::unique_ptr<Logger> instance;
+		static std::unique_ptr<Logger> Instance;
 	public:
 		//type only affects once
 		static Logger* GetInstance(LogType type = StdLog);

@@ -18,11 +18,11 @@ namespace Space
 		ZeroMemory(&data, sizeof(data));
 		data.pSysMem = initialData;
 
-		ID3D11Buffer* pBuffer = nullptr;
+		m_pBuffer = nullptr;
 		HRESULT hr = mDevice->Get()->CreateBuffer(
 			&desc,
 			initialData != nullptr ? &data : nullptr,
-			&pBuffer);
+			&(m_pBuffer.p));
 		if (FAILED(hr))
 		{
 			throw std::exception("D3D11DeviceBufferImpl CreateBuffer failed.");
@@ -48,8 +48,12 @@ namespace Space
 			box.right = startOffset + lengthInBytes;
 			box.front = 0; box.back = 1;
 			box.top = 0; box.bottom = 1;
+			
+			auto pBox = &box;
+			if (m_Type == BufferType::ConstantBuffer)
+				pBox = nullptr;
 
-			mDevice->GetImmediateContext()->UpdateSubresource(m_pBuffer, 0, &box, pData, 0, 0);
+			mDevice->GetImmediateContext()->UpdateSubresource(m_pBuffer, 0, pBox, pData, 0, 0);
 
 			isSuccess = true;
 		}

@@ -148,6 +148,8 @@ namespace Space
 		default:
 		case DataFormat::UNKNOWN:
 			return 0;
+		case DataFormat::R16_UINT:
+			return 1;
 			//half2, short2
 		case DataFormat::R16G16_TYPELESS:
 		case DataFormat::R16G16_FLOAT:
@@ -210,7 +212,7 @@ namespace Space
 	int32 GetElementSize(VertexElemType type)
 	{
 		switch (type)
-		{
+		{			
 			ElementSize(Float1);
 			ElementSize(Float2);
 			ElementSize(Float3);
@@ -321,7 +323,7 @@ namespace Space
 	std::string Name::ToString() const
 	{
 		return wstr2str(*(m_impl->pStr));
-	}
+	} 
 	
 	std::ostream& Name::Write(std::ostream& archiver) const
 	{

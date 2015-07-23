@@ -61,7 +61,7 @@ int main(int argc, char*argv[])
 		{
 			Value& shader = *iter;
 
-			Value& SourceFileName = shader["SourceFile"];
+			Value& SourceFileName = shader["Name"];
 			if (SourceFileName.IsNull() || !SourceFileName.IsString())
 				continue;
 
@@ -81,7 +81,7 @@ int main(int argc, char*argv[])
 				continue;
 			
 			std::fstream source(
-				(path + "/" + SourceFileName.GetString()).c_str(),
+				(path + "/" + SourceFileName.GetString() + ".hlsl").c_str(),
 				std::ios_base::in);
 			if (!source.is_open())
 			{
@@ -97,7 +97,11 @@ int main(int argc, char*argv[])
 				sourceCode.data(), sourceCode.size(), SourceFileName.GetString(),
 				nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, VertexShaderEntry.GetString(),
 				("vs" + suffix).c_str(),
+#if defined DEBUG || defined _DEBUG
+				D3DCOMPILE_DEBUG,
+#else
 				D3DCOMPILE_OPTIMIZATION_LEVEL3,
+#endif
 				0,
 				&pVSBlob,
 				&pErrorBlob
@@ -112,7 +116,11 @@ int main(int argc, char*argv[])
 				sourceCode.data(), sourceCode.size(), SourceFileName.GetString(),
 				nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, PixelShaderEntry.GetString(),
 				("ps" + suffix).c_str(),
+#if defined DEBUG || defined _DEBUG
+				D3DCOMPILE_DEBUG,
+#else
 				D3DCOMPILE_OPTIMIZATION_LEVEL3,
+#endif
 				0,
 				&pPSBlob,
 				&pErrorBlob

@@ -42,6 +42,17 @@ namespace Space
 
 	void InputLayout::Insert(ElementArray::iterator pos, InputElement elem)
 	{
+		try
+		{
+			auto& offset = m_StridePerSlot.at(elem.InputSlot);
+			elem.AlignedByteOffset = offset;
+			offset = Alignment(offset + GetElementSize(elem.Type));
+		}
+		catch (std::out_of_range&)
+		{
+			m_StridePerSlot[elem.InputSlot] = GetElementSize(elem.Type);
+			elem.AlignedByteOffset = 0;
+		}
 		m_LayoutArray.insert(pos, elem);
 	}
 

@@ -110,14 +110,14 @@ namespace Space
 		offsets.reserve(numBuffers);
 		m_VertexBufferArray.clear();
 		m_VertexBufferArray.reserve(numBuffers);
-		for (; buffer != buffer + numBuffers; buffer++)
+		for (auto iter = buffer; iter != buffer + numBuffers; iter++)
 		{
-			assert(nullptr != buffer);
-			assert(nullptr != dynamic_cast<D3D11DeviceBuffer*>((*buffer)->GetBuffer()));
-			m_VertexBufferArray.push_back(*buffer);
-			vbuffers.push_back(static_cast<D3D11DeviceBuffer*>((*buffer)->GetBuffer())->GetRawBuffer());
-			striders.push_back((*buffer)->GetStride());
-			striders.push_back((*buffer)->GetOffest());
+			assert(nullptr != iter);
+			assert(nullptr != dynamic_cast<D3D11DeviceBuffer*>((*iter)->GetBuffer()));
+			m_VertexBufferArray.push_back(*iter);
+			vbuffers.push_back(static_cast<D3D11DeviceBuffer*>((*iter)->GetBuffer())->GetRawBuffer());
+			striders.push_back((*iter)->GetStride());
+			offsets.push_back((*iter)->GetOffest());
 		}
 
 		m_pDeferredContext->IASetVertexBuffers(
@@ -158,7 +158,7 @@ namespace Space
 			);
 
 		m_pDeferredContext->IASetPrimitiveTopology(
-			(D3D11_PRIMITIVE_TOPOLOGY)pPipelineState->m_PrimTopology
+			(D3D11_PRIMITIVE_TOPOLOGY)pPipelineState->m_PrimitiveTopology
 			);
 
 		// Set VertexShader Stage
@@ -220,10 +220,10 @@ namespace Space
 
 		std::vector<ID3D11RenderTargetView*> renderTargetArray;
 		renderTargetArray.reserve(numTargets);
-		for (; targets != targets + numTargets; ++targets)
+		for (auto iter = targets; iter != targets + numTargets; ++iter)
 		{
-			assert(nullptr != dynamic_cast<D3D11RenderTarget const*>(*targets));
-			auto pTarget = static_cast<D3D11RenderTarget const*>(*targets);
+			assert(nullptr != dynamic_cast<D3D11RenderTarget const*>(*iter));
+			auto pTarget = static_cast<D3D11RenderTarget const*>(*iter);
 			renderTargetArray.push_back(pTarget->GetRenderTargetView());
 		}
 		//pDepth is optional
@@ -239,12 +239,12 @@ namespace Space
 	}
 	void D3D11CommandList::DrawIndexed(uint startIndex, uint numPrimitive)
 	{
-
+		m_pDeferredContext->DrawIndexed(3 * numPrimitive,startIndex,0);
 	}
 	void D3D11CommandList::DrawIndexedInstanced(
 		uint startIndex, uint numPrimitive, uint startInstance, uint numInstance)
 	{
-
+		throw std::exception("Not Implement");
 	}
 
 }

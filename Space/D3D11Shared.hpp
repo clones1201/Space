@@ -6,13 +6,7 @@
 #include "D3D11Prerequisites.hpp"
 
 namespace Space
-{
-	class D3D11DeviceCreateFailedExcepion : public std::exception
-	{
-	public:
-		D3D11DeviceCreateFailedExcepion();
-	};
-	
+{	
 	UINT GetD3D11BufferBindFlags(BufferType type);
 
 	D3D11_USAGE GetD3D11Usage(ResourceUsage usage);
@@ -27,7 +21,10 @@ namespace Space
 
 	extern DXGI_FORMAT g_ElemDXGIFormatTable[];
 
-#define GetElemDXGIFormat(type) g_ElemDXGIFormatTable[type]
+	inline DXGI_FORMAT GetElemDXGIFormat(VertexElemType type)
+	{
+		return g_ElemDXGIFormatTable[(uint16)type];
+	}
 
 }
 

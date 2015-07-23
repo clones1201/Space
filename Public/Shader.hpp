@@ -20,16 +20,16 @@ namespace Space
 		void SetShaderResource(uint slots, ShaderResource* resource);
 
 		// get the max number of the slot
-		inline uint GetConstantBufferCount() const
+		inline int32 GetConstantBufferCount() const
 		{
 			assert(m_MaxCBSlot >= 0);
-			return m_MaxCBSlot;
+			return m_MaxCBSlot + 1;
 		}
 		// get the max number of the slot
-		inline uint GetShaderResourceCount() const
+		inline int32 GetShaderResourceCount() const
 		{
 			assert(m_MaxSRSlot >= 0);
-			return m_MaxSRSlot;
+			return m_MaxSRSlot + 1;
 		}
 
 		ConstantBuffer* GetConstantBuffer(uint slot) const;
@@ -53,8 +53,8 @@ namespace Space
 		ConstantBufferTable m_ConstantBufferTable;
 		ShaderResourceTable m_ShaderResourceTable;
 
-		uint m_MaxCBSlot;
-		uint m_MaxSRSlot;
+		int32 m_MaxCBSlot = 0;
+		int32 m_MaxSRSlot = 0;
 	};
 
 	class VertexShader : virtual public Interface, public ShaderBase

@@ -250,7 +250,7 @@ namespace Space
 	struct CommonVariables
 	{
 		// modelview * view
-		Float4x3 _MV;
+		Float4x4 _MV;
 		// Projection | CameraPosition, Time
 		Float4x4 _PCT;
 	};
@@ -281,10 +281,9 @@ namespace Space
 		variables._PCT._33 = 1.0f;
 		variables._PCT._44 = 0.0f;
 
-		g_CommonVariablesBuffer.reset(ConstantBuffer::Create(pRenderSys,
+		m_CommonVariablesBuffer.reset(ConstantBuffer::Create(pRenderSys,
 			(byte const*)&variables, sizeof(CommonVariables)));
-
-
+		
 		std::string materialPath = GetAssetsPath() + "Material/" + name + "/";
 		std::string DescriptionPath = materialPath + "ContentDesc.json";
 		std::fstream tempFile(DescriptionPath, std::ios_base::in | std::ios_base::binary);
@@ -414,6 +413,9 @@ namespace Space
 			Shader* shader = Shader::Create(pRenderSys,
 				materialPath + nodeShaderName.GetString());
 
+			shader->GetVertexShader()->SetConstantBuffer(0, m_CommonVariablesBuffer.get());
+			shader->GetPixelShader()->SetConstantBuffer(0, m_CommonVariablesBuffer.get());
+
 			m_Shaders.insert(std::pair<Name, std::unique_ptr<Shader>>(
 				Name(nodeShaderName.GetString()),
 				std::unique_ptr<Shader>(shader)));
@@ -458,38 +460,21 @@ namespace Space
 		return m_BlendMode;
 	}
 
-	void Material::SetWorld(Float4x4 world)
-	{
-		g_World = world;
-	}
-	void Material::SetView(Float4x4 view)
-	{
-		g_View = view;
-	}
-	void Material::SetProjection(Float4x4 projection)
-	{
-		g_Projection = g_Projection;
-	}
-	void Material::SetGameTime(float time)
-	{
-		g_Time = time;
-	}
-
 	Shader* Material::GetShader()
 	{
-		Matrix world = LoadFloat4x4(&g_World);
-		Matrix view = LoadFloat4x4(&g_View);
-		Matrix projection = LoadFloat4x4(&g_Projection);
+		Matrix world = LoadFloat4x4(&m_World);
+		Matrix view = LoadFloat4x4(&m_View);
+		Matrix projection = MatrixTranspose(LoadFloat4x4(&m_Projection));
 
-		Matrix worldView = world * view;
-		projection.r[3].m128_f32[3] = g_Time;
+		Matrix worldView = MatrixTranspose(world * view);
+		//projection.r[3].m128_f32[3] = m_Time;
 
 		CommonVariables variables;
-		StoreFloat4x3(&variables._MV, worldView);
+		StoreFloat4x4(&variables._MV, worldView);
 		StoreFloat4x4(&variables._PCT, projection);
-		g_CommonVariablesBuffer->Update(0, sizeof(CommonVariables),
+		m_CommonVariablesBuffer->Update(0, sizeof(CommonVariables),
 			(byte const*)&variables);
-		g_CommonVariablesBuffer->UpdateToDevice();
+		m_CommonVariablesBuffer->UpdateToDevice();
 
 		SelectShader();
 

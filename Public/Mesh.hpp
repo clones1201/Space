@@ -21,7 +21,25 @@ namespace Space
 		{
 			return m_Center;
 		}
+		inline IndexBuffer* GetIndexBuffer() const
+		{
+			return m_pIndexBuffer.get();
+		}
+		inline VertexBuffer* GetVertexBuffer() const
+		{
+			return m_pVertexBuffer.get();
+		}
+		inline InputLayout* GetInputLayout() const
+		{
+			return m_pInputLayout.get();
+		}
+		inline uint32 GetNumPrimitives() const
+		{
+			return m_NumPrimitives;
+		}
 	private:
+		MeshPart();
+
 		VertexBufferPtr m_pVertexBuffer;
 		IndexBufferPtr m_pIndexBuffer;
 
@@ -29,6 +47,7 @@ namespace Space
 		
 		float m_Size;
 		Float3 m_Center;
+		uint32 m_NumPrimitives;
 		
 		friend class Mesh;
 	};
@@ -48,9 +67,31 @@ namespace Space
 
 		MeshPart* CreatePart();
 		void RemovePart(MeshPart* pPart);
+
+		typedef std::list<MeshPartPtr> MeshPartContainer;
+		typedef MeshPartContainer::iterator MeshPartIterator;
+		typedef MeshPartContainer::const_iterator MeshPartConstIterator;
+
+		inline MeshPartIterator Begin()
+		{
+			return m_PartCollection.begin();
+		}
+		inline MeshPartConstIterator CBegin() const
+		{
+			return m_PartCollection.cbegin();
+		}
+		inline MeshPartIterator End()
+		{
+			return m_PartCollection.end();
+		}
+		inline MeshPartConstIterator CEnd() const
+		{
+			return m_PartCollection.cend();
+		}
 	protected:
-		
-		std::list<MeshPartPtr> m_PartCollection;
+		Mesh();
+
+		MeshPartContainer m_PartCollection;
 	};
 
 	typedef std::shared_ptr<Mesh> MeshPtr;

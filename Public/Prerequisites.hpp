@@ -60,11 +60,13 @@
 #include "rapidjson/document.h"
 
 #if SPACE_PLATFORM == SPACE_WIN32
+#ifdef _DEBUG
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
 #define CHECK_MEMORY_LEAKS_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
 #define new CHECK_MEMORY_LEAKS_NEW
+#endif
 #endif
 
 namespace Space
@@ -161,6 +163,13 @@ namespace Space
 	enum class DataFormat : uint16
 	{
 		UNKNOWN = 0,
+		//half, short
+		R16_TYPELESS,
+		R16_FLOAT,
+		R16_UNORM,
+		R16_UINT,
+		R16_SNORM,
+		R16_SINT,
 		//half2, short2
 		R16G16_TYPELESS,
 		R16G16_FLOAT,

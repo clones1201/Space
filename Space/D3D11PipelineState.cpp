@@ -18,6 +18,8 @@ namespace Space
 
 	D3D11PipelineState::D3D11PipelineState(D3D11DevicePtr device)
 		:device(device){
+
+
 	}
 
 	void GetAllD3D11ConstantBufferAndShaderResource(
@@ -80,10 +82,6 @@ namespace Space
 		GetAllD3D11ConstantBufferAndShaderResource(
 			m_PSConstantBuffers, m_PSSRVs, shader->GetPixelShader());
 
-		if (m_pInput != nullptr)
-		{
-			_CreateInputLayout();
-		}
 	}
 
 	void D3D11PipelineState::_ClearAllState()
@@ -100,9 +98,10 @@ namespace Space
 		m_pRasterizerState = nullptr;
 	}
 
-	void D3D11PipelineState::SetInputLayout(InputLayout* input)
+	void D3D11PipelineState::SetInputLayout(InputLayout* input,
+		byte const* pInputSignature, uint32 signatureSizeInBytes)
 	{
-		if (input == nullptr) return;
+		if (input == nullptr || pInputSignature == nullptr || signatureSizeInBytes == 0) return;
 
 		m_ElemArray.clear();
 		m_ElemArray.reserve(input->GetSize());
@@ -112,7 +111,7 @@ namespace Space
 			auto desc = D3D11_INPUT_ELEMENT_DESC{
 				GetSemanticName(iter->Semantic),
 				iter->SemanticIdx,
-				GetElemDXGIFormat((uint16)iter->Type),
+				GetElemDXGIFormat(iter->Type),
 				iter->InputSlot,
 				iter->AlignedByteOffset,
 				iter->ElemClass ==
@@ -123,25 +122,24 @@ namespace Space
 			m_ElemArray.push_back(desc);
 		}
 		m_pInput = input;
-		if (m_pVS != nullptr)
-			_CreateInputLayout();
+		
+		_CreateInputLayout(pInputSignature,signatureSizeInBytes);
 	}
 
-	void D3D11PipelineState::_CreateInputLayout()
+	void D3D11PipelineState::_CreateInputLayout(byte const* pInputSignature, uint32 signatureSizeInBytes)
 	{
-		assert(m_InputSignature != nullptr && m_LengthOfSignature != 0);
+		assert(pInputSignature != nullptr && signatureSizeInBytes != 0);
 
-		ID3D11InputLayout* pInputLayout = nullptr;
+		m_pInputLayout = nullptr;
 		HRESULT hr = device->Get()->CreateInputLayout(
 			m_ElemArray.data(), m_ElemArray.size(),
-			m_InputSignature, m_LengthOfSignature,
-			&pInputLayout);
+			pInputSignature, signatureSizeInBytes,
+			&(m_pInputLayout));
 		if (FAILED(hr))
 		{
 			Log(TEXT("CreateInputLayout failed"));
 			return;
 		}
-		m_pInputLayout = pInputLayout;
 	}
 	void D3D11PipelineState::_SetBlendState()
 	{

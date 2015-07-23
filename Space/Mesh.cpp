@@ -11,6 +11,14 @@
 
 namespace Space
 {
+	MeshPart::MeshPart()
+	{
+	}
+
+	Mesh::Mesh()
+	{
+	}
+
 	MeshPart* Mesh::CreatePart()
 	{
 		auto newPart = TypeTrait<MeshPart>::Ptr(new MeshPart());
@@ -42,13 +50,13 @@ namespace Space
 	{ 
 		try
 		{
-			const aiScene* scene = aiImportFile(filename.c_str(),
+			const aiScene* scene = aiImportFile((GetAssetsPath() + "/Models/" + filename).c_str(),
 				aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_ConvertToLeftHanded | aiProcess_TransformUVCoords);
 
 			Float3 min, max;
 
-			if (scene == nullptr || scene->mNumMeshes)
-				return nullptr;
+			if (scene == nullptr || scene->mNumMeshes == 0)
+				throw std::exception("No Mesh in this file");
 
 			Mesh* ret = new Mesh();
 
@@ -87,16 +95,16 @@ namespace Space
 				uint32 stride = layout->GetVertexStride(0);
 				byte* vertices = new byte[stride * numVertices];
 				uint16* indices = new uint16[3 * numFaces];
-
+				
 				auto elemPosition = layout->Begin();
 				auto elemNormal = elemPosition + 1;
 				auto elemTangent = elemNormal + 1;
 
-#define Get(V,i,stride,offset) (V[stride * i] + offset)
+#define Get(V,i,stride,offset) (V + stride * i + offset)
 				for (int32 i = 0; i < numVertices; ++i)
 				{
 					*(Float3*)Get(vertices, i, stride, elemPosition->AlignedByteOffset) = Float3((float*)&(pAiPart->mVertices[i]));
-					*(Float3*)Get(vertices, i, stride, elemNormal->AlignedByteOffset) = Float3((float*)&(pAiPart->mTangents[i]));
+					*(Float3*)Get(vertices, i, stride, elemTangent->AlignedByteOffset) = Float3((float*)&(pAiPart->mTangents[i]));
 					*(Float3*)Get(vertices, i, stride, elemNormal->AlignedByteOffset) = Float3((float*)&(pAiPart->mNormals[i]));
 
 					auto elemTexCoord = elemTangent + 1;
@@ -129,12 +137,18 @@ namespace Space
 					indices[3 * i] = face->mIndices[0];
 					indices[3 * i + 1] = face->mIndices[1];
 					indices[3 * i + 2] = face->mIndices[2];
+					assert(
+						indices[3 * i] <= numVertices && 
+						indices[3 * i + 1] <= numVertices &&
+						indices[3 * i + 2] <= numVertices 
+					);
 				}
 
+				part->m_NumPrimitives = numFaces;
 				part->m_pVertexBuffer.reset(
 					VertexBuffer::Create(pRenderSys, vertices, layout->GetVertexStride(0) * numVertices, layout->GetVertexStride(0)));
 				part->m_pIndexBuffer.reset(
-					IndexBuffer::Create(pRenderSys, (byte*)indices, sizeof(uint16) * 3 * numFaces, DataFormat::D16_UNORM));
+					IndexBuffer::Create(pRenderSys, (byte*)indices, sizeof(uint16) * 3 * numFaces, DataFormat::R16_UINT));
 
 				delete vertices;
 				delete indices;

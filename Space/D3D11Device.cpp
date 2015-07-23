@@ -96,8 +96,8 @@ namespace Space
 	}
 	D3D11Device::~D3D11Device()
 	{
-#ifdef _DEBUG
-		m_pDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
-#endif
+//#ifdef _DEBUG
+//		m_pDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+//#endif
 	} 
 }
