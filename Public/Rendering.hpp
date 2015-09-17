@@ -160,7 +160,7 @@ namespace Space
 	class PipelineState;
 	class CommandQueue;
 
-	class SPACE_API CommandList : virtual public Uncopyable
+	class SPACE_API CommandList : public Uncopyable
 	{
 	public:
 		static CommandList* Create(RenderSystem* pRenderSys);
@@ -191,6 +191,7 @@ namespace Space
 		std::vector<VertexBuffer const*> m_VertexBufferArray;
 		
 	private:
+
 	};
 	typedef std::shared_ptr<CommandList> CommandListPtr;
 	 

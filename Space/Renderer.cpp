@@ -14,7 +14,24 @@ namespace Space
 			pRenderSys->CreatePipelineState());
 
 		m_pPipelineState->SetPrimitiveTopology(PrimitiveTopology::TriangleList);
-		m_pPipelineState->SetInputLayout(,);
+
+		std::fstream signatureFile("StandardInputSignature.cso", std::ios_base::in | std::ios_base::binary);
+		if (!signatureFile.is_open())
+		{
+			throw std::exception("Missing Input Signature File");
+		}
+		std::vector<char> signatureCode(
+			(std::istreambuf_iterator<char>(signatureFile)),
+			(std::istreambuf_iterator<char>()));
+
+		std::unique_ptr<InputLayout> pInputLayout(new InputLayout{
+			{ VertexElemType::Float3, ElemSemantic::Position, 0, 0, ElementClass::PerVertex, 0 },
+			{ VertexElemType::Float3, ElemSemantic::Normal, 0, 0, ElementClass::PerVertex, 0 },
+			{ VertexElemType::Float3, ElemSemantic::Tangent, 0, 0, ElementClass::PerVertex, 0 },
+			{ VertexElemType::Float2, ElemSemantic::TexCoord, 0, 0, ElementClass::PerVertex, 0 },
+		});
+
+		m_pPipelineState->SetInputLayout(pInputLayout.get(),(byte const*) signatureCode.data(), signatureCode.size());
 	}
 
 	MaterialRenderer::MaterialRenderer(RenderSystem* pRenderSys)
@@ -47,7 +64,7 @@ namespace Space
 		{
 			ViewPort{
 				0.0f, 0.0f,
-				m_pRenderTarget->GetWidth(), m_pRenderTarget->GetHeight(),
+				(float)m_pRenderTarget->GetWidth(), (float)m_pRenderTarget->GetHeight(),
 				0.0f, 1.0f
 			}
 		};

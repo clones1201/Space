@@ -9,8 +9,92 @@
 
 namespace Space
 {
-	class StaticBoolParameter;
-	class StaticMaskParameter;
+	class StaticParameterSet;
+
+	class SPACE_API StaticBoolParameter
+	{
+	public:
+		~StaticBoolParameter();
+
+		inline Name GetName() const
+		{
+			return m_Name;
+		}
+		inline void SetName(Name const& name)
+		{
+			m_Name = name;
+		}
+		bool GetValue() const;
+		void SetValue(bool value);
+
+		inline bool operator==(StaticBoolParameter const& other) const
+		{
+			return (m_Bit == other.m_Bit) && (m_Name == other.m_Name);
+		}
+	private:
+		StaticParameterSet* pSet;
+		Name m_Name;
+		uint8 m_Bit = -1;
+		StaticBoolParameter(StaticParameterSet* pSet, std::string const& name, uint8 bit);
+		StaticBoolParameter(StaticParameterSet* pSet, std::wstring const& name, uint8 bit);
+		StaticBoolParameter(StaticParameterSet* pSet, const Name& name, uint8 bit);
+
+		//uint32 GetHashCode() const;
+
+		friend class StaticParameterSet;
+	};
+
+	class SPACE_API StaticMaskParameter
+	{
+	public:
+		~StaticMaskParameter();
+
+		inline Name GetName() const
+		{
+			return m_Name;
+		}
+		inline void SetName(Name const& name)
+		{
+			m_Name = name;
+		}
+		bool GetMaskR() const;
+		bool GetMaskG() const;
+		bool GetMaskB() const;
+		bool GetMaskA() const;
+
+		void SetMaskR(bool value);
+		void SetMaskG(bool value);
+		void SetMaskB(bool value);
+		void SetMaskA(bool value);
+
+		inline bool operator==(StaticMaskParameter const& other) const
+		{
+			return
+				(m_BitR == other.m_BitR) &&
+				(m_BitG == other.m_BitG) &&
+				(m_BitB == other.m_BitB) &&
+				(m_BitA == other.m_BitA) &&
+				(m_Name == other.m_Name);
+		}
+	private:
+		StaticParameterSet* pSet = nullptr;
+		Name m_Name;
+		uint8 m_BitR = -1;
+		uint8 m_BitG = -1;
+		uint8 m_BitB = -1;
+		uint8 m_BitA = -1;
+		StaticMaskParameter(
+			StaticParameterSet* pSet, std::string const& name,
+			uint8 bitR, uint8 bitG, uint8 bitB, uint8 bitA);
+		StaticMaskParameter(
+			StaticParameterSet* pSet, std::wstring const& name,
+			uint8 bitR, uint8 bitG, uint8 bitB, uint8 bitA);
+		StaticMaskParameter(
+			StaticParameterSet* pSet, Name const& name,
+			uint8 bitR, uint8 bitG, uint8 bitB, uint8 bitA);
+
+		friend class StaticParameterSet;
+	};
 
 	/* can have 32 static switch at all or 8 static mask at all */
 	class SPACE_API StaticParameterSet
@@ -141,120 +225,6 @@ namespace Space
 
 	typedef std::shared_ptr<StaticParameterSet> StaticParameterSetPtr;
 
-	class SPACE_API StaticBoolParameter
-	{
-	public:
-		~StaticBoolParameter();
-
-		inline Name GetName() const
-		{
-			return m_Name;
-		}
-		inline void SetName(Name const& name)
-		{
-			m_Name = name;
-		}
-		inline bool GetValue() const
-		{
-			return pSet->_GetBoolValueFromBits(m_Bit);
-		}
-		inline void SetValue(bool value)
-		{
-			pSet->_SetBoolValueToBits(m_Bit, value);
-		}
-
-		inline bool operator==(StaticBoolParameter const& other) const
-		{
-			return (m_Bit == other.m_Bit) && (m_Name == other.m_Name);
-		}
-	private:
-		StaticParameterSet* pSet;
-		Name m_Name;
-		uint8 m_Bit = -1;
-		StaticBoolParameter(StaticParameterSet* pSet, std::string const& name, uint8 bit);
-		StaticBoolParameter(StaticParameterSet* pSet, std::wstring const& name, uint8 bit);
-		StaticBoolParameter(StaticParameterSet* pSet, const Name& name, uint8 bit);
-
-		//uint32 GetHashCode() const;
-
-		friend class StaticParameterSet;
-	};
-
-	class SPACE_API StaticMaskParameter
-	{
-	public:
-		~StaticMaskParameter();
-
-		inline Name GetName() const
-		{
-			return m_Name;
-		}
-		inline void SetName(Name const& name)
-		{
-			m_Name = name;
-		}
-		inline bool GetMaskR() const
-		{
-			return pSet->_GetBoolValueFromBits(m_BitR);
-		}
-		inline bool GetMaskG() const
-		{
-			return pSet->_GetBoolValueFromBits(m_BitG);
-		}
-		inline bool GetMaskB() const
-		{
-			return pSet->_GetBoolValueFromBits(m_BitB);
-		}
-		inline bool GetMaskA() const
-		{
-			return pSet->_GetBoolValueFromBits(m_BitA);
-		}
-
-		inline void SetMaskR(bool value)
-		{
-			pSet->_SetBoolValueToBits(m_BitR, value);
-		}
-		inline void SetMaskG(bool value)
-		{
-			pSet->_SetBoolValueToBits(m_BitG, value);
-		}
-		inline void SetMaskB(bool value)
-		{
-			pSet->_SetBoolValueToBits(m_BitB, value);
-		}
-		inline void SetMaskA(bool value)
-		{
-			pSet->_SetBoolValueToBits(m_BitA, value);
-		}
-
-		inline bool operator==(StaticMaskParameter const& other) const
-		{
-			return
-				(m_BitR == other.m_BitR) &&
-				(m_BitG == other.m_BitG) &&
-				(m_BitB == other.m_BitB) &&
-				(m_BitA == other.m_BitA) &&
-				(m_Name == other.m_Name);
-		}
-	private:
-		StaticParameterSet* pSet = nullptr;
-		Name m_Name;
-		uint8 m_BitR = -1;
-		uint8 m_BitG = -1;
-		uint8 m_BitB = -1;
-		uint8 m_BitA = -1;
-		StaticMaskParameter(
-			StaticParameterSet* pSet, std::string const& name,
-			uint8 bitR, uint8 bitG, uint8 bitB, uint8 bitA);
-		StaticMaskParameter(
-			StaticParameterSet* pSet, std::wstring const& name,
-			uint8 bitR, uint8 bitG, uint8 bitB, uint8 bitA);
-		StaticMaskParameter(
-			StaticParameterSet* pSet, Name const& name,
-			uint8 bitR, uint8 bitG, uint8 bitB, uint8 bitA);
-
-		friend class StaticParameterSet;
-	};
 
 	class SPACE_API Shader : virtual public Uncopyable
 	{
@@ -280,14 +250,14 @@ namespace Space
 		ShaderResourcePool * pResourcePool;
 	};
 
-	SPACE_API enum class MaterialDomain : uint8
+	enum class SPACE_API MaterialDomain : uint8
 	{
 		Surface = 0,
 		PostProcess,
 		Max
 	};
 
-	SPACE_API enum class MaterialBlendMode : uint8
+	enum class SPACE_API MaterialBlendMode : uint8
 	{
 		Opaque = 0,
 		Masked,
@@ -359,6 +329,8 @@ namespace Space
 		std::unordered_map<Name, std::unique_ptr<Shader>, Name::Hasher> m_Shaders;
 		std::unordered_map<StaticParameterSet, Shader*, StaticParameterSet::Hasher> m_ShaderMap;
 	};
+
+	typedef std::shared_ptr<Material> MaterialPtr;
 }
 
 #endif

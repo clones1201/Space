@@ -24,6 +24,8 @@ namespace Space
 		virtual ~Object(){}
 	};
 
+	typedef std::shared_ptr<Object> ObjectPtr;
+
 	template <class _Type>
 	class SPACE_API SharedPtrObject : virtual public std::enable_shared_from_this < _Type >
 	{
@@ -35,7 +37,6 @@ namespace Space
 	protected:
 		Uncopyable();
 		virtual ~Uncopyable();
-	private:
 		Uncopyable(const Uncopyable&) = delete;
 		Uncopyable& operator=(const Uncopyable&) = delete;
 	};

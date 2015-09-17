@@ -53,7 +53,7 @@ namespace Space
 	};
 	typedef std::shared_ptr<MeshPart> MeshPartPtr;
 
-	class Mesh : public Uncopyable
+	class Mesh : public Uncopyable , public Object
 	{
 	public:
 		static Mesh* CreateFromFBX(

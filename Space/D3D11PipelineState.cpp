@@ -172,7 +172,7 @@ namespace Space
 			(D3D11_FILL_MODE)m_RasterizerDesc.FillMode,
 			(D3D11_CULL_MODE)m_RasterizerDesc.CullMode,
 			(BOOL)m_RasterizerDesc.FrontCounterClockwise,
-			(FLOAT)m_RasterizerDesc.DepthBias,
+			(INT)m_RasterizerDesc.DepthBias,
 			(FLOAT)m_RasterizerDesc.DepthBiasClamp,
 			(FLOAT)m_RasterizerDesc.SlopeScaledDepthBias,
 			(BOOL)m_RasterizerDesc.DepthClipEnable,

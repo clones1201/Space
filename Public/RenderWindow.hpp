@@ -6,7 +6,7 @@
 
 namespace Space
 {
-	class SPACE_API RenderWindow : virtual public Interface
+	class SPACE_API RenderWindow : public Interface
 	{
 	public:
 		virtual bool Initialize() = 0;

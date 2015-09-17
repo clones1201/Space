@@ -17,7 +17,8 @@ namespace Space
 		void MainLoop();
 		void Update();
 		CommandList* RenderOneFrame();
-		
+		int ExecuteRender();
+
 		std::unique_ptr<RenderSystem> m_pRenderSys = nullptr;
 		std::unique_ptr<RenderWindow> m_pRenderWindow = nullptr;
 		std::unique_ptr<RenderTarget> m_pRenderTarget = nullptr;
@@ -31,6 +32,9 @@ namespace Space
 		std::mutex m_Mutex;
 		std::unique_lock<std::mutex> m_Lock;
 		std::condition_variable m_Fence;
+
+		std::future<CommandList*> m_CmdList;
+		std::future<int> m_RenderAction;
 	};
 }
 

@@ -293,6 +293,15 @@
     <ClCompile Include="Event.cpp">
       <Filter>Private\Global\Source</Filter>
     </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Private\Global\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Private\Global\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>Private\Global\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Extra\StandardInputSignature.hlsl">

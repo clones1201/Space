@@ -90,7 +90,7 @@ namespace Space
 				auto layout = part->m_pInputLayout;
 				for (int32 i = 0; i < numUVChannels; ++i)
 					layout->Insert(layout->End(),
-					{ VertexElemType::Float2, ElemSemantic::TexCoord, i, 0, ElementClass::PerVertex, 0 });
+					{ VertexElemType::Float2, ElemSemantic::TexCoord, (uint32)i, 0, ElementClass::PerVertex, 0 });
 
 				uint32 stride = layout->GetVertexStride(0);
 				byte* vertices = new byte[stride * numVertices];

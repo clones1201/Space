@@ -70,7 +70,7 @@ namespace Space
 	{
 #if defined _DEBUG || defined DEBUG
 		char buffer[1024];
-		sprintf_s((char*)buffer, 1024, "%s line %d %s", filename, line, format);
+		sprintf_s((char*)buffer, 1024, "%s line %d : %s", filename, line, format);
 		log += toTs(StringFormatA(buffer, args));
 #else
 #endif
@@ -79,7 +79,7 @@ namespace Space
 	{
 #if defined _DEBUG || defined DEBUG
 		wchar_t buffer[1024];
-		sprintf_s((char*)buffer, 1024, "%s line %d %s", filename, line, format);
+		swprintf_s((wchar_t*)buffer, 1024, L"%s line %d : %s", filename, line, format);
 		log += toTs(StringFormatW(buffer,args));
 #else
 #endif
@@ -112,7 +112,7 @@ namespace Space
 	{
 #if defined _DEBUG || defined DEBUG
 		char buffer[1024];
-		sprintf_s((char*)buffer,1024,"%s line %d %s",filename,line,format);
+		sprintf_s((char*)buffer,1024,"%s line %d  : %s",filename,line,format);
 		vprintf_s(buffer,args);
 #else
 #endif
@@ -120,9 +120,9 @@ namespace Space
 	void StdLogWriter::DebugPrintf(int32 line, const wchar_t* filename, const wchar_t* format, va_list args)
 	{
 #if defined _DEBUG || defined DEBUG
-		char buffer[1024];
-		sprintf_s((char*)buffer, 1024, "%s line %d %s", filename, line, format);
-		vwprintf_s(format,args);
+		wchar_t buffer[1024];
+		swprintf_s((wchar_t*)buffer, 1024, L"%s line %d : %s", filename, line, format);
+		vwprintf_s(buffer,args);
 #else
 #endif
 	}

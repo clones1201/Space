@@ -46,7 +46,7 @@ namespace Space
 #undef ADD_ITEM
 			}
 
-			TableType::referent_type operator[] (TableType::key_type key)
+			TableType::mapped_type operator[] (TableType::key_type key)
 			{
 				TRY_CATCH_OUT_OF_RANGE(return _table.at(key), return SVT_Void);
 			}

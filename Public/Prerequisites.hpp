@@ -73,8 +73,10 @@ namespace Space
 {
 #ifdef SPACE_UNICODE
 	using tstring = std::wstring;
+	using tchar = wchar_t;
 #else
 	using tstring = std::string;
+	using tchar = char;
 #endif
 	using uint = unsigned int;
 	using uchar = unsigned char;

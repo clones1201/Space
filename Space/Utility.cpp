@@ -8,7 +8,7 @@ namespace Space
 
 	tstring toTs(const std::string &in)
 	{
-#if (defined _UNICODE) ||  (defined UNICODE)
+#ifdef SPACE_UNICODE
 		return str2wstr(in);
 #else
 		return wstr2str(in);
@@ -16,7 +16,7 @@ namespace Space
 	}
 	tstring toTs(const std::wstring &in)
 	{
-#if (defined _UNICODE) ||  (defined UNICODE)
+#ifdef SPACE_UNICODE
 		return str2wstr(in);
 #else
 		return wstr2str(in);
@@ -267,7 +267,7 @@ namespace Space
 		static StringPool g_StringPool;
 
 		std::weak_ptr<Name::Impl> pSelf;
-		std::unique_ptr<std::wstring> pStr = nullptr;
+		std::unique_ptr<tstring> pStr = nullptr;
 
 		Impl(){}
 		~Impl()
@@ -287,11 +287,18 @@ namespace Space
 		:Name(L"")
 	{
 	}
+	
+#ifdef SPACE_UNICODE
 	Name::Name(std::string const& name)
 		:Name(str2wstr(name))
+#else
+	Name::Name(std::wstring const& name)
+		:Name(wstr2str(name))
+#endif
 	{
 	}
-	Name::Name(std::wstring const& name)
+
+	Name::Name(tstring const& name)
 	{
 		bool found = false;
 		std::for_each(Impl::g_StringPool.begin(), Impl::g_StringPool.end(),
@@ -305,7 +312,7 @@ namespace Space
 		if (!found){
 			m_impl.reset(new Name::Impl());
 			m_impl->pSelf = m_impl;
-			m_impl->pStr.reset(new std::wstring(name));
+			m_impl->pStr.reset(new tstring(name));
 			Impl::g_StringPool.push_back(m_impl);
 		}
 	}
@@ -316,13 +323,31 @@ namespace Space
 	{
 		std::swap(param.m_impl, this->m_impl);
 	}
+	Name & Name::operator=(Name const & param)
+	{
+		m_impl = param.m_impl;
+		return (*this);
+	}
+	Name & Name::operator=(Name && param)
+	{
+		std::swap(param.m_impl, this->m_impl);
+		return (*this);
+	}
 	std::wstring Name::ToWString() const
 	{
+#ifdef SPACE_UNICODE
 		return *(m_impl->pStr);
+#else
+		return str2wstr(*(m_impl->pStr));
+#endif
 	}
 	std::string Name::ToString() const
 	{
+#ifdef SPACE_UNICODE
 		return wstr2str(*(m_impl->pStr));
+#else
+		return *(m_impl->pStr);
+#endif
 	} 
 	
 	std::ostream& Name::Write(std::ostream& archiver) const
@@ -381,4 +406,16 @@ namespace Space
 			}
 		}
 	}
+
+	void PropertyManager::AddProperty(PropertyBase* prop)
+	{
+		m_Properties.push_back(prop);
+		m_PropertiesMap.insert(
+			std::make_pair(
+				prop->GetName(), prop
+				));
+	}
+
+
+
 }

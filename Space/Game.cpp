@@ -51,13 +51,21 @@ namespace Space
 
 	void SimpleGame::MainLoop()
 	{
-		auto cmdList = std::async(std::launch::async,
-			[this]{ return this->RenderOneFrame(); }
+		m_CmdList = std::async(std::launch::async,
+			[this] { return this->RenderOneFrame(); }
 		);
 		Update();
-
-		m_pRenderSys->ExecuteCommandList(cmdList.get());
+		
+		if(m_RenderAction.valid())
+			m_RenderAction.get();
+		
+		m_RenderAction = std::async(std::launch::async, 
+			[this] { return this->ExecuteRender(); });
+	}
+	int SimpleGame::ExecuteRender(){
+		m_pRenderSys->ExecuteCommandList(m_CmdList.get());
 		m_pRenderWindow->Present();
+		return 1;
 	}
 
 	CommandList* SimpleGame::RenderOneFrame()

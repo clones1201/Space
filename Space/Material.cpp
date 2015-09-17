@@ -28,6 +28,16 @@ namespace Space
 		: pSet(pSet), m_Name(name), m_Bit(bit)
 	{
 	}
+	
+	bool StaticBoolParameter::GetValue() const
+	{
+		return pSet->_GetBoolValueFromBits(m_Bit);
+	}
+	void StaticBoolParameter::SetValue(bool value)
+	{
+		pSet->_SetBoolValueToBits(m_Bit, value);
+	}
+
 
 	//Definitions of class StaticMaskParameter
 
@@ -54,6 +64,40 @@ namespace Space
 
 	StaticMaskParameter::~StaticMaskParameter()
 	{
+	}
+
+	bool StaticMaskParameter::GetMaskR() const
+	{
+		return pSet->_GetBoolValueFromBits(m_BitR);
+	}
+	bool StaticMaskParameter::GetMaskG() const
+	{
+		return pSet->_GetBoolValueFromBits(m_BitG);
+	}
+	bool StaticMaskParameter::GetMaskB() const
+	{
+		return pSet->_GetBoolValueFromBits(m_BitB);
+	}
+	bool StaticMaskParameter::GetMaskA() const
+	{
+		return pSet->_GetBoolValueFromBits(m_BitA);
+	}
+
+	inline void StaticMaskParameter::SetMaskR(bool value)
+	{
+		pSet->_SetBoolValueToBits(m_BitR, value);
+	}
+	inline void StaticMaskParameter::SetMaskG(bool value)
+	{
+		pSet->_SetBoolValueToBits(m_BitG, value);
+	}
+	inline void StaticMaskParameter::SetMaskB(bool value)
+	{
+		pSet->_SetBoolValueToBits(m_BitB, value);
+	}
+	inline void StaticMaskParameter::SetMaskA(bool value)
+	{
+		pSet->_SetBoolValueToBits(m_BitA, value);
 	}
 
 	// Definitions of class StaticParameterSet
@@ -258,6 +302,14 @@ namespace Space
 	Material* Material::Create(RenderSystem* pRenderSys, std::wstring const& name)
 	{
 		return Create(pRenderSys, wstr2str(name));
+	}
+	StaticParameterSet const & Material::GetStaticParameterSet() const
+	{ 
+		return m_ParameterSet;
+	}
+	StaticParameterSet & Material::GetStaticParameterSet()
+	{ 
+		return m_ParameterSet;
 	}
 	Material* Material::Create(RenderSystem* pRenderSys, std::string const& name)
 	{
