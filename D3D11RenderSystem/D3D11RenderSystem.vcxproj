@@ -19,33 +19,34 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{9BB833F0-7D37-49C1-B576-46F14280193D}</ProjectGuid>
+    <ProjectGuid>{3588D261-1321-4CEA-8D18-3ABB3FEF6F88}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>Space</RootNamespace>
+    <RootNamespace>D3D11Interface</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>D3D11RenderSystem</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -73,6 +74,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)\Binary\$(Configuration)\</OutDir>
     <IntDir>Temp\$(Configuration)\</IntDir>
+    <TargetName>$(SolutionName).$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -81,6 +83,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)\Binary\$(Configuration)\</OutDir>
     <IntDir>Temp\$(Configuration)\</IntDir>
+    <TargetName>$(SolutionName).$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -91,16 +94,17 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>NOMINMAX;SPACE_EXPORTS;SPACE_GAME;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SPACE_D3D11_EXPORTS;NOMINMAX;WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)\Public;$(SolutionDir)\Common\Public;$(SolutionDir)\RenderSystem\Public;$(SolutionDir)\D3D11RenderSystem\Public;$(RAPIDJSON_DIR)\include;$(ASSIMP_DIR)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Public\;$(SolutionDir)\Common\Public\;$(SolutionDir)\RenderSystem\Public\;$(VCInstallDir)UnitTest\include\;$(DXTK_DIR)\Inc\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;4250;</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OutDir)\;$(ASSIMP_DIR)\lib\Debug\;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Space.Common.lib;Space.RenderSystem.lib;Space.D3D11RenderSystem.lib;assimpd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);$(DXTK_DIR)\Bin\Desktop_2015\Win32\Debug\;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d11.lib;dxgi.lib;d3dcompiler.lib;DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -109,11 +113,11 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;D3D11INTERFACE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -124,17 +128,21 @@
       </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NOMINMAX;SPACE_EXPORTS;SPACE_GAME;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <PreprocessorDefinitions>SPACE_D3D11_EXPORTS;NOMINMAX;WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Public\;$(SolutionDir)\Common\Public\;$(SolutionDir)\RenderSystem\Public\;$(VCInstallDir)UnitTest\include\;$(DXTK_DIR)\Inc\;</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;4250;</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(OutDir)\;$(ASSIMP_DIR)\lib\Debug\;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Space.Common.lib;Space.RenderSystem.lib;Space.D3D11RenderSystem.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);$(DXTK_DIR)\Bin\Desktop_2015\Win32\Release\;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d11.lib;dxgi.lib;d3dcompiler.lib;DirectXTK.lib;msvcrt.lib;msvcmrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -145,57 +153,56 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;D3D11INTERFACE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Public\RenderSystem\D3D11DepthStencilView.hpp" />
+    <ClInclude Include="Public\RenderSystem\D3D11Device.hpp" />
+    <ClInclude Include="Public\RenderSystem\D3D11DeviceBuffer.hpp" />
+    <ClInclude Include="Public\RenderSystem\D3D11DeviceTexture.hpp" />
+    <ClInclude Include="Public\RenderSystem\D3D11Prerequisites.hpp" />
+    <ClInclude Include="Public\RenderSystem\D3D11Rendering.hpp" />
+    <ClInclude Include="Public\RenderSystem\D3D11RenderSystem.hpp" />
+    <ClInclude Include="Public\RenderSystem\D3D11RenderTarget.hpp" />
+    <ClInclude Include="Public\RenderSystem\D3D11RenderWindow.hpp" />
+    <ClInclude Include="Public\RenderSystem\D3D11Shader.hpp" />
+    <ClInclude Include="Public\RenderSystem\D3D11ShaderReflection.hpp" />
+    <ClInclude Include="Public\RenderSystem\D3D11ShaderResource.hpp" />
+    <ClInclude Include="Public\RenderSystem\D3D11Shared.hpp" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Common\Common.vcxproj">
       <Project>{dcf17ee5-cd6c-456f-8f7a-50942aa0890f}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\D3D11RenderSystem\D3D11RenderSystem.vcxproj">
-      <Project>{3588d261-1321-4cea-8d18-3abb3fef6f88}</Project>
     </ProjectReference>
     <ProjectReference Include="..\RenderSystem\RenderSystem.vcxproj">
       <Project>{715849ed-91e3-4084-9be3-8f5f5e5f9eb0}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Public\Space\Behavior.hpp" />
-    <ClInclude Include="Public\Space\Game.hpp" />
-    <ClInclude Include="Public\Space\GameObject.hpp" />
-    <ClInclude Include="Public\Space\Material.hpp" />
-    <ClInclude Include="Public\Space\Mesh.hpp" />
-    <ClInclude Include="Public\Space\Prerequisites.hpp" />
-    <ClInclude Include="Public\Space\Renderer.hpp" />
-    <ClInclude Include="Public\Space\ResourcePool.h" />
-    <ClInclude Include="Public\Space\Scene.hpp" />
-    <ClInclude Include="Public\Space\ShaderResourcePool.hpp" />
-    <ClInclude Include="Public\Space\Space.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Source\Component.cpp" />
-    <ClCompile Include="Source\Game.cpp" />
-    <ClCompile Include="Source\GameObject.cpp" />
-    <ClCompile Include="Source\Material.cpp" />
-    <ClCompile Include="Source\Mesh.cpp" />
-    <ClCompile Include="Source\Renderer.cpp" />
-    <ClCompile Include="Source\Scene.cpp" />
-    <ClCompile Include="Source\ShaderResourcePool.cpp" />
-    <ClCompile Include="Source\Space.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Extra\StandardInputSignature.hlsl">
-      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">DummyVertexShader</EntryPointName>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
-    </FxCompile>
+    <ClCompile Include="Private\D3D11CommandList.cpp" />
+    <ClCompile Include="Private\D3D11DepthStencilView.cpp" />
+    <ClCompile Include="Private\D3D11Device.cpp" />
+    <ClCompile Include="Private\D3D11DeviceBuffer.cpp" />
+    <ClCompile Include="Private\D3D11DeviceTexture.cpp" />
+    <ClCompile Include="Private\D3D11PipelineState.cpp" />
+    <ClCompile Include="Private\D3D11RenderSystem.cpp" />
+    <ClCompile Include="Private\D3D11RenderTarget.cpp" />
+    <ClCompile Include="Private\D3D11RenderWindow.cpp" />
+    <ClCompile Include="Private\D3D11Shader.cpp" />
+    <ClCompile Include="Private\D3D11ShaderReflection.cpp" />
+    <ClCompile Include="Private\D3D11ShaderResource.cpp" />
+    <ClCompile Include="Private\D3D11Shared.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

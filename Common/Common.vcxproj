@@ -19,33 +19,33 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{9BB833F0-7D37-49C1-B576-46F14280193D}</ProjectGuid>
+    <ProjectGuid>{DCF17EE5-CD6C-456F-8F7A-50942AA0890F}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>Space</RootNamespace>
+    <RootNamespace>Common</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -71,6 +71,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(SolutionName).$(ProjectName)</TargetName>
     <OutDir>$(SolutionDir)\Binary\$(Configuration)\</OutDir>
     <IntDir>Temp\$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -81,6 +82,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)\Binary\$(Configuration)\</OutDir>
     <IntDir>Temp\$(Configuration)\</IntDir>
+    <TargetName>$(SolutionName).$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -91,16 +93,16 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>NOMINMAX;SPACE_EXPORTS;SPACE_GAME;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SPACE_COMMON_EXPORTS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)\Public;$(SolutionDir)\Common\Public;$(SolutionDir)\RenderSystem\Public;$(SolutionDir)\D3D11RenderSystem\Public;$(RAPIDJSON_DIR)\include;$(ASSIMP_DIR)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4251;4250;</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Public\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OutDir)\;$(ASSIMP_DIR)\lib\Debug\;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Space.Common.lib;Space.RenderSystem.lib;Space.D3D11RenderSystem.lib;assimpd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -109,11 +111,11 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;COMMON_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -124,17 +126,20 @@
       </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NOMINMAX;SPACE_EXPORTS;SPACE_GAME;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SPACE_COMMON_EXPORTS;NOMIXMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Public\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(OutDir)\;$(ASSIMP_DIR)\lib\Debug\;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Space.Common.lib;Space.RenderSystem.lib;Space.D3D11RenderSystem.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>msvcrt.lib;msvcmrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -145,57 +150,41 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;COMMON_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.vcxproj">
-      <Project>{dcf17ee5-cd6c-456f-8f7a-50942aa0890f}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\D3D11RenderSystem\D3D11RenderSystem.vcxproj">
-      <Project>{3588d261-1321-4cea-8d18-3abb3fef6f88}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\RenderSystem\RenderSystem.vcxproj">
-      <Project>{715849ed-91e3-4084-9be3-8f5f5e5f9eb0}</Project>
-    </ProjectReference>
+    <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Public\Space\Behavior.hpp" />
-    <ClInclude Include="Public\Space\Game.hpp" />
-    <ClInclude Include="Public\Space\GameObject.hpp" />
-    <ClInclude Include="Public\Space\Material.hpp" />
-    <ClInclude Include="Public\Space\Mesh.hpp" />
-    <ClInclude Include="Public\Space\Prerequisites.hpp" />
-    <ClInclude Include="Public\Space\Renderer.hpp" />
-    <ClInclude Include="Public\Space\ResourcePool.h" />
-    <ClInclude Include="Public\Space\Scene.hpp" />
-    <ClInclude Include="Public\Space\ShaderResourcePool.hpp" />
-    <ClInclude Include="Public\Space\Space.hpp" />
+    <ClCompile Include="Private\Basic.cpp" />
+    <ClCompile Include="Private\Common.cpp" />
+    <ClCompile Include="Private\Core.cpp" />
+    <ClCompile Include="Private\Event.cpp" />
+    <ClCompile Include="Private\Log.cpp" />
+    <ClCompile Include="Private\Utility.cpp" />
+    <ClCompile Include="Private\Win32Window.cpp" />
+    <ClCompile Include="Private\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Component.cpp" />
-    <ClCompile Include="Source\Game.cpp" />
-    <ClCompile Include="Source\GameObject.cpp" />
-    <ClCompile Include="Source\Material.cpp" />
-    <ClCompile Include="Source\Mesh.cpp" />
-    <ClCompile Include="Source\Renderer.cpp" />
-    <ClCompile Include="Source\Scene.cpp" />
-    <ClCompile Include="Source\ShaderResourcePool.cpp" />
-    <ClCompile Include="Source\Space.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Extra\StandardInputSignature.hlsl">
-      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">DummyVertexShader</EntryPointName>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
-    </FxCompile>
+    <ClInclude Include="Public\Common\Basic.hpp" />
+    <ClInclude Include="Public\Common\Common.hpp" />
+    <ClInclude Include="Public\Common\Core.hpp" />
+    <ClInclude Include="Public\Common\Event.hpp" />
+    <ClInclude Include="Public\Common\Log.h" />
+    <ClInclude Include="Public\Common\Math.hpp" />
+    <ClInclude Include="Public\Common\Prerequisites.hpp" />
+    <ClInclude Include="Public\Common\TemplateTrait.hpp" />
+    <ClInclude Include="Public\Common\Utility.hpp" />
+    <ClInclude Include="Public\Common\Win32Window.hpp" />
+    <ClInclude Include="Public\Common\Window.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

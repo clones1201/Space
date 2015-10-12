@@ -1,311 +1,85 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
     <Filter Include="Public">
-      <UniqueIdentifier>{a5ced340-cbd7-42b8-9ef2-afa476296180}</UniqueIdentifier>
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Private">
-      <UniqueIdentifier>{34765070-cfd5-4855-aec1-88006ae2bcae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Private\RenderSystem">
-      <UniqueIdentifier>{62655940-d02b-4d9d-ac90-e7f1edce683c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Private\RenderSystem\D3D11">
-      <UniqueIdentifier>{274d5864-1ef8-4535-a209-9e1192935ab0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Private\RenderSystem\D3D11\Header">
-      <UniqueIdentifier>{48a59840-6dea-480f-8e20-5ab33ad312e8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Private\RenderSystem\D3D11\Source">
-      <UniqueIdentifier>{7faca260-ea63-4450-ae46-162bf9fdb492}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Private\Global">
-      <UniqueIdentifier>{3dea7455-2cf8-41f7-a472-1d214114b414}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Private\Global\Header">
-      <UniqueIdentifier>{5a89c39d-e94f-4a7b-a204-ccbb0772459c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Private\Global\Source">
-      <UniqueIdentifier>{3dbb7bfa-a62a-48d7-aa29-5376d397c03f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Public\RenderSystem">
-      <UniqueIdentifier>{82622c70-4e78-4bbe-9a9e-cd8287d66f91}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Public\RenderSystem\D3D11">
-      <UniqueIdentifier>{f4d6c675-1af3-46b6-a483-cd0c45cbde3c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Test">
-      <UniqueIdentifier>{8a04b477-c589-44dd-a54b-b28f0bdced46}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Private\Extra">
-      <UniqueIdentifier>{aee2fa6a-3e6f-403f-a33f-40e3085668f3}</UniqueIdentifier>
+    <Filter Include="Extra">
+      <UniqueIdentifier>{28e669f8-3987-4d60-a397-85f2bd066e32}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Log.h">
-      <Filter>Private\Global\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Basic.hpp">
+    <ClInclude Include="Public\Space\Behavior.hpp">
       <Filter>Public</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Core.hpp">
+    <ClInclude Include="Public\Space\Game.hpp">
       <Filter>Public</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Game.hpp">
+    <ClInclude Include="Public\Space\GameObject.hpp">
       <Filter>Public</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Material.hpp">
+    <ClInclude Include="Public\Space\Material.hpp">
       <Filter>Public</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Prerequisites.hpp">
+    <ClInclude Include="Public\Space\Mesh.hpp">
       <Filter>Public</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Space.hpp">
+    <ClInclude Include="Public\Space\Prerequisites.hpp">
       <Filter>Public</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Window.hpp">
+    <ClInclude Include="Public\Space\Renderer.hpp">
       <Filter>Public</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\D3D11RenderTarget.hpp">
-      <Filter>Public\RenderSystem\D3D11</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\D3D11RenderWindow.hpp">
-      <Filter>Public\RenderSystem\D3D11</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\D3D11Shader.hpp">
-      <Filter>Public\RenderSystem\D3D11</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\D3D11RenderSystem.hpp">
-      <Filter>Public\RenderSystem\D3D11</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\D3D11ShaderResource.hpp">
-      <Filter>Public\RenderSystem\D3D11</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\D3D11Device.hpp">
-      <Filter>Public\RenderSystem\D3D11</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\D3D11DeviceBuffer.hpp">
-      <Filter>Public\RenderSystem\D3D11</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\D3D11Prerequisites.hpp">
-      <Filter>Public\RenderSystem\D3D11</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D11Shared.hpp">
-      <Filter>Private\RenderSystem\D3D11\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\D3D11DeviceTexture.hpp">
-      <Filter>Public\RenderSystem\D3D11</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\D3D11DepthStencilView.hpp">
-      <Filter>Public\RenderSystem\D3D11</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\D3D11ShaderReflection.hpp">
-      <Filter>Public\RenderSystem\D3D11</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Renderer.hpp">
+    <ClInclude Include="Public\Space\ResourcePool.h">
       <Filter>Public</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\DepthStencilView.hpp">
-      <Filter>Public\RenderSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\DeviceBuffer.hpp">
-      <Filter>Public\RenderSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\DeviceTexture.hpp">
-      <Filter>Public\RenderSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\RenderSystem.hpp">
-      <Filter>Public\RenderSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\RenderTarget.hpp">
-      <Filter>Public\RenderSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\RenderWindow.hpp">
-      <Filter>Public\RenderSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Shader.hpp">
-      <Filter>Public\RenderSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ShaderReflection.hpp">
-      <Filter>Public\RenderSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ShaderResource.hpp">
-      <Filter>Public\RenderSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ShaderCommon.hpp">
-      <Filter>Public\RenderSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\InputLayout.hpp">
-      <Filter>Public\RenderSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Mesh.hpp">
+    <ClInclude Include="Public\Space\Scene.hpp">
       <Filter>Public</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Win32Window.hpp">
+    <ClInclude Include="Public\Space\ShaderResourcePool.hpp">
       <Filter>Public</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Renderable.hpp">
-      <Filter>Public\RenderSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Math.hpp">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Behavior.hpp">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Utility.hpp">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ShaderResourcePool.hpp">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Rendering.hpp">
-      <Filter>Public\RenderSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\D3D11Rendering.hpp">
-      <Filter>Public\RenderSystem\D3D11</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Event.hpp">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Scene.hpp">
-      <Filter>Public</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\GameObject.hpp">
+    <ClInclude Include="Public\Space\Space.hpp">
       <Filter>Public</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Basic.cpp">
-      <Filter>Private\Global\Source</Filter>
+    <ClCompile Include="Source\Component.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="D3D11RenderTarget.cpp">
-      <Filter>Private\RenderSystem\D3D11\Source</Filter>
+    <ClCompile Include="Source\Game.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Core.cpp">
-      <Filter>Private\Global\Source</Filter>
+    <ClCompile Include="Source\GameObject.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>Private\Global\Source</Filter>
+    <ClCompile Include="Source\Material.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="D3D11RenderSystem.cpp">
-      <Filter>Private\RenderSystem\D3D11\Source</Filter>
+    <ClCompile Include="Source\Mesh.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Log.cpp">
-      <Filter>Private\Global\Source</Filter>
+    <ClCompile Include="Source\Renderer.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Utility.cpp">
-      <Filter>Private\Global\Source</Filter>
+    <ClCompile Include="Source\Scene.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="D3D11Shared.cpp">
-      <Filter>Private\RenderSystem\D3D11\Source</Filter>
+    <ClCompile Include="Source\ShaderResourcePool.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="D3D11RenderWindow.cpp">
-      <Filter>Private\RenderSystem\D3D11\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Window.cpp">
-      <Filter>Private\Global\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D11Device.cpp">
-      <Filter>Private\RenderSystem\D3D11\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D11DeviceBuffer.cpp">
-      <Filter>Private\RenderSystem\D3D11\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D11DeviceTexture.cpp">
-      <Filter>Private\RenderSystem\D3D11\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D11DepthStencilView.cpp">
-      <Filter>Private\RenderSystem\D3D11\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D11ShaderResource.cpp">
-      <Filter>Private\RenderSystem\D3D11\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D11Shader.cpp">
-      <Filter>Private\RenderSystem\D3D11\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D11ShaderReflection.cpp">
-      <Filter>Private\RenderSystem\D3D11\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Test\UtilityTest.cpp">
-      <Filter>Test</Filter>
-    </ClCompile>
-    <ClCompile Include="DepthStencilView.cpp">
-      <Filter>Private\RenderSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="DeviceBuffer.cpp">
-      <Filter>Private\RenderSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="DeviceTexture.cpp">
-      <Filter>Private\RenderSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderSystem.cpp">
-      <Filter>Private\RenderSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderTarget.cpp">
-      <Filter>Private\RenderSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderWindow.cpp">
-      <Filter>Private\RenderSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Private\RenderSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderResourcePool.cpp">
-      <Filter>Private\RenderSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderResource.cpp">
-      <Filter>Private\RenderSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="Win32Window.cpp">
-      <Filter>Private\Global\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="InputLayout.cpp">
-      <Filter>Private\RenderSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderable.cpp">
-      <Filter>Private\RenderSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderReflection.cpp">
-      <Filter>Private\RenderSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="Rendering.cpp">
-      <Filter>Private\RenderSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D11CommandList.cpp">
-      <Filter>Private\RenderSystem\D3D11\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D11PipelineState.cpp">
-      <Filter>Private\RenderSystem\D3D11\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Material.cpp">
-      <Filter>Private\Global\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>Private\Global\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Space.cpp">
-      <Filter>Private\Global\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer.cpp">
-      <Filter>Private\Global\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Event.cpp">
-      <Filter>Private\Global\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>Private\Global\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>Private\Global\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Component.cpp">
-      <Filter>Private\Global\Source</Filter>
+    <ClCompile Include="Source\Space.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Extra\StandardInputSignature.hlsl">
-      <Filter>Private\Extra</Filter>
+      <Filter>Extra</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
