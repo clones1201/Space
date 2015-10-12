@@ -275,7 +275,7 @@ namespace Space
 		//VectorParameter& GetVectorParameter(Name const& name);
 
 		//void Apply();
-		Shader* GetShader();
+		Shader* GetShader(CommandList* pList);
 
 		virtual ~Material();
 	protected:

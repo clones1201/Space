@@ -43,7 +43,7 @@ namespace Space
 	{
 		m_pMaterial = material;
 
-		m_pPipelineState->SetShaders(m_pMaterial->GetShader());
+		//m_pPipelineState->SetShaders(m_pMaterial->GetShader());
 	}
 
 	MeshMaterialRenderer* MeshMaterialRenderer::Create(RenderSystem* pRenderSys)
@@ -81,7 +81,7 @@ namespace Space
 				pPart->GetVertexBuffer()
 			};
 			list->SetVertexBuffers(0, 1, buffers);
-			m_pPipelineState->SetShaders(m_pMaterial->GetShader());
+			m_pPipelineState->SetShaders(m_pMaterial->GetShader(list));
 
 			list->SetPipelineState(m_pPipelineState.get());
 

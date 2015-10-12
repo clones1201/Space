@@ -8,8 +8,11 @@ namespace Space
 	{
 		m_pRenderSys.reset(
 			D3D11RenderSystem::Create());
-		m_pGraphicCommandList.reset(
+		m_pFrontCommandList.reset(
 			m_pRenderSys->CreateCommandList());
+		m_pBackCommandList.reset(
+			m_pRenderSys->CreateCommandList());
+
 		m_pRenderWindow.reset(
 			m_pRenderSys->CreateRenderWindow("RenderWindow", 500, 500, false));
 		m_pRenderWindow->Initialize();
@@ -61,11 +64,15 @@ namespace Space
 		if(m_RenderAction.valid())
 			m_RenderAction.get();
 		
+		CommandList* pList = m_CmdList.get();
+		std::swap(m_pFrontCommandList,m_pBackCommandList);
+
 		m_RenderAction = std::async(std::launch::async, 
-			[this] { return this->ExecuteRender(); });
+			[this,pList] { return this->ExecuteRender(pList); });
 	}
-	int SimpleGame::ExecuteRender(){
-		m_pRenderSys->ExecuteCommandList(m_CmdList.get());
+
+	int SimpleGame::ExecuteRender(CommandList* pList){		
+		m_pRenderSys->ExecuteCommandList(pList);
 		m_pRenderWindow->Present();
 		return 1;
 	}
@@ -76,18 +83,18 @@ namespace Space
 		{
 			m_pSimpleRenderer->GetRenderTarget()
 		};
-		m_pGraphicCommandList->SetRenderTargets(
+		m_pFrontCommandList->SetRenderTargets(
 			targets,1,nullptr
 			);
 
-		m_pGraphicCommandList->ClearRenderTargetView(
+		m_pFrontCommandList->ClearRenderTargetView(
 			m_pRenderTarget.get(),
 			Float4{ 0.12f, 0.15f, 0.55f, 1.0f });
 
-		m_pSimpleRenderer->Render(m_pGraphicCommandList.get(),m_pMesh.get());
+		m_pSimpleRenderer->Render(m_pFrontCommandList.get(),m_pMesh.get());
 
-		m_pGraphicCommandList->Close();
-		return m_pGraphicCommandList.get();
+		m_pFrontCommandList->Close();
+		return m_pFrontCommandList.get();
 	}
 
 	void SimpleGame::Close()

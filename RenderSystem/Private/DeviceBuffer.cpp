@@ -43,9 +43,9 @@ namespace Space
 	VertexBuffer::~VertexBuffer()
 	{}
 
-	bool VertexBuffer::Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData)
+	bool VertexBuffer::Update(CommandList* pList, uint32 startOffset, uint32 lengthInBytes, byte const* pData)
 	{
-		return m_pBuffer->Update(startOffset, lengthInBytes, pData);
+		return m_pBuffer->Update(pList, startOffset, lengthInBytes, pData);
 	}
 	
 	IndexBuffer* IndexBuffer::Create(RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes, DataFormat format)
@@ -64,9 +64,9 @@ namespace Space
 	IndexBuffer::~IndexBuffer()
 	{}
 
-	bool IndexBuffer::Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData)
+	bool IndexBuffer::Update(CommandList* pList, uint32 startOffset, uint32 lengthInBytes, byte const* pData)
 	{
-		return m_pBuffer->Update(startOffset, lengthInBytes, pData);
+		return m_pBuffer->Update(pList, startOffset, lengthInBytes, pData);
 	}
 	
 	ConstantBuffer* ConstantBuffer::Create(RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes)
@@ -89,9 +89,9 @@ namespace Space
 			_aligned_free(m_pShadowData);
 	}
 
-	void ConstantBuffer::UpdateToDevice()
+	void ConstantBuffer::UpdateToDevice(CommandList* pList)
 	{
-		m_pBuffer->Update(0, m_pBuffer->GetLengthInBytes(), m_pShadowData);
+		m_pBuffer->Update(pList, 0, m_pBuffer->GetLengthInBytes(), m_pShadowData);
 	}
 
 	bool ConstantBuffer::Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData)
@@ -122,9 +122,9 @@ namespace Space
 	TextureBuffer::~TextureBuffer()
 	{}
 
-	bool TextureBuffer::Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData)
+	bool TextureBuffer::Update(CommandList* pList, uint32 startOffset, uint32 lengthInBytes, byte const* pData)
 	{
-		return m_pBuffer->Update(startOffset, lengthInBytes, pData);
+		return m_pBuffer->Update(pList, startOffset, lengthInBytes, pData);
 	}
 
 	DeviceBuffer* TextureBuffer::GetBuffer()

@@ -17,12 +17,13 @@ namespace Space
 		void MainLoop();
 		void Update();
 		CommandList* RenderOneFrame();
-		int ExecuteRender();
+		int ExecuteRender(CommandList* pList);
 
 		std::unique_ptr<RenderSystem> m_pRenderSys = nullptr;
 		std::unique_ptr<RenderWindow> m_pRenderWindow = nullptr;
 		std::unique_ptr<RenderTarget> m_pRenderTarget = nullptr;
-		std::unique_ptr<CommandList> m_pGraphicCommandList = nullptr;
+		std::unique_ptr<CommandList> m_pFrontCommandList = nullptr;
+		std::unique_ptr<CommandList> m_pBackCommandList = nullptr;
 		std::unique_ptr<MeshMaterialRenderer> m_pSimpleRenderer = nullptr;
 		std::unique_ptr<Mesh> m_pMesh = nullptr;
 		std::unique_ptr<Material> m_pMaterial = nullptr;

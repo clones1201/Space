@@ -16,6 +16,7 @@ namespace Space
 		static D3D11CommandList* Create(D3D11DevicePtr device);
 		
 		CComPtr<ID3D11CommandList> GetList() const;
+		CComPtr<ID3D11DeviceContext> GetContext() const;
 
 		virtual void ClearDepth(DepthStencilView* pDepth, float depth);
 		virtual void ClearStencil(DepthStencilView* pStencil, uint8 stencil);
@@ -35,6 +36,7 @@ namespace Space
 		virtual void DrawIndexed(uint startIndex, uint numPrimitive);
 		virtual void DrawIndexedInstanced(
 			uint startIndex, uint numPrimitive, uint startInstance, uint numInstance);
+
 	protected:		
 
 	private:

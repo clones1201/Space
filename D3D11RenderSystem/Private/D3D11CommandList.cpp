@@ -33,6 +33,11 @@ namespace Space
 		return m_pCommandList;
 	}
 
+	CComPtr<ID3D11DeviceContext> D3D11CommandList::GetContext() const
+	{
+		return m_pDeferredContext;
+	}
+
 	void D3D11CommandList::ClearDepth(
 		DepthStencilView* pDepth, float depth)
 	{

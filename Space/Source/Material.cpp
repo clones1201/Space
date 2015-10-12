@@ -451,7 +451,7 @@ namespace Space
 		return m_BlendMode;
 	}
 
-	Shader* Material::GetShader()
+	Shader* Material::GetShader(CommandList* pList)
 	{
 		Matrix world = LoadFloat4x4(&m_World);
 		Matrix view = LoadFloat4x4(&m_View);
@@ -465,7 +465,7 @@ namespace Space
 		StoreFloat4x4(&variables._PCT, projection);
 		m_CommonVariablesBuffer->Update(0, sizeof(CommonVariables),
 			(byte const*)&variables);
-		m_CommonVariablesBuffer->UpdateToDevice();
+		m_CommonVariablesBuffer->UpdateToDevice(pList);
 
 		SelectShader();
 

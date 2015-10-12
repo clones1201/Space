@@ -13,7 +13,7 @@ namespace Space
 	public:
 		static D3D11DeviceBuffer* Create(D3D11DevicePtr device, BufferType type, ResourceUsage usage, byte const* initialData, uint32 lengthInBytes);
 				
-		virtual bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData);
+		virtual bool Update(CommandList* pList, uint32 startOffset, uint32 lengthInBytes, byte const* pData);
 
 		CComPtr<ID3D11Buffer> GetRawBuffer() const;
 	protected:

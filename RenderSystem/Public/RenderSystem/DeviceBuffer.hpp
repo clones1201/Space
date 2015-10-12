@@ -25,7 +25,7 @@ namespace Space
 		{
 			return m_Type;
 		}
-		virtual bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData) = 0;
+		virtual bool Update(CommandList* pList, uint32 startOffset, uint32 lengthInBytes, byte const* pData) = 0;
 	
 	protected:
 		DeviceBuffer(BufferType type, ResourceUsage usage, uint32 lengthInBytes);
@@ -45,7 +45,7 @@ namespace Space
 			RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes,
 			uint stride);
 
-		bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData);
+		bool Update(CommandList* pList, uint32 startOffset, uint32 lengthInBytes, byte const* pData);
 
 		inline uint GetStride() const
 		{
@@ -91,7 +91,7 @@ namespace Space
 			RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes,
 			DataFormat format);
 
-		bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData);
+		bool Update(CommandList* pList, uint32 startOffset, uint32 lengthInBytes, byte const* pData);
 
 
 		inline DataFormat GetFormat() const
@@ -136,7 +136,7 @@ namespace Space
 
 		static ConstantBuffer* Create(RenderSystem* pRenderSys, byte const* initialData, uint32 lengthInBytes);
 
-		void UpdateToDevice();
+		void UpdateToDevice(CommandList* pList);
 		bool Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData);		
 		inline byte const* GetBufferPointer() const
 		{
@@ -173,7 +173,7 @@ namespace Space
 
 		uint32 GetSizeOfElement() const;
 		uint32 GetElementCount() const;
-		bool Update(uint32 index, uint32 lengthInBytes, byte const* pData);
+		bool Update(CommandList* pList, uint32 index, uint32 lengthInBytes, byte const* pData);
 		
 		DeviceBuffer* GetBuffer();	
 	protected:

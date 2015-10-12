@@ -1,5 +1,6 @@
 #include "RenderSystem/D3D11Shared.hpp"
 #include "RenderSystem/D3D11DeviceBuffer.hpp"
+#include "RenderSystem/D3D11Rendering.hpp"
 
 namespace Space
 {
@@ -28,10 +29,13 @@ namespace Space
 		}
 	}
 
-	bool D3D11DeviceBuffer::Update(uint32 startOffset, uint32 lengthInBytes, byte const* pData)
+	bool D3D11DeviceBuffer::Update(CommandList* pList, uint32 startOffset, uint32 lengthInBytes, byte const* pData)
 	{
 		if (pData == nullptr)
 			return false;
+
+		assert(dynamic_cast<D3D11CommandList*>(pList) != nullptr);
+		auto pD3DCmdList = static_cast<D3D11CommandList*>(pList);
 
 		if (startOffset + lengthInBytes > m_LengthInBytes)
 			return false;
@@ -52,7 +56,7 @@ namespace Space
 			if (m_Type == BufferType::ConstantBuffer)
 				pBox = nullptr;
 
-			mDevice->GetImmediateContext()->UpdateSubresource(m_pBuffer, 0, pBox, pData, 0, 0);
+			pD3DCmdList->GetContext()->UpdateSubresource(m_pBuffer, 0, pBox, pData, 0, 0);
 
 			isSuccess = true;
 		}
@@ -61,14 +65,14 @@ namespace Space
 		case ResourceUsage::Dynamic:
 		{
 			D3D11_MAPPED_SUBRESOURCE mapped;
-			hr = mDevice->GetImmediateContext()->Map(m_pBuffer, 0, D3D11_MAP_WRITE, 0, &mapped);
+			hr = pD3DCmdList->GetContext()->Map(m_pBuffer, 0, D3D11_MAP_WRITE, 0, &mapped);
 			if (SUCCEEDED(hr))
 			{
 				auto error = memcpy_s((byte*)mapped.pData + startOffset, m_LengthInBytes, pData, lengthInBytes);
 
 				if (error == 0) isSuccess = true;
 
-				mDevice->GetImmediateContext()->Unmap(m_pBuffer, 0);
+				pD3DCmdList->GetContext()->Unmap(m_pBuffer, 0);
 			}
 		}
 		break;
