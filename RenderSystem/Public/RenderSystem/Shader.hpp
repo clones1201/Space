@@ -20,13 +20,13 @@ namespace Space
 		void SetShaderResource(uint slots, ShaderResource* resource);
 
 		// get the max number of the slot
-		inline int32 GetConstantBufferCount() const
+		inline size_t GetConstantBufferCount() const
 		{
 			assert(m_MaxCBSlot >= 0);
 			return m_MaxCBSlot + 1;
 		}
 		// get the max number of the slot
-		inline int32 GetShaderResourceCount() const
+		inline size_t GetShaderResourceCount() const
 		{
 			assert(m_MaxSRSlot >= 0);
 			return m_MaxSRSlot + 1;
@@ -39,7 +39,7 @@ namespace Space
 		{
 			return m_ByteCodes.data();
 		}
-		inline uint32 GetSizeInBytes() const
+		inline size_t GetSizeInBytes() const
 		{
 			return m_ByteCodes.size();
 		}
@@ -62,7 +62,7 @@ namespace Space
 	class SPACE_RENDERSYSTEM_API VertexShader : private Interface, virtual public ShaderBase
 	{  
 	public:
-		static VertexShader* LoadBinaryFromMemory(RenderSystem* pRenderSys, byte const* byteCodes, uint32 sizeInBytes);
+		static VertexShader* LoadBinaryFromMemory(RenderSystem* pRenderSys, byte const* byteCodes, size_t sizeInBytes);
 				 
 		virtual ~VertexShader();
 	protected:		
@@ -81,7 +81,7 @@ namespace Space
 	class SPACE_RENDERSYSTEM_API PixelShader : private Interface, virtual public ShaderBase
 	{
 	public:
-		static PixelShader* LoadBinaryFromMemory(RenderSystem* pRenderSys, byte const* byteCodes, uint32 sizeInBytes);
+		static PixelShader* LoadBinaryFromMemory(RenderSystem* pRenderSys, byte const* byteCodes, size_t sizeInBytes);
 				 
 		virtual ~PixelShader();
 	protected:

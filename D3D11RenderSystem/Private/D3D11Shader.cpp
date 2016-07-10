@@ -34,7 +34,7 @@ namespace Space
 
 	D3D11VertexShader* D3D11VertexShader::LoadBinaryFromMemory(
 		D3D11DevicePtr device,
-		byte const* byteCodes, uint32 sizeInBytes)
+		byte const* byteCodes, size_t sizeInBytes)
 	{
 		TRY_CATCH_LOG(
 			return new D3D11VertexShader(device, byteCodes, sizeInBytes),
@@ -43,7 +43,7 @@ namespace Space
 	}
 
 	D3D11PixelShader::D3D11PixelShader(
-		D3D11DevicePtr device, byte const* byteCodes, uint32 sizeInBytes)
+		D3D11DevicePtr device, byte const* byteCodes, size_t sizeInBytes)
 		: mDevice(device){
 
 		m_ByteCodes = std::vector<byte>(byteCodes, byteCodes + sizeInBytes);

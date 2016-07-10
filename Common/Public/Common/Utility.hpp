@@ -143,7 +143,7 @@ namespace Space
 	class SPACE_COMMON_API PropertyManager
 	{
 	public:
-		inline int GetPropertyCount() const
+		inline size_t GetPropertyCount() const
 		{
 			assert(m_Properties.size() >= 0);
 			return m_Properties.size();

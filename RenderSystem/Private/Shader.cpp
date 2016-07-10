@@ -51,7 +51,7 @@ namespace Space
 	/* VertexShader implement */
 
 	VertexShader* VertexShader::LoadBinaryFromMemory(RenderSystem* pRenderSys,
-		byte const* byteCodes, uint32 sizeInBytes)
+		byte const* byteCodes, size_t sizeInBytes)
 	{
 		return pRenderSys->LoadVertexShaderFromMemory(byteCodes, sizeInBytes);
 	}
@@ -63,7 +63,7 @@ namespace Space
 	{}
 
 	PixelShader* PixelShader::LoadBinaryFromMemory(RenderSystem* pRenderSys,
-		byte const* byteCodes, uint32 sizeInBytes)
+		byte const* byteCodes, size_t sizeInBytes)
 	{
 		return pRenderSys->LoadPixelShaderFromMemory(byteCodes, sizeInBytes);
 	}

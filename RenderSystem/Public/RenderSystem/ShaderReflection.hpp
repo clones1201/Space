@@ -16,15 +16,15 @@ namespace Space
 	public:
 		virtual ~ShaderReflection();
 
-		inline uint32 GetConstantBufferCount() const
+		inline size_t GetConstantBufferCount() const
 		{
 			return m_ConstBuffers.size();
 		}
-		inline uint32 GetBindResourceCount() const
+		inline size_t GetBindResourceCount() const
 		{
 			return m_Resources.size();
 		}
-		inline uint32 GetInstructionCount() const
+		inline size_t GetInstructionCount() const
 		{
 			return m_InstructionCount;
 		}
@@ -190,11 +190,11 @@ namespace Space
 		{
 			return m_StartOffset;
 		}
-		uint32 GetSizeInBytes() const
+		size_t GetSizeInBytes() const
 		{
 			return m_Size;
 		}
-		inline uint32 GetMemberCount() const
+		inline size_t GetMemberCount() const
 		{
 			return m_Members.size();
 		}
@@ -210,12 +210,12 @@ namespace Space
 		}
 
 		/* for matrices, 1 for other numeric, 0 if not applicable */
-		inline uint32 GetColumnsCount() const
+		inline size_t GetColumnsCount() const
 		{
 			return m_Columns;
 		}
 		/* for vectors & matrices, 1 for other numeric, 0 if not applicable */
-		inline uint32 GetRowsCount() const
+		inline size_t GetRowsCount() const
 		{
 			return m_Rows;
 		}
@@ -256,12 +256,12 @@ namespace Space
 		ShaderReflectionVariable* const pParentVariable;
 		std::vector<TypeTrait<ShaderReflectionVariable>::Ptr> m_Members;
 		Name m_Name;
-		uint32 m_StartOffset;
-		uint32 m_Size = 0;
+		size_t m_StartOffset;
+		size_t m_Size = 0;
 		ShaderVariableClass m_Class;
 		ShaderVariableType m_Type;
-		uint32 m_Columns;
-		uint32 m_Rows;
+		size_t m_Columns;
+		size_t m_Rows;
 	};
 
 	enum class SPACE_RENDERSYSTEM_API ResourceReturnType : uint8

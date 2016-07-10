@@ -86,14 +86,14 @@ namespace Space
 	}
 
 	VertexShader* D3D11RenderSystem::LoadVertexShaderFromMemory(
-		byte const* byteCodes, uint32 sizeInBytes) throw()
+		byte const* byteCodes, size_t sizeInBytes) throw()
 	{
 		return D3D11VertexShader::LoadBinaryFromMemory(mDevice,
 			byteCodes, sizeInBytes);
 	}
 
 	PixelShader* D3D11RenderSystem::LoadPixelShaderFromMemory(
-		byte const* byteCodes, uint32 sizeInBytes) throw()
+		byte const* byteCodes, size_t sizeInBytes) throw()
 	{
 		return D3D11PixelShader::LoadBinaryFromMemory(mDevice, 
 			byteCodes, sizeInBytes);
