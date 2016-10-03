@@ -1,0 +1,205 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGUID>{F83D0942-266A-3B0B-BCEF-40934760EB14}</ProjectGUID>
+    <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>Space</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+    <PropertyGroup>
+      <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+      <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\clone\Code\GitHub\Space\Binary\Debug\</OutDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Space.dir\Debug\</IntDir>
+      <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Space</TargetName>
+      <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
+      <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+      <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+      <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\clone\Code\GitHub\Space\Binary\Release\</OutDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Space.dir\Release\</IntDir>
+      <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Space</TargetName>
+      <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
+      <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+      <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\clone\Code\GitHub\Space\Space\Public;C:\Users\clone\Libs\DirectXTK\Inc;C:\Users\clone\Libs\assimp-master\include;C:\Users\clone\Libs\rapidjson-master\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Debug/</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4251</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_UNICODE;UNICODE;SPACE_EXPORTS;NOMINMAX;SPACE_GAME;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_UNICODE;UNICODE;SPACE_EXPORTS;NOMINMAX;SPACE_GAME;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\clone\Code\GitHub\Space\Space\Public;C:\Users\clone\Libs\DirectXTK\Inc;C:\Users\clone\Libs\assimp-master\include;C:\Users\clone\Libs\rapidjson-master\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\clone\Code\GitHub\Space\Space\Public;C:\Users\clone\Libs\DirectXTK\Inc;C:\Users\clone\Libs\assimp-master\include;C:\Users\clone\Libs\rapidjson-master\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalOptions> /machine:x64 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;..\Binary\Debug\Common.lib;..\Binary\Debug\RenderSystem.lib;..\Binary\Debug\D3D11RenderSystem.lib;C:\Users\clone\Libs\DirectXTK\Bin\Desktop_2015\x64\Debug\DirectXTK.lib;C:\Users\clone\Libs\assimp-master\lib\Debug\assimp-vc140-mtd.lib;d3d11.lib;dxgi.lib;d3dcompiler.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>Debug</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/Users/clone/Code/GitHub/Space/Binary/Debug/Space.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/Users/clone/Code/GitHub/Space/Binary/Debug/Space.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+      <Version></Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\clone\Code\GitHub\Space\Space\Public;C:\Users\clone\Libs\DirectXTK\Inc;C:\Users\clone\Libs\assimp-master\include;C:\Users\clone\Libs\rapidjson-master\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Release/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DisableSpecificWarnings>4251</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_UNICODE;UNICODE;SPACE_EXPORTS;NOMINMAX;SPACE_GAME;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat></DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_UNICODE;UNICODE;SPACE_EXPORTS;NOMINMAX;SPACE_GAME;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\clone\Code\GitHub\Space\Space\Public;C:\Users\clone\Libs\DirectXTK\Inc;C:\Users\clone\Libs\assimp-master\include;C:\Users\clone\Libs\rapidjson-master\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\clone\Code\GitHub\Space\Space\Public;C:\Users\clone\Libs\DirectXTK\Inc;C:\Users\clone\Libs\assimp-master\include;C:\Users\clone\Libs\rapidjson-master\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalOptions> /machine:x64 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;..\Binary\Release\Common.lib;..\Binary\Release\RenderSystem.lib;..\Binary\Release\D3D11RenderSystem.lib;C:\Users\clone\Libs\DirectXTK\Bin\Desktop_2015\x64\Release\DirectXTK.lib;C:\Users\clone\Libs\assimp-master\lib\Release\assimp-vc140-mt.lib;d3d11.lib;dxgi.lib;d3dcompiler.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>No</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/Users/clone/Code/GitHub/Space/Binary/Release/Space.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/Users/clone/Code/GitHub/Space/Binary/Release/Space.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+      <Version></Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\clone\Code\GitHub\Space\Space\CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/clone/Code/GitHub/Space/Space/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -HC:/Users/clone/Code/GitHub/Space -BC:/Users/clone/Code/GitHub/Space --check-stamp-file C:\Users\clone\Code\GitHub\Space\Space\CMakeFiles\generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/clone/Code/GitHub/Space/Space/CMakeLists.txt;C:\Users\clone\Code\GitHub\Space\Space\CMakeLists.txt;C:\Users\clone\Code\GitHub\Space\Space\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\clone\Code\GitHub\Space\Space\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/clone/Code/GitHub/Space/Space/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -HC:/Users/clone/Code/GitHub/Space -BC:/Users/clone/Code/GitHub/Space --check-stamp-file C:\Users\clone\Code\GitHub\Space\Space\CMakeFiles\generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/clone/Code/GitHub/Space/Space/CMakeLists.txt;C:\Users\clone\Code\GitHub\Space\Space\CMakeLists.txt;C:\Users\clone\Code\GitHub\Space\Space\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\clone\Code\GitHub\Space\Space\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\clone\Code\GitHub\Space\Space\Public\Space\Game.hpp" />
+    <ClInclude Include="C:\Users\clone\Code\GitHub\Space\Space\Public\Space\Material.hpp" />
+    <ClInclude Include="C:\Users\clone\Code\GitHub\Space\Space\Public\Space\Mesh.hpp" />
+    <ClInclude Include="C:\Users\clone\Code\GitHub\Space\Space\Public\Space\Prerequisites.hpp" />
+    <ClInclude Include="C:\Users\clone\Code\GitHub\Space\Space\Public\Space\Renderer.hpp" />
+    <ClInclude Include="C:\Users\clone\Code\GitHub\Space\Space\Public\Space\Scene.hpp" />
+    <ClInclude Include="C:\Users\clone\Code\GitHub\Space\Space\Public\Space\Space.hpp" />
+    <ClCompile Include="C:\Users\clone\Code\GitHub\Space\Space\Source\Space\Material.cpp"  />
+    <ClCompile Include="C:\Users\clone\Code\GitHub\Space\Space\Source\Space\Mesh.cpp"  />
+    <ClCompile Include="C:\Users\clone\Code\GitHub\Space\Space\Source\Space\Renderer.cpp"  />
+    <ClCompile Include="C:\Users\clone\Code\GitHub\Space\Space\Source\Space\Scene.cpp"  />
+    <ClCompile Include="C:\Users\clone\Code\GitHub\Space\Space\Source\Space\Space.cpp"  />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:/Users/clone/Code/GitHub/Space/ZERO_CHECK.vcxproj">
+      <Project>B0780712-DB76-337B-9A74-D04EDB7C9849</Project>
+    </ProjectReference>
+    <ProjectReference Include="C:/Users/clone/Code/GitHub/Space/Space/Common.vcxproj">
+      <Project>D1C968A8-B97F-3D09-A5E7-CD48A42B50CB</Project>
+    </ProjectReference>
+    <ProjectReference Include="C:/Users/clone/Code/GitHub/Space/Space/D3D11RenderSystem.vcxproj">
+      <Project>A0D19725-C942-3822-9BB8-9317A4F94DEA</Project>
+    </ProjectReference>
+    <ProjectReference Include="C:/Users/clone/Code/GitHub/Space/Space/RenderSystem.vcxproj">
+      <Project>ED874386-59C7-3D51-A237-95595298D461</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

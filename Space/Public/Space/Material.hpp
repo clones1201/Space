@@ -301,6 +301,8 @@ namespace Space
 
 		std::unordered_map<Name, std::unique_ptr<Shader>, Name::Hasher> m_Shaders;
 		std::unordered_map<StaticParameterSet, Shader*, StaticParameterSet::Hasher> m_ShaderMap;
+
+		PipelineStatePtr m_pPipelineState = nullptr;
 	};
 
 	typedef std::shared_ptr<Material> MaterialPtr;

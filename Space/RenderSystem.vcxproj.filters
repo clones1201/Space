@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\clone\Code\GitHub\Space\Space\Source\RenderSystem\DeviceResource.cpp">
+      <Filter>RenderSystem\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\clone\Code\GitHub\Space\Space\Source\RenderSystem\InputLayout.cpp">
+      <Filter>RenderSystem\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\clone\Code\GitHub\Space\Space\Source\RenderSystem\RenderSystem.cpp">
+      <Filter>RenderSystem\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\clone\Code\GitHub\Space\Space\Source\RenderSystem\Rendering.cpp">
+      <Filter>RenderSystem\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\clone\Code\GitHub\Space\Space\Source\RenderSystem\ResourceView.cpp">
+      <Filter>RenderSystem\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\clone\Code\GitHub\Space\Space\Source\RenderSystem\Shader.cpp">
+      <Filter>RenderSystem\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\clone\Code\GitHub\Space\Space\Source\RenderSystem\ShaderReflection.cpp">
+      <Filter>RenderSystem\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\clone\Code\GitHub\Space\Space\Source\RenderSystem\Shared.cpp">
+      <Filter>RenderSystem\Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\clone\Code\GitHub\Space\Space\Public\Common\Basic.hpp">
+      <Filter>Common\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\clone\Code\GitHub\Space\Space\Public\Common\Common.hpp">
+      <Filter>Common\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\clone\Code\GitHub\Space\Space\Public\Common\ConfigReader.h">
+      <Filter>Common\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\clone\Code\GitHub\Space\Space\Public\Common\Core.hpp">
+      <Filter>Common\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\clone\Code\GitHub\Space\Space\Public\Common\Log.h">
+      <Filter>Common\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\clone\Code\GitHub\Space\Space\Public\Common\Math.hpp">
+      <Filter>Common\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\clone\Code\GitHub\Space\Space\Public\Common\Prerequisites.hpp">
+      <Filter>Common\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\clone\Code\GitHub\Space\Space\Public\Common\Utility.hpp">
+      <Filter>Common\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\clone\Code\GitHub\Space\Space\Public\Common\Window.hpp">
+      <Filter>Common\Header</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\clone\Code\GitHub\Space\Space\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="RenderSystem\Source">
+      <UniqueIdentifier>{1E02701E-74C4-30E0-A9D8-49B341D4BEB9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Header">
+      <UniqueIdentifier>{F21BD00B-7FC5-3490-9D02-A602E62AAEB3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{FA9C6D11-9458-3435-B6BE-77AC80491912}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderSystem">
+      <UniqueIdentifier>{8A1B12C4-9667-38ED-B829-B57ADE5710D1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

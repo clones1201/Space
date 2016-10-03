@@ -2,7 +2,7 @@
 #define __SPACE_SCENE_HPP__
 
 #include "Prerequisites.hpp"
-#include "GameObject.hpp"
+#include "Game.hpp"
 
 namespace Space
 { 

@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\clone\Code\GitHub\Space\Space\Source\Space\Material.cpp">
+      <Filter>Space\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\clone\Code\GitHub\Space\Space\Source\Space\Mesh.cpp">
+      <Filter>Space\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\clone\Code\GitHub\Space\Space\Source\Space\Renderer.cpp">
+      <Filter>Space\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\clone\Code\GitHub\Space\Space\Source\Space\Scene.cpp">
+      <Filter>Space\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\clone\Code\GitHub\Space\Space\Source\Space\Space.cpp">
+      <Filter>Space\Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\clone\Code\GitHub\Space\Space\Public\Space\Game.hpp">
+      <Filter>Space\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\clone\Code\GitHub\Space\Space\Public\Space\Material.hpp">
+      <Filter>Space\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\clone\Code\GitHub\Space\Space\Public\Space\Mesh.hpp">
+      <Filter>Space\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\clone\Code\GitHub\Space\Space\Public\Space\Prerequisites.hpp">
+      <Filter>Space\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\clone\Code\GitHub\Space\Space\Public\Space\Renderer.hpp">
+      <Filter>Space\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\clone\Code\GitHub\Space\Space\Public\Space\Scene.hpp">
+      <Filter>Space\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\clone\Code\GitHub\Space\Space\Public\Space\Space.hpp">
+      <Filter>Space\Header</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\clone\Code\GitHub\Space\Space\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Space\Header">
+      <UniqueIdentifier>{EF43770B-CD00-3E14-BB20-A7DCF38A750B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Space\Source">
+      <UniqueIdentifier>{35B85DE8-6CE3-3FFD-926A-6345C607E4C5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Space">
+      <UniqueIdentifier>{C45A1FB1-3676-371C-8335-E208E0596ED3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

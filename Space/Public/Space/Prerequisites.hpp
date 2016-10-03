@@ -7,7 +7,7 @@ extern "C" void * __cdecl memset(void *, int, size_t);
 
 #include "Common/Common.hpp"
 #include "RenderSystem/RenderSystem.hpp"
-#include "RenderSystem/D3D11RenderSystem.hpp"
+#include "D3D11RenderSystem/D3D11RenderSystem.hpp"
 
 #ifdef SPACE_EXPORTS
 #define SPACE_API __declspec(dllexport)

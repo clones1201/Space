@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+
+<Type Name="Space::Name">
+	<DisplayString Condition="m_impl._Ptr != 0">[count {m_impl._Rep->_Uses}] {{{*(m_impl._Ptr->pStr._Myptr)}}}</DisplayString>
+	<DisplayString Condition="m_impl._Ptr == 0">corrupted</DisplayString>
+</Type>
+
+  <Type Name="Space::StaticBoolParameter">
+    <DisplayString
+      Condition="m_Bit == -1">NULL</DisplayString>        
+    <DisplayString Condition="m_Bit != -1 &amp;&amp; ((pSet.m_Bits >> m_Bit) &amp; 0x00000001) == 1">true</DisplayString>
+    <DisplayString Condition="m_Bit != -1 &amp;&amp; ((pSet.m_Bits >> m_Bit) &amp; 0x00000001) == 0">false</DisplayString>
+  </Type>
+  <Type Name="Space::StaticMaskParameter">
+    <DisplayString
+      Condition="m_Bit == -1">NULL</DisplayString>
+    <DisplayString Condition="m_Bit != -1 &amp;&amp; ((pSet.m_Bits >> m_Bit) &amp; 0x00000001) == 1">true</DisplayString>
+    <DisplayString Condition="m_Bit != -1 &amp;&amp; ((pSet.m_Bits >> m_Bit) &amp; 0x00000001) == 0">false</DisplayString>
+  </Type>
+</AutoVisualizer>

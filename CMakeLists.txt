@@ -26,9 +26,6 @@ if (WIN32)
    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4251")
 endif (WIN32)
 
-add_subdirectory(${PROJECT_BINARY_DIR}/Common)
-add_subdirectory(${PROJECT_BINARY_DIR}/RenderSystem)
-add_subdirectory(${PROJECT_BINARY_DIR}/D3D11RenderSystem)
 add_subdirectory(${PROJECT_BINARY_DIR}/Space)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
