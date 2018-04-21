@@ -81,4 +81,10 @@ namespace Space
 #define SPACE_COMMON_API __declspec(dllimport)
 #endif
 
+#ifdef WIN32
+#define ALIGNED_ALLOCATED __declspec(align(32))
+#elif defined GCC
+#define ALIGNED_ALLOCATED __attribute__(aligned(16))
+#endif
+
 #endif

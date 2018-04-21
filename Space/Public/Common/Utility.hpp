@@ -3,6 +3,7 @@
 
 #include "Common/Prerequisites.hpp" 
 #include "Common/Basic.hpp"
+#include "Common/RenderCommon.hpp"
 
 namespace Space
 {
@@ -79,7 +80,7 @@ namespace Space
 #	define ALIGNMENT 16
 #endif
 
-	SPACE_COMMON_API int32 Alignment(int32 n);
+	SPACE_COMMON_API size_t Alignment(size_t n);
 	
 	class SPACE_COMMON_API Name
 	{
@@ -375,6 +376,33 @@ namespace Space
 		return Pi * (deg / 180.0);
 	}
 
+	inline long double operator""_rad(long double rad)
+	{
+		return 180.0 * (rad / Pi);
+	}
+
+	namespace Render {
+		enum class SPACE_COMMON_API ElementClass : uint8
+		{
+			PerVertex, PerInstance
+		};
+		struct InputElement
+		{
+			VertexElemType Type;
+			ElemSemantic Semantic;
+			uint32 SemanticIdx;
+			uint32 InputSlot;
+			ElementClass ElemClass;
+			uint32 InstanceStep;
+			uint32 AlignedByteOffset; //leave this field 0, will be calculated
+		};
+
+		typedef std::vector<InputElement> ElementArray;
+		SPACE_COMMON_API size_t GetFormatSize(DataFormat format);
+		SPACE_COMMON_API size_t GetElementSize(VertexElemType type);
+
+		SPACE_COMMON_API char const* GetSemanticName(ElemSemantic semantic);
+	}
 }
 
 #endif

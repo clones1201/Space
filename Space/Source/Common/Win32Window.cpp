@@ -5,6 +5,10 @@
 namespace Space
 {
 
+	Win32Window::Win32Window(std::string const& name, int32 width, int32 height, bool fullscreen)
+		:Win32Window(str2wstr(name), width, height, fullscreen)
+	{}
+
 	Win32Window::Win32Window(std::wstring const& name, int32 width, int32 height, bool fullscreen)
 		:Window(name, width, height, fullscreen)
 	{
@@ -105,6 +109,20 @@ namespace Space
 
 		case WM_DESTROY:
 			PostQuitMessage(0);
+			break;
+		case WM_LBUTTONDOWN:
+		{
+			auto x = GET_X_LPARAM(lParam);
+			auto y = GET_Y_LPARAM(lParam);
+			m_EventDispatcher->RaiseMouseDownEvent(
+				MouseEventArgs{
+				x,y,0,
+				(MK_LBUTTON == (MK_LBUTTON & wParam)),
+				(MK_RBUTTON == (MK_RBUTTON & wParam)),
+				(MK_MBUTTON == (MK_MBUTTON & wParam)) }
+			); 
+		}break;
+		case WM_LBUTTONUP:
 			break;
 		case WM_MOUSEMOVE:
 		{

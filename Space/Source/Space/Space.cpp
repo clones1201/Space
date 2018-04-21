@@ -1,32 +1,108 @@
 #include "Space/Space.hpp"
 
+#include "Common/Utility.hpp"
 
+#include "RenderSystem/RenderSystem.hpp"
+#include "RenderSystem/RenderTarget.hpp"
+#include "RenderSystem/Rendering.hpp"
+#include "RenderSystem/Material.hpp"
+#include "RenderSystem/Renderer.hpp"
 namespace Space
 {
+	using namespace Render;
+
+	struct PerFrameData
+	{
+		Float4x4 View;
+		Float4x4 Projection;
+	} ALIGNED_ALLOCATED;
+
+	struct PerObjectData
+	{
+		Float4x4 World;
+	} ALIGNED_ALLOCATED;
+
 	SimpleGame::SimpleGame()
 	{
-		m_pRenderSys.reset(
-			D3D11RenderSystem::Create());
-		m_pFrontCommandList.reset(
-			m_pRenderSys->CreateCommandList());
-		m_pBackCommandList.reset(
-			m_pRenderSys->CreateCommandList());
+		renderer = std::make_unique<Render::Renderer>();
 
-		m_pRenderWindow.reset(
-			m_pRenderSys->CreateRenderWindow("RenderWindow", 500, 500, false));
-		m_pRenderWindow->Initialize();
+		auto device = Render::Device::GetInstance();
 
-		m_pRenderTarget.reset(
-			m_pRenderSys->CreateRenderTarget(m_pRenderWindow->GetBackBuffer()));
+		m_pFrontCommandList = std::make_unique<Render::CommandList>(device);
+		m_pBackCommandList = std::make_unique<Render::CommandList>(device);
 
-		m_pMaterial.reset(Material::Create(m_pRenderSys.get(), TEXT("simplecolor")));
-		m_pMesh.reset(Mesh::CreateFromFBX(m_pRenderSys.get(), TEXT("bunny.fbx")));
+		m_pRenderWindow = std::make_unique<Render::RenderWindow>(
+			device,
+			"RenderWindow", 500, 500, false);
 
-		m_pSimpleRenderer.reset(
-			MeshMaterialRenderer::Create(m_pRenderSys.get()));
-		m_pSimpleRenderer->SetRenderTarget(m_pRenderTarget.get());
-  		m_pSimpleRenderer->SetMaterial(m_pMaterial.get());
+		auto pBackBuffer = m_pRenderWindow->GetBackBuffer();
+		m_pRenderTarget = std::make_unique<Render::RenderTarget>(
+			device,
+			pBackBuffer);
+		_Width = pBackBuffer->GetWidth();
+		_Height = pBackBuffer->GetHeight();
+		m_pDepthBuffer = std::make_unique<Render::Texture2D>(device, _Width , _Height, 1,
+			DataFormat::D24_UNORM_S8_UINT, ResourceUsage::Default, ResourceBindFlag::DepthStencil);
+		m_pDepthStencilView = std::make_unique<Render::DepthStencilView>(device, m_pDepthBuffer.get());
 
+		m_pRenderWindow->Show();
+
+		m_pPipelineState.reset(new Render::PipelineState(device));
+		m_pPipelineState->_SetRasterizerState();	
+		m_pPipelineState->_SetBlendState();	
+		m_pPipelineState->_SetDepthStencilState();
+
+		std::ifstream shaderfile("./Assets/Material/default/Shader0.hlsl");
+		auto shaderCode = std::make_shared<std::string>((std::istreambuf_iterator<char>(shaderfile)),
+			std::istreambuf_iterator<char>());
+
+		auto macros = std::make_shared<Render::ShaderMacro>();
+		macros->DefineBool("TRUE", true);
+		macros->DefineBool("FALSE", false);
+		macros->DefineFloat("MACRO_TEST_FLOAT", 3.1415926f);
+		macros->DefineFloat("MACRO_TEST_INT", 42);
+
+		Render::ShaderSource vs_source = 
+		{
+			"Assets/Material/default/Shader0.hlsl",
+			"5_0",
+			"MainVS",
+			macros,
+			shaderCode
+		};
+		
+		Render::ShaderSource ps_source =
+		{
+			"Assets/Material/default/Shader0.hlsl",
+			"5_0",
+			"MainPS",
+			macros,
+			shaderCode
+		};
+
+		_vs.reset(new Render::VertexShader(vs_source));
+		_ps.reset(new Render::PixelShader(ps_source));
+		_mesh.reset(Space::Mesh::CreateCube(1.0f, 1.0f, 1.0f));
+
+		Render::InputLayout const* layout = (*_mesh->Begin())->GetInputLayout();
+		m_pPipelineState->SetInputLayout(layout->Data(),layout->Size());
+
+		_PerFrameData.reset(new Render::ConstantBuffer(sizeof(PerFrameData), nullptr));
+		_PerObjectData.reset(new Render::ConstantBuffer(sizeof(PerObjectData), nullptr));
+		
+		Matrix projection = MatrixPerspectiveFovLH(Pi / 4.0f, 1.0f, 0.1f, 100.0f);
+		projection = MatrixTranspose(projection);
+		_PerFrameData->Update(m_pFrontCommandList.get(), sizeof(Float4x4), sizeof(Float4x4),
+			reinterpret_cast<byte const*>(&projection));
+		
+		m_pFrontCommandList->GetContext()->Flush();
+		std::vector<D3D11RenderTarget*> targets =
+		{
+			m_pRenderTarget.get()
+		};
+		m_pFrontCommandList->SetRenderTargets(
+			targets, m_pDepthStencilView.get()
+		);
 	}
 
 	SimpleGame::~SimpleGame()
@@ -49,92 +125,94 @@ namespace Space
 		while(true)
 		{			
 #endif
-			MainLoop();
+			Logic();
+			Update();
+			Render();
 		}
 	}
-
-	void SimpleGame::MainLoop()
+	
+	void SimpleGame::Render()
 	{
-		m_CmdList = std::async(std::launch::async,
-			[this] { return this->RenderOneFrame(); }
-		);
-		Update();
-		
-		if(m_RenderAction.valid())
-			m_RenderAction.get();
-		
-		CommandList* pList = m_CmdList.get();
-		std::swap(m_pFrontCommandList,m_pBackCommandList);
-
-		m_RenderAction = std::async(std::launch::async, 
-			[this,pList] { return this->ExecuteRender(pList); });
-	}
-
-	int SimpleGame::ExecuteRender(CommandList* pList){		
-		m_pRenderSys->ExecuteCommandList(pList);
-		m_pRenderWindow->Present();
-		return 1;
-	}
-
-	CommandList* SimpleGame::RenderOneFrame()
-	{
-		RenderTarget* targets[] = 
-		{
-			m_pSimpleRenderer->GetRenderTarget()
-		};
-		m_pFrontCommandList->SetRenderTargets(
-			targets,1,nullptr
-			);
-
 		m_pFrontCommandList->ClearRenderTargetView(
 			m_pRenderTarget.get(),
 			Float4{ 0.12f, 0.15f, 0.55f, 1.0f });
+		m_pFrontCommandList->ClearDepth(m_pDepthStencilView.get(), 1.0);
+		m_pFrontCommandList->ClearStencil(m_pDepthStencilView.get(), 0);
 
-		m_pSimpleRenderer->Render(m_pFrontCommandList.get(),m_pMesh.get());
+		m_pFrontCommandList->SetPipelineState(m_pPipelineState.get());
+		
+		Render::ViewPort viewports[] = {
+			{0.0, 0.0, _Width, _Height, 0.0, 1.0 }
+		};
+		m_pFrontCommandList->SetViewPorts(viewports, 1);
+		
+		m_pFrontCommandList->SetVertexShader(_vs.get());
+		m_pFrontCommandList->SetPixelShader(_ps.get());
+		ID3D11Buffer* buffers[] = {
+			_PerFrameData->GetBuffer()->GetRawPtr().p, _PerObjectData->GetBuffer()->GetRawPtr().p
+		};
+		m_pFrontCommandList->GetContext()->VSSetConstantBuffers(0, 2, buffers);
+		//m_pFrontCommandList->SetVertexShader();
+		//m_pSimpleRenderer->Render(m_pFrontCommandList.get(),m_pMesh.get());
+		for(auto part = _mesh->Begin(); part != _mesh->End(); ++part)
+		{
+			m_pFrontCommandList->DrawPrimitives(
+				*(*part)->GetVertexBuffer(),
+				*(*part)->GetIndexBuffer(),
+				0, (*part)->GetNumPrimitives()
+			);
+		}
 
 		m_pFrontCommandList->Close();
-		return m_pFrontCommandList.get();
-	}
+		
+		auto device = Render::Device::GetInstance();
+		device->GetImmediateContext()->ExecuteCommandList(m_pFrontCommandList->GetList(), false);
 
-	void SimpleGame::Close()
-	{
+		m_pRenderWindow->Present();
 	}
 
 	void SimpleGame::Update()
-	{ 
-		Float4x4 world;
-		Float4x4 view;
-		Float4x4 project;
+	{
+		PerFrameData perFrameData;
+		PerObjectData perObjectData;
 
 		static uint count = 0;
 		count = (count + 1) % 360;
 		Matrix mWorld = MatrixTranslation(0.0f, 0.0f, 0.0f);
 		Vector lookAt = VectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 		Vector eye = VectorSet(
-			10.0f,// * std::sin(count / 360.0f),
+			50.0f * std::sin(2 * Pi * (count / 360.0f)),
 			0.0f,
-			10.0f,// * std::cos(count / 360.0f), 
+			50.0f * std::cos(2 * Pi * (count / 360.0f)), 
 			1.0f);
-		Matrix mView = MatrixLookToLH(
-			eye, 
-			lookAt - eye,
+		Matrix mView = MatrixLookAtLH(
+			eye,
+			lookAt,
 			VectorSet(0.0f, 1.0f, 0.0f, 1.0f));
-		Matrix mProject = MatrixPerspectiveFovLH(
-			Pi / 3.0f,
-			m_pRenderTarget->GetWidth() / (float)m_pRenderTarget->GetHeight(),
-			0.1f,1000.0f);
-		
-		StoreFloat4x4(&world, mWorld);
-		StoreFloat4x4(&view, mView);
-		StoreFloat4x4(&project, mProject);
 
-		m_pMaterial->SetGameTime(123.111f);
-		m_pMaterial->SetWorld(world);
-		m_pMaterial->SetView(view);
-		m_pMaterial->SetProjection(project);
+		mWorld = MatrixTranspose(mWorld);
+		mView = MatrixTranspose(mView);
 
+		StoreFloat4x4(&perObjectData.World, mWorld);
+		StoreFloat4x4(&perFrameData.View, mView);
+
+		_PerFrameData->Update(m_pFrontCommandList.get(), 0, sizeof(Float4x4),
+			reinterpret_cast<byte const*>(&perFrameData.View));
+		_PerObjectData->Update(m_pFrontCommandList.get(), 0, sizeof(Float4x4),
+			reinterpret_cast<byte const*>(&perObjectData.World));
+
+		_PerFrameData->UpdateToDevice(m_pFrontCommandList.get());
+		_PerObjectData->UpdateToDevice(m_pFrontCommandList.get());
 	}
 
+	void SimpleGame::Logic()
+	{
+		
+	}
+
+	void SimpleGame::Close()
+	{
+	}
 }
 
 #ifdef SPACE_GAME

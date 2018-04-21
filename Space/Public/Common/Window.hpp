@@ -109,8 +109,8 @@ namespace Space
 			return m_IsPressedMap.at(code);
 		}
 		
-		void RaisePressedEvent(KeyCode code);
-		void RaiseReleaseEvent(KeyCode code);
+		void RaisePressedEvent(KeyboardEventArgs code);
+		void RaiseReleaseEvent(KeyboardEventArgs code);
 	private:
 		KeyboardListener()
 			:EventListener(Type::Keyboard){}
@@ -124,10 +124,9 @@ namespace Space
 	public:
 		void AddEventListener(EventListener* listener);
 		void RemoveEventListener(EventListener* listener);
-
-
-		void RaisePressedEvent(KeyCode code);
-		void RaiseReleaseEvent(KeyCode code);
+		
+		void RaisePressedEvent(KeyboardEventArgs e);
+		void RaiseReleaseEvent(KeyboardEventArgs e);
 
 		void RaiseMouseDownEvent(MouseEventArgs e);
 		void RaiseMouseUpEvent(MouseEventArgs e);
@@ -144,7 +143,7 @@ namespace Space
 	typedef std::shared_ptr<EventDispatcher> EventDispatcherPtr;
 
 	
-	class SPACE_COMMON_API Window : public Interface
+	class SPACE_COMMON_API Window : public SharedPtrObject<Window>, public Interface
 	{
 	public:
 		static Window* Create(const std::string& name, int32 width, int32 height, bool fullscreen);
@@ -176,9 +175,6 @@ namespace Space
 		//std::function<void(*)> Resize;
 	};
 
-	typedef std::shared_ptr<Window> WindowPtr;
-
-
 #if SPACE_PLATFORM == SPACE_WIN32
 	class SPACE_COMMON_API Win32Window : public Window
 	{
@@ -195,10 +191,11 @@ namespace Space
 		}
 
 		~Win32Window();
-	private:
 		Win32Window(std::wstring const &name,
 			int32 width, int32 height, bool fullscreen);
-
+		Win32Window(std::string const&name,
+			int32 width, int32 height, bool fullscreen);
+	private:
 		LRESULT CALLBACK WndProc(
 			HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 		static LRESULT CALLBACK MessageRouter(
@@ -210,8 +207,6 @@ namespace Space
 		
 		friend class Window;
 	};
-	
-	typedef std::shared_ptr<Win32Window> Win32WindowPtr;
 #endif
 }
 

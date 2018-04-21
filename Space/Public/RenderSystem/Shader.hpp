@@ -1,160 +1,105 @@
-#ifndef __SPACE_RENDERSYSTEM_SHADER_HPP__
-#define __SPACE_RENDERSYSTEM_SHADER_HPP__
+#pragma once
 
-#include "RenderSystem/Prerequisites.hpp"
-#include "RenderSystem/Shared.hpp"
+#include "Prerequisites.hpp"
+#include "Shared.hpp"
 
-#include "RenderSystem/ShaderReflection.hpp"
+//#include "ShaderReflection.hpp"
 
 namespace Space
 {
-
-	/*class ConstantBufferMap
+	namespace Render
 	{
-	public:
+		enum ShaderClass : uint8
+		{
+			SC_VertexShader,
+			SC_GeometryShader,
+			SC_HullShader,
+			SC_DomainShader,
+			SC_PixelShader,
+			SC_ComputeShader
+		};
+
+		class ShaderSource;
+		class ShaderMacro;
+
+		namespace Details
+		{
+			template<ShaderClass shaderClass>
+			class ShaderImpl
+			{
+			public:				
+				static ShaderClass GetClass()
+				{
+					return shaderClass;
+				}
+			};
+
+			template<class RenderSystem>
+			class VertexShaderImpl : public ShaderImpl<SC_VertexShader>, public RenderSystem::VertexShader
+			{
+			public:				
+				VertexShaderImpl(ShaderSource const& source)
+					:RenderSystem::VertexShader(
+						Device::GetInstance(),
+						RenderSystem::VertexShader::Compile(source)
+					)
+				{}
+
+				VertexShaderImpl(std::vector<byte> byteCodes)
+					: RenderSystem::VertexShader(
+						Device::GetInstance(),
+						byteCodes)
+				{}
+			};
+
+			template<class RenderSystem>
+			class PixelShaderImpl : public ShaderImpl<SC_PixelShader>, public RenderSystem::PixelShader
+			{
+			public:
+				PixelShaderImpl(ShaderSource const& source)
+					:RenderSystem::PixelShader(
+						Device::GetInstance(),
+						RenderSystem::PixelShader::Compile(source)
+					)
+				{}
+
+				PixelShaderImpl(std::vector<byte> byteCodes)
+					: RenderSystem::PixelShader(
+						Device::GetInstance(),
+						byteCodes)
+				{}
+			};
+		}
+
+		class ShaderSource
+		{
+		public:
+			std::string FileName;
+			std::string Profile;
+			std::string Entry;
+			std::shared_ptr<ShaderMacro> Macros;
+			std::shared_ptr<std::string> StringSource;
+			std::vector<byte> ByteCodes;
+		};
+
+		class ShaderMacro
+		{
+		public:
+			std::unordered_map<std::string, std::string> _macros;
 		
-		static ConstantBufferMap* Create(RenderSystem* pRenderSys,std::string const& name);
+			std::string GetString() const;
+			void Undef(std::string const& name);
+			void DefineFloat(std::string const& name, float value);
+			void DefineInt(std::string const& name, int value);
+			void DefineBool(std::string const& name, bool value);
+		};
 
-		void AddVariable(std::string const& name, uint32 size, uint32 offset);
-		ShaderVariableDesc GetVariableDescByIndex(uint32 index) const;
-		ShaderVariableDesc GetVariableDescByName(std::string const& name) const;
-		bool SetVariableValue(std::string const& name, byte const* pData);
-		uint32 GetVariablesCount() const;
 
-		void Complete();
-		void Update();
-
-		std::string GetName() const;
-		bool IsComplete() const;
-		uint32 GetBufferSize() const;
-
-		~ConstantBufferMap();
-	protected:
-		ConstantBufferMap(RenderSystem* pRenderSys, std::string const& name);
-
-		std::unique_ptr<ConstantBuffer> m_pBuffer;
-
-		std::unordered_map<Name, ShaderVariableDesc> m_vLayout;
-		std::string m_Name;
-		uint32 m_Size = 0;
-		std::vector<byte> m_pRaw;
-
-		bool m_IsComplete = false;
-
-		RenderSystem* m_pRenderSystem = nullptr;
-	};*/
-	
-	enum class SPACE_RENDERSYSTEM_API ShaderStage : uint8
-	{
-		SS_VertexShader = 0,
-		SS_GeometryShader = 1,
-		SS_PixelShader = 2,
-		SS_Num = 3
-	}; 
-
-	class SPACE_RENDERSYSTEM_API ShaderBase : private Uncopyable
-	{
-	public:
-		virtual ~ShaderBase();
-
-		void ClearAllSlots();
-
-		void SetConstantBuffer(uint slots, ConstantBuffer* buffer);
-		void SetShaderResource(uint slots, ShaderResource* resource);
-
-		// get the max number of the slot
-		inline size_t GetConstantBufferCount() const
+		class Shader
 		{
-			assert(m_MaxCBSlot >= 0);
-			return m_MaxCBSlot + 1;
-		}
-		// get the max number of the slot
-		inline size_t GetShaderResourceCount() const
-		{
-			assert(m_MaxSRSlot >= 0);
-			return m_MaxSRSlot + 1;
-		}
-
-		ConstantBuffer* GetConstantBuffer(uint slot) const;
-		ShaderResource* GetShaderResource(uint slot) const;
-
-		inline byte const* GetByteCodes() const
-		{
-			return m_ByteCodes.data();
-		}
-		inline size_t GetSizeInBytes() const
-		{
-			return m_ByteCodes.size();
-		}
-
-		virtual ShaderReflection* CreateReflection() = 0;
-	protected:
-		ShaderBase();
-
-		std::vector<byte> m_ByteCodes;
-
-		typedef std::map<uint, ConstantBuffer*> ConstantBufferTable;
-		typedef std::map<uint, ShaderResource*> ShaderResourceTable;
-		ConstantBufferTable m_ConstantBufferTable;
-		ShaderResourceTable m_ShaderResourceTable;
-
-		int32 m_MaxCBSlot = 0;
-		int32 m_MaxSRSlot = 0;
-	};
-
-	class SPACE_RENDERSYSTEM_API VertexShader : private Interface, virtual public ShaderBase
-	{  
-	public:
-		static VertexShader* LoadBinaryFromMemory(RenderSystem* pRenderSys, byte const* byteCodes, size_t sizeInBytes);
-				 
-		virtual ~VertexShader();
-	protected:		
-		VertexShader();  
-	};
-	typedef std::shared_ptr<VertexShader> VertexShaderPtr;
-	/*class GeometryShader : virtual public Interface
-	{
-	public:
-
-		virtual ~GeometryShader();
-	protected:
-		GeometryShader();
-	};*/
-
-	class SPACE_RENDERSYSTEM_API PixelShader : private Interface, virtual public ShaderBase
-	{
-	public:
-		static PixelShader* LoadBinaryFromMemory(RenderSystem* pRenderSys, byte const* byteCodes, size_t sizeInBytes);
-				 
-		virtual ~PixelShader();
-	protected:
-		PixelShader(); 
-	};
-	typedef std::shared_ptr<PixelShader> PixelShaderPtr;
-
-	class SPACE_RENDERSYSTEM_API Shader : private Uncopyable
-	{
-	public:
-		static Shader* Create(RenderSystem* pRenderSys, std::string const& name);
-		static Shader* Create(RenderSystem* pRenderSys, std::wstring const& name);
-
-		void SetShaderResourcePool(ShaderResourcePool* pPool);
-
-		VertexShader* GetVertexShader() const;
-		PixelShader* GetPixelShader() const;
-
-		virtual ~Shader();
-	protected:
-		Shader(RenderSystem* pRenderSys, std::string const& name);
-
-		std::unique_ptr<VertexShader> m_pVS = nullptr;
-		std::unique_ptr<PixelShader> m_pPS = nullptr;
-
-		std::unique_ptr<ShaderReflection> m_pVSReflect = nullptr;
-		std::unique_ptr<ShaderReflection> m_pPSReflect = nullptr;
-
-		ShaderResourcePool * pResourcePool;
-	};
+		public:
+			std::shared_ptr<VertexShader> vs;
+			std::shared_ptr<PixelShader> ps;			
+		};
+	}
 }
-
-#endif

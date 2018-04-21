@@ -1,32 +1,26 @@
-#ifndef __SPACE_EFFECTS_HPP__
-#define __SPACE_EFFECTS_HPP__
+#pragma once
 
-#include "Space/Prerequisites.hpp"
+#include "Prerequisites.hpp"
 
-namespace Space
+#include "DeviceResource.hpp"
+#include "Rendering.hpp"
+#include "Shader.hpp"
+
+namespace Space { namespace Render
 {
 	class StaticParameterSet;
 
-	class SPACE_API StaticBoolParameter
+	class SPACE_RENDERSYSTEM_API StaticBoolParameter
 	{
 	public:
 		~StaticBoolParameter();
 
-		inline Name GetName() const
-		{
-			return m_Name;
-		}
-		inline void SetName(Name const& name)
-		{
-			m_Name = name;
-		}
+		inline Name GetName() const { return m_Name; }
+		inline void SetName(Name const& name) { m_Name = name; }
 		bool GetValue() const;
 		void SetValue(bool value);
 
-		inline bool operator==(StaticBoolParameter const& other) const
-		{
-			return (m_Bit == other.m_Bit) && (m_Name == other.m_Name);
-		}
+		inline bool operator==(StaticBoolParameter const& other) const { return (m_Bit == other.m_Bit) && (m_Name == other.m_Name); }
 	private:
 		StaticParameterSet* pSet;
 		Name m_Name;
@@ -40,19 +34,13 @@ namespace Space
 		friend class StaticParameterSet;
 	};
 
-	class SPACE_API StaticMaskParameter
+	class SPACE_RENDERSYSTEM_API StaticMaskParameter
 	{
 	public:
 		~StaticMaskParameter();
 
-		inline Name GetName() const
-		{
-			return m_Name;
-		}
-		inline void SetName(Name const& name)
-		{
-			m_Name = name;
-		}
+		inline Name GetName() const { return m_Name; }
+		inline void SetName(Name const& name) { m_Name = name; }
 		bool GetMaskR() const;
 		bool GetMaskG() const;
 		bool GetMaskB() const;
@@ -72,13 +60,14 @@ namespace Space
 				(m_BitA == other.m_BitA) &&
 				(m_Name == other.m_Name);
 		}
+
 	private:
 		StaticParameterSet* pSet = nullptr;
 		Name m_Name;
-		uint8 m_BitR = -1;
-		uint8 m_BitG = -1;
-		uint8 m_BitB = -1;
-		uint8 m_BitA = -1;
+		uint8 m_BitR : 1;
+		uint8 m_BitG : 1;
+		uint8 m_BitB : 1;
+		uint8 m_BitA : 1;
 		StaticMaskParameter(
 			StaticParameterSet* pSet, std::string const& name,
 			uint8 bitR, uint8 bitG, uint8 bitB, uint8 bitA);
@@ -93,7 +82,7 @@ namespace Space
 	};
 
 	/* can have 32 static switch at all or 8 static mask at all */
-	class SPACE_API StaticParameterSet
+	class SPACE_RENDERSYSTEM_API StaticParameterSet
 	{
 	public:
 		StaticParameterSet();
@@ -104,71 +93,35 @@ namespace Space
 		void Clear();
 
 		void AddSwitch(Name const& name,
-			bool defaultValue = false);
+		               bool defaultValue = false);
 		void AddMask(Name const& name,
-			bool maskR = false, bool maskG = false,
-			bool maskB = false, bool maskA = false);
+		             bool maskR = false, bool maskG = false,
+		             bool maskB = false, bool maskA = false);
 
-		inline int32 GetSwitchCount() const
-		{
-			return m_SwitchParameters.size();
-		}
-		inline int32 GetMaskCount() const
-		{
-			return m_MaskParameters.size();
-		}
+		inline size_t GetSwitchCount() const { return m_SwitchParameters.size(); }
+		inline size_t GetMaskCount() const { return m_MaskParameters.size(); }
 
 		// throw exception if no parameter has this name
-		inline StaticBoolParameter& GetSwitchByName(Name const& name)
-		{
-			return m_SwitchParameters.at(name);
-		}
+		inline StaticBoolParameter& GetSwitchByName(Name const& name) { return m_SwitchParameters.at(name); }
 		// throw exception if no parameter has this name
-		inline StaticMaskParameter& GetMaskByName(Name const& name)
-		{
-			return m_MaskParameters.at(name);
-		}
+		inline StaticMaskParameter& GetMaskByName(Name const& name) { return m_MaskParameters.at(name); }
 		typedef std::unordered_map<Name, StaticBoolParameter, Name::Hasher> SwitchSet;
 		typedef SwitchSet::iterator SwitchIterator;
 		typedef SwitchSet::const_iterator ConstSwitchIterator;
-		inline SwitchIterator SwitchBegin()
-		{
-			return m_SwitchParameters.begin();
-		}
-		inline ConstSwitchIterator CSwitchBegin() const
-		{
-			return m_SwitchParameters.cbegin();
-		}
-		inline SwitchIterator SwitchEnd()
-		{
-			return m_SwitchParameters.end();
-		}
-		inline ConstSwitchIterator CSwitchEnd() const
-		{
-			return m_SwitchParameters.cend();
-		}
+		inline SwitchIterator SwitchBegin() { return m_SwitchParameters.begin(); }
+		inline ConstSwitchIterator CSwitchBegin() const { return m_SwitchParameters.cbegin(); }
+		inline SwitchIterator SwitchEnd() { return m_SwitchParameters.end(); }
+		inline ConstSwitchIterator CSwitchEnd() const { return m_SwitchParameters.cend(); }
 		typedef std::unordered_map<Name, StaticMaskParameter, Name::Hasher> MaskSet;
 		typedef MaskSet::iterator MaskIterator;
 		typedef MaskSet::const_iterator ConstMaskIterator;
-		inline MaskIterator MaskBegin()
-		{
-			return m_MaskParameters.begin();
-		}
-		inline ConstMaskIterator CMaskBegin() const
-		{
-			return m_MaskParameters.cbegin();
-		}
-		inline MaskIterator MaskEnd()
-		{
-			return m_MaskParameters.end();
-		}
-		inline ConstMaskIterator CMaskEnd() const
-		{
-			return m_MaskParameters.cend();
-		}
+		inline MaskIterator MaskBegin() { return m_MaskParameters.begin(); }
+		inline ConstMaskIterator CMaskBegin() const { return m_MaskParameters.cbegin(); }
+		inline MaskIterator MaskEnd() { return m_MaskParameters.end(); }
+		inline ConstMaskIterator CMaskEnd() const { return m_MaskParameters.cend(); }
 
 		// hash code only depent on values, without names
-		inline uint32 GetHashCode() const
+		inline size_t GetHashCode() const
 		{
 			std::hash<uint32> hasher;
 			return hasher(m_Bits);
@@ -177,24 +130,13 @@ namespace Space
 		class Hasher
 		{
 		public:
-			size_t operator()(StaticParameterSet const& s) const
-			{
-				return s.GetHashCode();
-			}
+			size_t operator()(StaticParameterSet const& s) const { return s.GetHashCode(); }
 		};
 
-		inline uint32 _GetBits() const
-		{
-			return m_Bits;
-		}
-		inline void _SetBits(uint32 bits)
-		{
-			m_Bits = bits;
-		}
-		inline bool _GetBoolValueFromBits(uint8 bit) const
-		{
-			return (bool)((m_Bits >> bit) & 0x00000001);
-		}
+		inline uint32 _GetBits() const { return m_Bits; }
+		inline void _SetBits(uint32 bits) { m_Bits = bits; }
+		inline bool _GetBoolValueFromBits(uint8 bit) const { return static_cast<bool>((m_Bits >> bit) & 0x00000001); }
+
 		inline void _SetBoolValueToBits(uint8 bit, bool value)
 		{
 			value ?
@@ -221,17 +163,14 @@ namespace Space
 
 	typedef std::shared_ptr<StaticParameterSet> StaticParameterSetPtr;
 
-
-	
-
-	enum class SPACE_API MaterialDomain : uint8
+	enum class SPACE_RENDERSYSTEM_API MaterialDomain : uint8
 	{
 		Surface = 0,
 		PostProcess,
 		Max
 	};
 
-	enum class SPACE_API MaterialBlendMode : uint8
+	enum class SPACE_RENDERSYSTEM_API MaterialBlendMode : uint8
 	{
 		Opaque = 0,
 		Masked,
@@ -240,11 +179,10 @@ namespace Space
 		Max
 	};
 
-	class SPACE_API Material : virtual public Uncopyable
+	class SPACE_RENDERSYSTEM_API Material : virtual public Uncopyable
 	{
 	public:
-		static Material* Create(RenderSystem* pRenderSys, tstring const& name);
-
+		typedef Shader Shader;
 		StaticParameterSet const& GetStaticParameterSet() const;
 		StaticParameterSet& GetStaticParameterSet();
 
@@ -252,37 +190,23 @@ namespace Space
 		MaterialDomain GetDomain() const;
 		MaterialBlendMode GetBlendMode() const;
 
-		inline void SetWorld(Float4x4 world)
-		{
-			m_World = world;
-		}
-		inline void SetView(Float4x4 view)
-		{
-			m_View = view;
-		}
-		inline void SetProjection(Float4x4 projection)
-		{
-			m_Projection = projection;
-		}
-		inline void SetGameTime(float time)
-		{
-			m_Time = time;
-		}
+		inline void SetWorld(Float4x4 world) { m_World = world; }
+		inline void SetView(Float4x4 view) { m_View = view; }
+		inline void SetProjection(Float4x4 projection) { m_Projection = projection; }
+		inline void SetGameTime(float time) { m_Time = time; }
 
 		// TODO 
 		//TextureParameter& GetTextureParameter(Name const& name);
 		//ScalarParameter& GetScalarParameter(Name const& name);
 		//VectorParameter& GetVectorParameter(Name const& name);
 
-		//void Apply();
-		Shader* GetShader(CommandList* pList);
+		void Apply(CommandList* pCmdList);
+		void Update(CommandList* pCmdList);
 
+		Material(tstring const& name);
 		virtual ~Material();
 	protected:
-		Material(RenderSystem* pRenderSys, tstring const& name);
-
-		void SelectShader();
-		RenderSystem* pRenderSystem;
+		Shader* SelectShader();
 
 		Name m_Name;
 		MaterialDomain m_Domain;
@@ -299,13 +223,9 @@ namespace Space
 
 		Shader* m_CurrentShader = nullptr;
 
-		std::unordered_map<Name, std::unique_ptr<Shader>, Name::Hasher> m_Shaders;
+		std::unordered_map<Name, std::shared_ptr<Shader>, Name::Hasher> m_Shaders;
 		std::unordered_map<StaticParameterSet, Shader*, StaticParameterSet::Hasher> m_ShaderMap;
 
-		PipelineStatePtr m_pPipelineState = nullptr;
+		std::shared_ptr<PipelineState> _pipelineState = nullptr;
 	};
-
-	typedef std::shared_ptr<Material> MaterialPtr;
-}
-
-#endif
+}}

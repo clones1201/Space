@@ -1,353 +1,210 @@
-#ifndef __SPACE_RENDERSYSTEM_DEVICEBUFFER_HPP
-#define __SPACE_RENDERSYSTEM_DEVICEBUFFER_HPP
+#pragma once
 
-#include "RenderSystem/Prerequisites.hpp"
-#include "RenderSystem/Shared.hpp"
+#include "Prerequisites.hpp"
+#include "Shared.hpp"
 
-namespace Space
-{
-	class SPACE_RENDERSYSTEM_API DeviceBuffer : private Interface
-	{
-	public:
-		virtual ~DeviceBuffer();
+#include "RenderSystem.hpp"
+#include "Rendering.hpp"
 
-		static DeviceBuffer* Create(RenderSystem* pRenderSys,BufferType type,ResourceUsage usage, byte const* initialData, size_t lengthInBytes);
+namespace Space {
+	namespace Render {
+		namespace Details {
 
-		inline size_t GetLengthInBytes() const
-		{
-			return m_LengthInBytes;
-		}
-		inline ResourceUsage GetUsage() const
-		{
-			return m_Usage;
-		}
-		inline BufferType GetBufferType() const
-		{
-			return m_Type;
-		}
-		virtual bool Update(CommandList* pList, size_t startOffset, size_t lengthInBytes, byte const* pData) = 0;
-	
-	protected:
-		DeviceBuffer(BufferType type, ResourceUsage usage, size_t lengthInBytes);
+			template <class RenderSystem>
+			class SPACE_RENDERSYSTEM_API BufferImpl :
+				protected SharedPtrObject<BufferImpl<RenderSystem>>
+			{
+			public:
+				typedef typename std::remove_reference<typename RenderSystem>::type RenderSystem;
+				typedef typename std::remove_reference<typename RenderSystem::DeviceBuffer>::type DeviceBuffer;
+				typedef typename std::remove_reference<typename RenderSystem::CommandList>::type CommandList;
+				virtual ~BufferImpl()
+				{}
 
-		BufferType m_Type;
-		ResourceUsage m_Usage;
-		size_t m_LengthInBytes;
-	}; 
-	typedef std::shared_ptr<DeviceBuffer> DeviceBufferPtr;
+				BufferImpl(Device* device,BufferType type, ResourceUsage usage, size_t lengthInBytes, byte const* initialData)
+					:_Type(type), _Usage(usage), _LengthInBytes(lengthInBytes)
+				{
+					_deviceBuffer = std::make_unique<DeviceBuffer>(
+						device, type, usage, initialData, lengthInBytes);
+				}
 
-	class SPACE_RENDERSYSTEM_API VertexBuffer : private Uncopyable
-	{
-	public:
-		virtual ~VertexBuffer();
+				DeviceBuffer* GetBuffer() const {
+					return _deviceBuffer.get();
+				}
 
-		static VertexBuffer* Create(
-			RenderSystem* pRenderSys, byte const* initialData, size_t lengthInBytes,
-			size_t stride);
+				inline size_t GetLengthInBytes() const
+				{
+					return _LengthInBytes;
+				}
+				inline ResourceUsage GetUsage() const
+				{
+					return _Usage;
+				}
+				inline BufferType GetBufferType() const
+				{
+					return _Type;
+				}
+				virtual bool Update(CommandList* pList,
+					size_t startOffset, size_t lengthInBytes, byte const* pData)
+				{
+					size_t lengthInTotal = _LengthInBytes;
+					return _deviceBuffer->Update(
+						pList,
+						_Usage, _Type, lengthInTotal, startOffset, lengthInBytes, pData);
+				}
 
-		bool Update(CommandList* pList, size_t startOffset, size_t lengthInBytes, byte const* pData);
+			protected:
+				BufferType _Type;
+				ResourceUsage _Usage;
+				size_t _LengthInBytes;
 
-		inline size_t GetStride() const
-		{
-			return m_Stride;
-		}
-		inline size_t GetOffest() const
-		{
-			return m_Offset;
-		}
-		inline void SetStride(size_t stride)
-		{
-			assert(stride >= 0);
-			m_Stride = stride;
-		}
-		inline void SetOffest(size_t offset)
-		{
-			assert(offset >= 0);
-			m_Offset = offset;
-		}
-		inline DeviceBuffer* GetBuffer() const
-		{
-			return m_pBuffer.get();
-		}
-		inline size_t GetLengthInBytes() const
-		{
-			return m_pBuffer->GetLengthInBytes();
-		}
-	protected:
-		VertexBuffer(DeviceBuffer* pBuffer, size_t stride);
+				typename std::unique_ptr<DeviceBuffer> _deviceBuffer = nullptr;
+			};
 
-		std::unique_ptr<DeviceBuffer> m_pBuffer = nullptr;
-		size_t m_Offset = 0;
-		size_t m_Stride = 0;
-	};
-	typedef std::shared_ptr<VertexBuffer> VertexBufferPtr;
+			template<class RenderSystem, class Texture>
+			class SPACE_RENDERSYSTEM_API TextureImpl :
+				public SharedPtrObject<TextureImpl<RenderSystem, Texture>>,
+				public Texture
+			{
+			public:
+				typedef typename std::remove_reference<typename RenderSystem::Device>::type Device;
+				virtual ~TextureImpl() {}
+				inline DataFormat GetFormat() const
+				{
+					return _Format;
+				}
+				inline ResourceUsage GetUsage() const
+				{
+					return _Usage;
+				}
+				inline ResourceBindFlag GetBindFlag() const
+				{
+					return _Flag;
+				}
 
-	class SPACE_RENDERSYSTEM_API IndexBuffer : private Uncopyable
-	{
-	public:
-		virtual ~IndexBuffer();
-
-		static IndexBuffer* Create(
-			RenderSystem* pRenderSys, byte const* initialData, size_t lengthInBytes,
-			DataFormat format);
-
-		bool Update(CommandList* pList, size_t startOffset, size_t lengthInBytes, byte const* pData);
-
-
-		inline DataFormat GetFormat() const
-		{
-			return m_Format;
-		}
-		inline size_t GetOffest() const
-		{
-			return m_Offset;
-		}
-		inline void SetDataFormat(DataFormat format)
-		{
-			m_Format = format;
-		}
-		inline void SetOffest(size_t offset)
-		{
-			m_Offset = offset;
+				TextureImpl(Device* device, int32 X, int32 Y, int32 Z,
+					DataFormat format,
+					ResourceUsage usage,
+					ResourceBindFlag flag)
+					:Texture(device, X, Y, format, usage, flag, 1, nullptr)
+				{
+				}
+			protected:
+				DataFormat _Format = DataFormat::UNKNOWN;
+				ResourceUsage _Usage = ResourceUsage::Default;
+				ResourceBindFlag _Flag = ResourceBindFlag::None;
+			};
 		}
 
-		inline DeviceBuffer* GetBuffer() const
+		class SPACE_RENDERSYSTEM_API VertexBuffer :
+			SharedPtrObject<VertexBuffer>,
+			public Buffer
 		{
-			return m_pBuffer.get();
-		}
+		public:
+			typedef typename std::remove_reference<typename Buffer::RenderSystem>::type RenderSystem;
+			virtual ~VertexBuffer();
 
-		inline size_t GetLengthInBytes() const
+			VertexBuffer(size_t lengthInBytes, size_t stride, byte const* initialData);
+
+			inline size_t GetStride() const
+			{
+				return _Stride;
+			}
+			inline size_t GetOffset() const
+			{
+				return _Offset;
+			}
+			inline void SetStride(size_t stride)
+			{
+				assert(stride >= 0);
+				_Stride = stride;
+			}
+			inline void SetOffest(size_t offset)
+			{
+				assert(offset >= 0);
+				_Offset = offset;
+			}
+		protected:
+			size_t _Offset = 0;
+			size_t _Stride = 0;
+		};
+
+		class SPACE_RENDERSYSTEM_API IndexBuffer :
+			public SharedPtrObject<IndexBuffer>,
+			public Buffer
 		{
-			return m_pBuffer->GetLengthInBytes();
-		}
-	protected:
-		IndexBuffer(DeviceBuffer* pBuffer, DataFormat format);
+		public:
+			typedef typename std::remove_reference<typename Buffer::RenderSystem>::type RenderSystem;
 
-		std::unique_ptr<DeviceBuffer> m_pBuffer = nullptr;
-		size_t m_Offset = 0;
-		DataFormat m_Format = DataFormat::UNKNOWN;
-	};
-	typedef std::shared_ptr<IndexBuffer> IndexBufferPtr;
+			virtual ~IndexBuffer();
 
-	class SPACE_RENDERSYSTEM_API ConstantBuffer : private Uncopyable
-	{ 
-	public:
-		virtual ~ConstantBuffer();
+			IndexBuffer(size_t lengthInBytes, DataFormat format, byte const* initialData);
+			inline DataFormat GetFormat() const
+			{
+				return _Format;
+			}
+			inline size_t GetOffset() const
+			{
+				return _Offset;
+			}
+			inline void SetDataFormat(DataFormat format)
+			{
+				_Format = format;
+			}
+			inline void SetOffest(size_t offset)
+			{
+				_Offset = offset;
+			}
 
-		static ConstantBuffer* Create(RenderSystem* pRenderSys, byte const* initialData, size_t lengthInBytes);
+		protected:
+			size_t _Offset = 0;
+			DataFormat _Format = DataFormat::UNKNOWN;
+		};
 
-		void UpdateToDevice(CommandList* pList);
-		bool Update(size_t startOffset, size_t lengthInBytes, byte const* pData);		
-		inline byte const* GetBufferPointer() const
+		class SPACE_RENDERSYSTEM_API ConstantBuffer :
+			public SharedPtrObject<ConstantBuffer>,
+			public Buffer
 		{
-			return m_pShadowData;
-		}
-		inline DeviceBuffer* GetBuffer()
+		public:
+			typedef typename std::remove_reference<typename Buffer::RenderSystem>::type RenderSystem;
+			ConstantBuffer(
+				size_t lengthInBytes, byte const* initialData);
+
+			~ConstantBuffer();
+			void UpdateToDevice(CommandList* pList);
+
+			bool Update(CommandList* pList, size_t startOffset, size_t lengthInBytes, byte const* pData);
+			inline byte const* GetBufferPointer() const
+			{
+				return _pShadowData;
+			}
+		protected:
+			byte *_pShadowData = nullptr;
+
+			friend class ShaderVariableAccessor;
+			friend class ConstantBufferAccessor;
+		};
+
+		class SPACE_RENDERSYSTEM_API TextureBuffer :
+			public SharedPtrObject<TextureBuffer>,
+			public Buffer
 		{
-			return m_pBuffer.get();
-		}
+		public:
+			virtual ~TextureBuffer();
 
-		inline size_t GetLengthInBytes() const
-		{
-			return m_pBuffer->GetLengthInBytes();
-		}
-	protected:
-		ConstantBuffer(DeviceBuffer* pBuffer);
-		
-		std::unique_ptr<DeviceBuffer> m_pBuffer = nullptr;
-		byte *m_pShadowData = nullptr;
-
-		friend class ShaderVariableAccessor;
-		friend class ConstantBufferAccessor;
-	};
-	typedef std::shared_ptr<ConstantBuffer> ConstantBufferPtr;
-
-	class SPACE_RENDERSYSTEM_API TextureBuffer : private Uncopyable
-	{
-	public:
-		virtual ~TextureBuffer();
-
-		static TextureBuffer* Create(
-			RenderSystem* pRenderSys, byte const* initialData,
-			size_t lengthInBytes, size_t sizeOfElem, size_t numElements);
-
-		size_t GetSizeOfElement() const;
-		size_t GetElementCount() const;
-		bool Update(CommandList* pList, size_t startOffset, size_t lengthInBytes, byte const* pData);
-		
-		DeviceBuffer* GetBuffer();	
-	protected:
-		TextureBuffer(DeviceBuffer* pBuffer,
-			size_t sizeOfElem, size_t numElements);
-
-		std::unique_ptr<DeviceBuffer> m_pBuffer = nullptr;
-		size_t m_SizeOfElem;
-		size_t m_NumElements;
-	};
-	typedef std::shared_ptr<TextureBuffer> TextureBufferPtr;
-
-	
-	class SPACE_RENDERSYSTEM_API DeviceTextureBase : private Uncopyable
-	{
-	public:
-		virtual ~DeviceTextureBase();
-
-		inline TextureType GetType() const
-		{
-			return m_Type;
-		}
-		inline DataFormat GetFormat() const
-		{
-			return m_Format;
-		}
-		inline ResourceUsage GetUsage() const
-		{
-			return m_Usage;
-		}
-		inline ResourceBindFlag GetBindFlag() const
-		{
-			return m_Flag;
-		}
-	protected:
-		DeviceTextureBase();
-
-		TextureType m_Type = TextureType::None;
-		DataFormat m_Format = DataFormat::UNKNOWN;
-		ResourceUsage m_Usage = ResourceUsage::Default;
-		ResourceBindFlag m_Flag = ResourceBindFlag::None;
-	};
-
-	class SPACE_RENDERSYSTEM_API DeviceTexture1D : private Interface, public DeviceTextureBase
-	{
-	public:
-		virtual ~DeviceTexture1D();
-
-		static DeviceTexture1D* CreateArray(
-			RenderSystem* pRenderSys,
-			int32 X,
-			DataFormat format,
-			ResourceUsage usage,
-			ResourceBindFlag flag,
-			int32 arraySize,
-			byte const* initialData);
-		static DeviceTexture1D* Create(
-			RenderSystem* pRenderSys,
-			int32 X,
-			DataFormat format,
-			ResourceUsage usage,
-			ResourceBindFlag flag,
-			byte const* initialData);
-		
-		virtual byte* Lock() = 0;
-		virtual void Unlock() = 0;
-
-		inline int32 GetArraySize() const
-		{
-			return m_ArraySize;
-		}
-		inline int32 GetWidth() const
-		{
-			return m_Width;
-		}
-	protected:
-		DeviceTexture1D(int32 X, 
-			DataFormat format, 
-			ResourceUsage usage, 
-			ResourceBindFlag flag,
-			int32 arraySize);
-		int32 m_Width = 0;
-		int32 m_ArraySize = 0;
-	};
-	typedef std::shared_ptr<DeviceTexture1D> DeviceTexture1DPtr;
-
-	class SPACE_RENDERSYSTEM_API DeviceTexture2D : private Interface, public DeviceTextureBase
-	{
-	public:
-		virtual ~DeviceTexture2D();
-
-		static DeviceTexture2D* CreateArray(
-			RenderSystem* pRenderSys,
-			int32 X, int32 Y,
-			DataFormat format,
-			ResourceUsage usage,
-			ResourceBindFlag flag,
-			int32 arraySize,
-			byte const* initialData);
-		static DeviceTexture2D* Create(
-			RenderSystem* pRenderSys,
-			int32 X, int32 Y,
-			DataFormat format,
-			ResourceUsage usage,
-			ResourceBindFlag flag,
-			byte const* initialData);
-		static DeviceTexture2D* CreateFromFile(
-			RenderSystem* pRenderSys, std::string const &filename, 
-			DataFormat format, ResourceUsage usage, ResourceBindFlag flag);
-		 
-		virtual byte* Lock() = 0;
-		virtual void Unlock() = 0;
-
-		inline int32 GetArraySize() const
-		{
-			return m_ArraySize;
-		}
-		inline int32 GetWidth() const
-		{
-			return m_Width;
-		}
-		inline int32 GetHeight() const
-		{
-			return m_Height;
-		}
-		 
-	protected:
-		DeviceTexture2D(int32 X, int32 Y,
-			DataFormat format,
-			ResourceUsage usage,
-			ResourceBindFlag flag,
-			int32 arraySize);
-		int32 m_Width = 0, m_Height = 0; 
-		int32 m_ArraySize = 0;
-	};
-	typedef std::shared_ptr<DeviceTexture2D> DeviceTexture2DPtr;
-
-	class SPACE_RENDERSYSTEM_API DeviceTexture3D : private Interface, public DeviceTextureBase
-	{
-	public:
-		virtual ~DeviceTexture3D();
-
-		static DeviceTexture3D* Create(
-			RenderSystem* pRenderSys,
-			int32 X, int32 Y, int32 Z,
-			DataFormat format,
-			ResourceUsage usage,
-			ResourceBindFlag flag,
-			byte const* initialData);
-		
-		virtual byte* Lock() = 0;
-		virtual void Unlock() = 0;
-
-		inline int32 GetWidth() const
-		{
-			return m_Width;
-		}
-		inline int32 GetHeight() const
-		{
-			return m_Height;
-		}
-		inline int32 GetDepth() const
-		{
-			return m_Depth;
-		}
-
-	protected:
-		DeviceTexture3D(int32 X, int32 Y, int32 Z,
-			DataFormat format,
-			ResourceUsage usage,
-			ResourceBindFlag flag);
-		int32 m_Width = 0, m_Height = 0, m_Depth = 0; 
-	};
-	typedef std::shared_ptr<DeviceTexture3D> DeviceTexture3DPtr;
+			TextureBuffer(
+				size_t lengthInBytes, size_t sizeOfElem, size_t numElements, byte const* initialData);
+			inline size_t GetSizeOfElement() const
+			{
+				return _SizeOfElem;
+			}
+			size_t GetElementCount() const
+			{
+				return _NumElements;
+			}
+		protected:
+			size_t _SizeOfElem;
+			size_t _NumElements;
+		};
+	}
 }
-
-#endif

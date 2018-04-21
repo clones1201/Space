@@ -3,121 +3,98 @@
 #include "D3D11RenderSystem/D3D11Rendering.hpp"
 #include "DDSTextureLoader.h"
 
-namespace Space
-{
-	D3D11DeviceBuffer::D3D11DeviceBuffer(D3D11DevicePtr device, BufferType type,
-		ResourceUsage usage, byte const* initialData, size_t lengthInBytes)
-		:mDevice(device), DeviceBuffer(type, usage, lengthInBytes)
-	{
-		D3D11_BUFFER_DESC desc;
-		ZeroMemory(&desc, sizeof(desc));
-		desc.ByteWidth = m_LengthInBytes;
-		desc.Usage = GetD3D11Usage(m_Usage);
-		desc.BindFlags = GetD3D11BufferBindFlags(type);
-
-		D3D11_SUBRESOURCE_DATA data;
-		ZeroMemory(&data, sizeof(data));
-		data.pSysMem = initialData;
-
-		m_pBuffer = nullptr;
-		HRESULT hr = mDevice->Get()->CreateBuffer(
-			&desc,
-			initialData != nullptr ? &data : nullptr,
-			&(m_pBuffer.p));
-		if (FAILED(hr))
+namespace Space {
+	namespace Render {
+		D3D11DeviceBuffer::D3D11DeviceBuffer(D3D11Device* device, BufferType type,
+			ResourceUsage usage, byte const* initialData, size_t lengthInBytes)
 		{
-			throw std::exception("D3D11DeviceBufferImpl CreateBuffer failed.");
-		}
-	}
+			D3D11_BUFFER_DESC desc;
+			ZeroMemory(&desc, sizeof(desc));
+			desc.ByteWidth = (UINT)lengthInBytes;
+			desc.Usage = GetD3D11Usage(usage);
+			desc.BindFlags = GetD3D11BufferBindFlags(type);
 
-	bool D3D11DeviceBuffer::Update(CommandList* pList, size_t startOffset, size_t lengthInBytes, byte const* pData)
-	{
-		if (pData == nullptr)
-			return false;
+			D3D11_SUBRESOURCE_DATA data;
+			ZeroMemory(&data, sizeof(data));
+			data.pSysMem = initialData;
 
-		assert(dynamic_cast<D3D11CommandList*>(pList) != nullptr);
-		auto pD3DCmdList = static_cast<D3D11CommandList*>(pList);
-
-		if (startOffset + lengthInBytes > m_LengthInBytes)
-			return false;
-
-		bool isSuccess = false;
-		HRESULT hr = S_OK;
-		switch (m_Usage)
-		{
-		case ResourceUsage::Default:
-		{
-			D3D11_BOX box; //buffer is a 1D dimension memory.
-			box.left = startOffset;
-			box.right = startOffset + lengthInBytes;
-			box.front = 0; box.back = 1;
-			box.top = 0; box.bottom = 1;
-			
-			auto pBox = &box;
-			if (m_Type == BufferType::ConstantBuffer)
-				pBox = nullptr;
-
-			pD3DCmdList->GetContext()->UpdateSubresource(m_pBuffer, 0, pBox, pData, 0, 0);
-
-			isSuccess = true;
-		}
-		break;
-		case ResourceUsage::Staging:
-		case ResourceUsage::Dynamic:
-		{
-			D3D11_MAPPED_SUBRESOURCE mapped;
-			hr = pD3DCmdList->GetContext()->Map(m_pBuffer, 0, D3D11_MAP_WRITE, 0, &mapped);
-			if (SUCCEEDED(hr))
+			m_pBuffer = nullptr;
+			HRESULT hr = device->Get()->CreateBuffer(
+				&desc,
+				initialData != nullptr ? &data : nullptr,
+				&(m_pBuffer.p));
+			if (FAILED(hr))
 			{
-				auto error = memcpy_s((byte*)mapped.pData + startOffset, m_LengthInBytes, pData, lengthInBytes);
-
-				if (error == 0) isSuccess = true;
-
-				pD3DCmdList->GetContext()->Unmap(m_pBuffer, 0);
+				throw std::exception("D3D11DeviceBufferImpl CreateBuffer failed.");
 			}
 		}
-		break;
-		case ResourceUsage::Immutable:
-		default:
+
+		bool D3D11DeviceBuffer::Update(
+			D3D11CommandList* pCommandList,
+			ResourceUsage usage,
+			BufferType type,
+			size_t lengthInTotal, size_t startOffset, size_t lengthInBytes,
+			byte const* pData)
+		{
+			if (pData == nullptr)
+				return false;
+
+			if (startOffset + lengthInBytes > lengthInTotal)
+				return false;
+
+			bool isSuccess = false;
+			HRESULT hr = S_OK;
+			switch (usage)
+			{
+			case ResourceUsage::Default:
+			{
+				D3D11_BOX box; //buffer is a 1D dimension memory.
+				box.left = (UINT)startOffset;
+				box.right = (UINT)(startOffset + lengthInBytes);
+				box.front = 0; box.back = 1;
+				box.top = 0; box.bottom = 1;
+
+				auto pBox = &box;
+				if (type == BufferType::ConstantBuffer)
+					pBox = nullptr;
+
+				pCommandList->GetContext()->UpdateSubresource(m_pBuffer, 0, pBox, pData, 0, 0);
+
+				isSuccess = true;
+			}
 			break;
+			case ResourceUsage::Staging:
+			case ResourceUsage::Dynamic:
+			{
+				D3D11_MAPPED_SUBRESOURCE mapped;
+				hr = pCommandList->GetContext()->Map(m_pBuffer, 0, D3D11_MAP_WRITE, 0, &mapped);
+				if (SUCCEEDED(hr))
+				{
+					auto error = memcpy_s((byte*)mapped.pData + startOffset, lengthInTotal, pData, lengthInBytes);
+
+					if (error == 0) isSuccess = true;
+
+					pCommandList->GetContext()->Unmap(m_pBuffer, 0);
+				}
+			}
+			break;
+			case ResourceUsage::Immutable:
+			default:
+				break;
+			}
+			return isSuccess;
 		}
-		return isSuccess;
-	}
 
-	CComPtr<ID3D11Buffer> D3D11DeviceBuffer::GetRawBuffer() const
-	{
-		return m_pBuffer.p;
-	}
-
-	D3D11DeviceBuffer* D3D11DeviceBuffer::Create(D3D11DevicePtr device, BufferType type, ResourceUsage usage, byte const* initialData, size_t lengthInBytes)
-	{
-		TRY_CATCH_LOG(
-			return new D3D11DeviceBuffer(device, type, usage, initialData, lengthInBytes),
-			return nullptr;
-		);
-	}
-
-	
-	class D3D11DeviceTexture1DImpl : public D3D11DeviceTexture1D
-	{
-	private:
-		CComPtr<ID3D11Texture1D> m_pTexture1D = nullptr;
-
-		D3D11_TEXTURE1D_DESC m_Desc;
-
-		D3D11DevicePtr mDevice;
-	public:
-		D3D11DeviceTexture1DImpl(
-			D3D11DevicePtr device,
+		D3D11DeviceTexture1D::D3D11DeviceTexture1D(
+			D3D11Device* device,
 			int32 X,
 			DataFormat format,
 			ResourceUsage usage,
 			ResourceBindFlag flag,
 			int32 arraySize,
-			byte const* initialData
-			) :
-			D3D11DeviceTexture1D(X, format, usage, flag, arraySize),
-			mDevice(device)
+			byte const* initialData):
+			m_Device(device),
+			m_DataFormat(format)
 		{
 			if (arraySize < 0 || arraySize > 8)
 			{
@@ -126,7 +103,7 @@ namespace Space
 
 			ZeroMemory(&m_Desc, sizeof(m_Desc));
 			m_Desc.ArraySize = arraySize;
-			m_Desc.Width = m_Width;
+			m_Desc.Width = X;
 			m_Desc.Usage = (D3D11_USAGE)usage;
 			m_Desc.BindFlags = GetD3D11BindFlag(flag);
 			m_Desc.MipLevels = 0;
@@ -136,7 +113,7 @@ namespace Space
 			data.pSysMem = initialData;
 
 			ID3D11Texture1D* pTexture = nullptr;
-			HRESULT hr = mDevice->Get()->CreateTexture1D(
+			HRESULT hr = device->Get()->CreateTexture1D(
 				&m_Desc,
 				initialData == nullptr ? nullptr : &data,
 				&pTexture);
@@ -147,14 +124,11 @@ namespace Space
 			m_pTexture1D = pTexture;
 		}
 
-		D3D11DeviceTexture1DImpl(D3D11DevicePtr device,
+		D3D11DeviceTexture1D::D3D11DeviceTexture1D(
+			D3D11Device* device,
 			D3D11_TEXTURE1D_DESC desc,
-			ID3D11Texture1D* pTexture)
-			:D3D11DeviceTexture1D(
-			desc.Width,
-			GetDataFormat(desc.Format), (ResourceUsage)desc.Usage, Space::GetBindFlag(desc.BindFlags), desc.ArraySize),
-			m_Desc(desc),
-			mDevice(device)
+			CComPtr<ID3D11Texture1D> pTexture):
+			m_Device(device)
 		{
 			if (pTexture == nullptr)
 				throw std::exception("null ID3D11Texture3D interface pointer");
@@ -162,97 +136,80 @@ namespace Space
 			m_pTexture1D = pTexture;
 		}
 
-		virtual ID3D11Texture1D* GetD3DTexture1D()
+		byte* D3D11DeviceTexture1D::Lock(D3D11CommandList* pCommandList)
 		{
-			return (m_pTexture1D.p);
-		}
-	private:
-		byte* m_pLock = nullptr;
-		D3D11_MAPPED_SUBRESOURCE m_Subres;
-	public:
-
-		virtual byte* Lock()
-		{
-			switch (m_Usage)
+			int32 X;
+			X = GetWidth();
+			D3D11_USAGE usage = m_Desc.Usage;
+			UINT pixel_size = (UINT)GetFormatSize(GetDataFormat(m_Desc.Format));
+			switch (usage)
 			{
-			case ResourceUsage::Default:
+			case D3D11_USAGE_DEFAULT:
 				if (m_pLock != nullptr)
 				{
 					throw std::exception("lock twice is unacceptable");
 				}
-				m_pLock = new byte[sizeof(m_Width *  GetFormatSize(m_Format))];
+				m_pLock = new byte[sizeof(X *  pixel_size)];
 				return m_pLock;
-			case ResourceUsage::Dynamic:
-			case ResourceUsage::Staging:
+			case D3D11_USAGE_DYNAMIC:
+			case D3D11_USAGE_STAGING:
 
-				mDevice->GetImmediateContext()->Map(m_pTexture1D, 0, D3D11_MAP_READ_WRITE, 0, &m_Subres);
+				pCommandList->GetContext()->Map(m_pTexture1D, 0, D3D11_MAP_READ_WRITE, 0, &m_Subres);
 
 				return (byte*)(m_Subres.pData);
-			case ResourceUsage::Immutable:
+			case D3D11_USAGE_IMMUTABLE:
 			default:
 				return nullptr;
 			}
 
 		}
 
-		virtual void Unlock()
+		void D3D11DeviceTexture1D::Unlock(D3D11CommandList* pCommandList)
 		{
-			switch (m_Usage)
+			int32 X;
+			X = GetWidth();
+			D3D11_USAGE usage = m_Desc.Usage;
+			UINT pixel_size = (UINT)GetFormatSize(GetDataFormat(m_Desc.Format));
+			switch (usage)
 			{
-			case ResourceUsage::Default:
+			case D3D11_USAGE_DEFAULT:
 				if (m_pLock == nullptr)
 				{
 					throw std::exception("Unlock twice is unacceptable");
 				}
 
 				D3D11_BOX box;
-				box.left = 0; box.right = m_Width;
+				box.left = 0; box.right = X;
 				box.top = 0; box.bottom = 1;
 				box.front = 0; box.back = 1;
-				mDevice->GetImmediateContext()->UpdateSubresource(
+				pCommandList->GetContext()->UpdateSubresource(
 					m_pTexture1D, 0, &box,
 					m_pLock,
-					m_Width * GetFormatSize(m_Format), m_Width * GetFormatSize(m_Format));
+					UINT(X * pixel_size), UINT(X * pixel_size));
 
 				delete[] m_pLock;
 				m_pLock = nullptr;
 				break;
-			case ResourceUsage::Dynamic:
-			case ResourceUsage::Staging:
-				mDevice->GetImmediateContext()->Unmap(m_pTexture1D, 0);
+			case D3D11_USAGE_DYNAMIC:
+			case D3D11_USAGE_STAGING:
+				pCommandList->GetContext()->Unmap(m_pTexture1D, 0);
 				break;
-			case ResourceUsage::Immutable:
+			case D3D11_USAGE_IMMUTABLE:
 			default:
 				break;
 			}
 		}
-
-	};
-
-	class D3D11DeviceTexture2DImpl : public D3D11DeviceTexture2D
-	{
-	private:
-		TextureType m_Type;
-		DataFormat m_Format;
-		ResourceUsage m_Usage;
-
-		CComPtr<ID3D11Texture2D> m_pTexture2D = nullptr;
-
-		D3D11_TEXTURE2D_DESC m_Desc;
-
-		D3D11DevicePtr mDevice;
-	public:
-		D3D11DeviceTexture2DImpl(
-			D3D11DevicePtr device,
+		
+		D3D11DeviceTexture2D::D3D11DeviceTexture2D(
+			D3D11Device* device,
 			int32 X, int32 Y,
 			DataFormat format,
 			ResourceUsage usage,
 			ResourceBindFlag flag,
 			int32 arraySize,
-			byte const* initialData
-			) :
-			D3D11DeviceTexture2D(X, Y, format, usage, flag, arraySize),
-			mDevice(device)
+			byte const* initialData):
+			m_Device(device),
+			m_DataFormat(format)
 		{
 			if (arraySize < 0 || arraySize > 8)
 			{
@@ -261,18 +218,23 @@ namespace Space
 
 			ZeroMemory(&m_Desc, sizeof(m_Desc));
 			m_Desc.ArraySize = arraySize;
+			m_Desc.Format = GetDXGIFormat(format);
 			m_Desc.Width = X;
 			m_Desc.Height = Y;
 			m_Desc.Usage = (D3D11_USAGE)usage;
 			m_Desc.BindFlags = GetD3D11BindFlag(flag);
-			m_Desc.MipLevels = 0;
+			m_Desc.MipLevels = 1; 
+			m_Desc.SampleDesc.Count = 1;
+			m_Desc.SampleDesc.Quality = 0;		
+			m_Desc.CPUAccessFlags = 0;
+			m_Desc.MiscFlags = 0;
 
 			D3D11_SUBRESOURCE_DATA data;
 			ZeroMemory(&data, sizeof(data));
 			data.pSysMem = initialData;
 
 			ID3D11Texture2D* pTexture = nullptr;
-			HRESULT hr = mDevice->Get()->CreateTexture2D(
+			HRESULT hr = m_Device->Get()->CreateTexture2D(
 				&m_Desc,
 				initialData == nullptr ? nullptr : &data,
 				&pTexture);
@@ -283,107 +245,92 @@ namespace Space
 			m_pTexture2D = pTexture;
 		}
 
-		D3D11DeviceTexture2DImpl(D3D11DevicePtr device,
-			D3D11_TEXTURE2D_DESC desc,
-			ID3D11Texture2D* pTexture)
-			:D3D11DeviceTexture2D(
-			desc.Width, desc.Height,
-			GetDataFormat(desc.Format), (ResourceUsage)desc.Usage, Space::GetBindFlag(desc.BindFlags), desc.ArraySize),
-			m_Desc(desc),
-			mDevice(device)
+		D3D11DeviceTexture2D::D3D11DeviceTexture2D(
+			D3D11Device* device,
+			CComPtr<ID3D11Texture2D> pTexture):
+			m_Device(device),
+			m_pTexture2D(pTexture)
 		{
 			if (pTexture == nullptr)
 				throw std::exception("null ID3D11Texture3D interface pointer");
+			ZeroMemory(&m_Desc, sizeof(m_Desc));
+			m_pTexture2D->GetDesc(&m_Desc);
 
-			m_pTexture2D = pTexture;
+			m_DataFormat = GetDataFormat(m_Desc.Format);
 		}
 
-		virtual ID3D11Texture2D* GetD3DTexture2D()
+		byte* D3D11DeviceTexture2D::Lock(D3D11CommandList* pCommandList)
 		{
-			return (m_pTexture2D.p);
-		}
-
-	private:
-		byte* m_pLock = nullptr;
-		D3D11_MAPPED_SUBRESOURCE m_Subres;
-	public:
-
-		virtual byte* Lock()
-		{
-			switch (m_Usage)
+			int32 X, Y;
+			X = GetWidth(); Y = GetHeight();
+			D3D11_USAGE usage = m_Desc.Usage;
+			UINT pixel_size = (UINT)GetFormatSize(GetDataFormat(m_Desc.Format));
+			switch (usage)
 			{
-			case ResourceUsage::Default:
+			case D3D11_USAGE_DEFAULT:
 				if (m_pLock != nullptr)
 				{
 					throw std::exception("lock twice is unacceptable");
 				}
-				m_pLock = new byte[sizeof(m_Width * m_Height * GetFormatSize(m_Format))];
+				m_pLock = new byte[X * Y * pixel_size];
 				return m_pLock;
-			case ResourceUsage::Dynamic:
-			case ResourceUsage::Staging:
+			case D3D11_USAGE_DYNAMIC:
+			case D3D11_USAGE_STAGING:
 
-				mDevice->GetImmediateContext()->Map(m_pTexture2D, 0, D3D11_MAP_READ_WRITE, 0, &m_Subres);
+				pCommandList->GetContext()->Map(m_pTexture2D, 0, D3D11_MAP_READ_WRITE, 0, &m_Subres);
 
 				return (byte*)(m_Subres.pData);
-			case ResourceUsage::Immutable:
+			case D3D11_USAGE_IMMUTABLE:
 			default:
 				return nullptr;
 			}
 
 		}
 
-		virtual void Unlock()
+		void D3D11DeviceTexture2D::Unlock(D3D11CommandList* pCommandList)
 		{
-			switch (m_Usage)
+			int32 X, Y;
+			X = GetWidth(); Y = GetHeight();
+			D3D11_USAGE usage = m_Desc.Usage;
+			UINT pixel_size = (UINT)GetFormatSize(GetDataFormat(m_Desc.Format));
+			switch (usage)
 			{
-			case ResourceUsage::Default:
+			case D3D11_USAGE_DEFAULT:
 				if (m_pLock == nullptr)
 				{
 					throw std::exception("Unlock twice is unacceptable");
 				}
 
 				D3D11_BOX box;
-				box.left = 0; box.right = m_Width;
-				box.top = 0; box.bottom = m_Height;
+				box.left = 0; box.right = X;
+				box.top = 0; box.bottom = Y;
 				box.front = 0; box.back = 1;
-				mDevice->GetImmediateContext()->UpdateSubresource(
+				pCommandList->GetContext()->UpdateSubresource(
 					m_pTexture2D, 0, &box,
 					m_pLock,
-					m_Width * GetFormatSize(m_Format), m_Width * m_Height * GetFormatSize(m_Format));
+					UINT(X * pixel_size), UINT(X * Y * pixel_size));
 
 				delete[] m_pLock;
 				m_pLock = nullptr;
 				break;
-			case ResourceUsage::Dynamic:
-			case ResourceUsage::Staging:
-				mDevice->GetImmediateContext()->Unmap(m_pTexture2D, 0);
+			case D3D11_USAGE_DYNAMIC:
+			case D3D11_USAGE_STAGING:
+				m_Device->GetImmediateContext()->Unmap(m_pTexture2D, 0);
 				break;
-			case ResourceUsage::Immutable:
+			case D3D11_USAGE_IMMUTABLE:
 			default:
 				break;
 			}
 		}
-	};
-
-	class D3D11DeviceTexture3DImpl : public D3D11DeviceTexture3D
-	{
-	private:
-		CComPtr<ID3D11Texture3D> m_pTexture3D = nullptr;
-
-		D3D11_TEXTURE3D_DESC m_Desc;
-
-		D3D11DevicePtr mDevice;
-	public:
-		D3D11DeviceTexture3DImpl(
-			D3D11DevicePtr device,
+		D3D11DeviceTexture3D::D3D11DeviceTexture3D(
+			D3D11Device* device,
 			int32 X, int32 Y, int32 Z,
 			DataFormat format,
 			ResourceUsage usage,
 			ResourceBindFlag flag,
-			byte const* initialData
-			) :
-			D3D11DeviceTexture3D(X, Y, Z, format, usage, flag),
-			mDevice(device)
+			byte const* initialData):
+			m_Device(device),
+			m_DataFormat(format)
 		{
 			/*if (arraySize < 0 || arraySize > 8)
 			{
@@ -396,13 +343,14 @@ namespace Space
 			m_Desc.Usage = (D3D11_USAGE)usage;
 			m_Desc.BindFlags = GetD3D11BindFlag(flag);
 			m_Desc.MipLevels = 0;
+			m_Desc.Format = GetDXGIFormat(format);
 
 			D3D11_SUBRESOURCE_DATA data;
 			ZeroMemory(&data, sizeof(data));
 			data.pSysMem = initialData;
 
 			ID3D11Texture3D* pTexture = nullptr;
-			HRESULT hr = mDevice->Get()->CreateTexture3D(
+			HRESULT hr = m_Device->Get()->CreateTexture3D(
 				&m_Desc,
 				initialData == nullptr ? nullptr : &data,
 				&pTexture);
@@ -413,249 +361,75 @@ namespace Space
 			m_pTexture3D = pTexture;
 		}
 
-		D3D11DeviceTexture3DImpl(D3D11DevicePtr device,
+		D3D11DeviceTexture3D::D3D11DeviceTexture3D(
+			D3D11Device* device,
 			D3D11_TEXTURE3D_DESC desc,
 			ID3D11Texture3D* pTex)
-			:D3D11DeviceTexture3D(
-			desc.Width, desc.Height, desc.Depth,
-			GetDataFormat(desc.Format), (ResourceUsage)desc.Usage, Space::GetBindFlag(desc.BindFlags)),
-			m_Desc(desc),
-			mDevice(device)
+			:m_Desc(desc), m_pTexture3D(pTex)
 		{
-			if (m_pTexture3D == nullptr)
-				throw std::exception("null ID3D11Texture3D interface pointer");
-
-			m_pTexture3D = pTex;
 		}
-	private:
-		byte* m_pLock = nullptr;
-		D3D11_MAPPED_SUBRESOURCE m_Subres;
-	public:
 
-		virtual byte* Lock()
+		byte* D3D11DeviceTexture3D::Lock(D3D11CommandList* pCommandList)
 		{
-			switch (m_Usage)
+			int32 X, Y, Z;
+			X = GetWidth(); Y = GetHeight(); Z = GetDepth();
+			D3D11_USAGE usage = m_Desc.Usage;
+			UINT pixel_size = (UINT)GetFormatSize(GetDataFormat(m_Desc.Format));
+			switch (usage)
 			{
-			case ResourceUsage::Default:
+			case D3D11_USAGE_DEFAULT:
 				if (m_pLock != nullptr)
 				{
 					throw std::exception("lock twice is unacceptable");
 				}
-				m_pLock = new byte[sizeof(m_Width * m_Height * m_Depth * GetFormatSize(m_Format))];
+				m_pLock = new byte[X * Y * Z * pixel_size];
 				return m_pLock;
-			case ResourceUsage::Dynamic:
-			case ResourceUsage::Staging:
+			case D3D11_USAGE_DYNAMIC:
+			case D3D11_USAGE_STAGING:
 
-				mDevice->GetImmediateContext()->Map(m_pTexture3D, 0, D3D11_MAP_READ_WRITE, 0, &m_Subres);
+				pCommandList->GetContext()->Map(m_pTexture3D, 0, D3D11_MAP_READ_WRITE, 0, &m_Subres);
 
 				return (byte*)(m_Subres.pData);
-			case ResourceUsage::Immutable:
+			case D3D11_USAGE_IMMUTABLE:
 			default:
 				return nullptr;
 			}
 
 		}
 
-		virtual void Unlock()
+		void D3D11DeviceTexture3D::Unlock(D3D11CommandList* pCommandList)
 		{
-			switch (m_Usage)
+			int32 X, Y, Z;
+			X = GetWidth(); Y = GetHeight(); Z = GetDepth();
+			D3D11_USAGE usage = m_Desc.Usage;
+			UINT pixel_size = (UINT)GetFormatSize(GetDataFormat(m_Desc.Format));
+			switch (usage)
 			{
-			case ResourceUsage::Default:
+			case D3D11_USAGE_DEFAULT:
 				if (m_pLock == nullptr)
 				{
 					throw std::exception("Unlock twice is unacceptable");
 				}
-
 				D3D11_BOX box;
-				box.left = 0; box.right = m_Width;
-				box.top = 0; box.bottom = m_Height;
-				box.front = 0; box.back = m_Depth;
-				mDevice->GetImmediateContext()->UpdateSubresource(
+				box.left = 0; box.right = X;
+				box.top = 0; box.bottom = Y;
+				box.front = 0; box.back = Z;
+				pCommandList->GetContext()->UpdateSubresource(
 					m_pTexture3D, 0, &box,
 					m_pLock,
-					m_Width * GetFormatSize(m_Format), m_Width * m_Height * GetFormatSize(m_Format));
+					UINT(X * pixel_size), UINT(X * Y * pixel_size));
 
 				delete[] m_pLock;
 				m_pLock = nullptr;
 				break;
-			case ResourceUsage::Dynamic:
-			case ResourceUsage::Staging:
-				mDevice->GetImmediateContext()->Unmap(m_pTexture3D, 0);
+			case D3D11_USAGE_DYNAMIC:
+			case D3D11_USAGE_STAGING:
+				pCommandList->GetContext()->Unmap(m_pTexture3D, 0);
 				break;
-			case ResourceUsage::Immutable:
+			case D3D11_USAGE_IMMUTABLE:
 			default:
 				break;
 			}
-		}
-
-		virtual ID3D11Texture3D* GetD3DTexture3D()
-		{
-			return (m_pTexture3D.p);
-		}
-	};
-
-	D3D11DeviceTexture1D* D3D11DeviceTexture1D::CreateArray(D3D11DevicePtr device, int32 X, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, int32 arraySize, byte const* initialData)
-	{
-		try
-		{
-			return new D3D11DeviceTexture1DImpl(device, X, format, usage, flag, arraySize, initialData);
-		}
-		catch (std::exception &e)
-		{
-			Log(e.what());
-			return nullptr;
-		}
-	}
-
-	D3D11DeviceTexture1D::D3D11DeviceTexture1D(
-		int32 X,
-		DataFormat format,
-		ResourceUsage usage,
-		ResourceBindFlag flag,
-		int32 arraySize)
-		:DeviceTexture1D(X, format, usage, flag, arraySize)
-	{}
-
-	D3D11DeviceTexture1D* D3D11DeviceTexture1D::Create(D3D11DevicePtr device, int32 X, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, byte const* initialData)
-	{
-		try
-		{
-			return new D3D11DeviceTexture1DImpl(device, X, format, usage, flag, 1, initialData);
-		}
-		catch (std::exception &e)
-		{
-			Log(e.what());
-			return nullptr;
-		}
-	}
-
-	D3D11DeviceTexture1D* D3D11DeviceTexture1D::Create(D3D11DevicePtr device, ID3D11Texture1D* pTexture)
-	{
-		try
-		{
-			D3D11_TEXTURE1D_DESC desc;
-			pTexture->GetDesc(&desc);
-			return new D3D11DeviceTexture1DImpl(device, desc, pTexture);
-		}
-		catch (std::exception &e)
-		{
-			Log(e.what());
-			return nullptr;
-		}
-	}
-
-	D3D11DeviceTexture2D::D3D11DeviceTexture2D(
-		int32 X, int32 Y,
-		DataFormat format,
-		ResourceUsage usage,
-		ResourceBindFlag flag,
-		int32 arraySize)
-		:DeviceTexture2D(X, Y, format, usage, flag, arraySize)
-	{}
-
-	D3D11DeviceTexture2D* D3D11DeviceTexture2D::CreateArray(D3D11DevicePtr device, int32 X, int32 Y, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, int32 arraySize, byte const* initialData)
-	{
-		try
-		{
-			return new D3D11DeviceTexture2DImpl(device, X, Y, format, usage, flag, arraySize, initialData);
-		}
-		catch (std::exception &e)
-		{
-			Log(e.what());
-			return nullptr;
-		}
-	}
-
-	D3D11DeviceTexture2D* D3D11DeviceTexture2D::Create(D3D11DevicePtr device, int32 X, int32 Y, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, byte const* initialData)
-	{
-		try
-		{
-			return new D3D11DeviceTexture2DImpl(device, X, Y, format, usage, flag, 1, initialData);
-		}
-		catch (std::exception &e)
-		{
-			Log(e.what());
-			return nullptr;
-		}
-	}
-
-	D3D11DeviceTexture2D* D3D11DeviceTexture2D::Create(D3D11DevicePtr device, ID3D11Texture2D* pTexture)
-	{
-		try
-		{
-			D3D11_TEXTURE2D_DESC desc;
-			pTexture->GetDesc(&desc);
-			return new D3D11DeviceTexture2DImpl(device, desc, pTexture);
-		}
-		catch (std::exception &e)
-		{
-			Log(e.what());
-			return nullptr;
-		}
-	}
-
-	D3D11DeviceTexture2D* D3D11DeviceTexture2D::CreateFromFile(D3D11DevicePtr device, std::string const& filename, DataFormat format, ResourceUsage usage, ResourceBindFlag flag)
-	{
-		return CreateFromFile(device, str2wstr(filename), format, usage, flag);
-	}
-
-	D3D11DeviceTexture2D* D3D11DeviceTexture2D::CreateFromFile(D3D11DevicePtr device, std::wstring const& filename, DataFormat format, ResourceUsage usage, ResourceBindFlag flag)
-	{
-		ID3D11Texture2D* pTexture = nullptr;
-		auto hr = DirectX::CreateDDSTextureFromFileEx(device->Get(), filename.c_str(), filename.size(), (D3D11_USAGE)usage,
-			(UINT)GetD3D11BindFlag(flag), 0, 0, true, (ID3D11Resource**)&pTexture, nullptr);
-		if (FAILED(hr))
-		{
-			return nullptr;
-		}
-
-		try
-		{
-			D3D11_TEXTURE2D_DESC desc;
-			pTexture->GetDesc(&desc);
-			return new D3D11DeviceTexture2DImpl(device, desc, pTexture);
-		}
-		catch (std::exception &e)
-		{
-			Log(e.what());
-			return nullptr;
-		}
-	}
-
-	D3D11DeviceTexture3D::D3D11DeviceTexture3D(
-		int32 X, int32 Y, int32 Z,
-		DataFormat format,
-		ResourceUsage usage,
-		ResourceBindFlag flag)
-		:DeviceTexture3D(X, Y, Z, format, usage, flag)
-	{
-	}
-
-	D3D11DeviceTexture3D* D3D11DeviceTexture3D::Create(D3D11DevicePtr device, int32 X, int32 Y, int32 Z, DataFormat format, ResourceUsage usage, ResourceBindFlag flag, byte const* initialData)
-	{
-		try
-		{
-			return new D3D11DeviceTexture3DImpl(device, X, Y, Z, format, usage, flag, initialData);
-		}
-		catch (std::exception &e)
-		{
-			Log(e.what());
-			return nullptr;
-		}
-	}
-
-	D3D11DeviceTexture3D* D3D11DeviceTexture3D::Create(D3D11DevicePtr device, ID3D11Texture3D* pTexture)
-	{
-		try
-		{
-			D3D11_TEXTURE3D_DESC desc;
-			pTexture->GetDesc(&desc);
-			return new D3D11DeviceTexture3DImpl(device, desc, pTexture);
-		}
-		catch (std::exception &e)
-		{
-			Log(e.what());
-			return nullptr;
 		}
 	}
 }

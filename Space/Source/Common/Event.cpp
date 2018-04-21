@@ -3,23 +3,23 @@
 
 namespace Space
 {
-	void KeyboardListener::RaisePressedEvent(KeyCode code)
+	void KeyboardListener::RaisePressedEvent(KeyboardEventArgs e)
 	{
 		try
 		{
-			m_IsPressedMap.at(code) = true;			
-			RaiseEvent(KeyPressed, KeyboardEventArgs{ code });
+			m_IsPressedMap.at(e.code) = true;			
+			RaiseEvent(KeyPressed, e);
 		}
 		catch (std::out_of_range)
 		{
 		}
 	}
-	void KeyboardListener::RaiseReleaseEvent(KeyCode code)
+	void KeyboardListener::RaiseReleaseEvent(KeyboardEventArgs e)
 	{
 		try
 		{
-			m_IsPressedMap.at(code) = false;
-			RaiseEvent(KeyReleased, KeyboardEventArgs{ code });
+			m_IsPressedMap.at(e.code) = false;
+			RaiseEvent(KeyReleased, e);
 		}
 		catch (std::out_of_range)
 		{
@@ -38,25 +38,25 @@ namespace Space
 			);
 	}
 
-	void EventDispatcher::RaisePressedEvent(KeyCode code)
+	void EventDispatcher::RaisePressedEvent(KeyboardEventArgs e)
 	{
 		for (std::shared_ptr<EventListener> ptr : m_ListenerArray)
 		{
 			if (EventListener::Type::Keyboard == ptr->GetType())
 			{
 				std::static_pointer_cast<KeyboardListener>(ptr)
-					->RaisePressedEvent(code);
+					->RaisePressedEvent(e);
 			}
 		}
 	}
-	void EventDispatcher::RaiseReleaseEvent(KeyCode code)
+	void EventDispatcher::RaiseReleaseEvent(KeyboardEventArgs e)
 	{
 		for (std::shared_ptr<EventListener> ptr : m_ListenerArray)
 		{
 			if (EventListener::Type::Keyboard == ptr->GetType())
 			{
 				std::static_pointer_cast<KeyboardListener>(ptr)
-					->RaiseReleaseEvent(code);
+					->RaiseReleaseEvent(e);
 			}
 		}
 	}

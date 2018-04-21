@@ -34,14 +34,32 @@ namespace Space
 		typedef Type& Ref;
 		typedef Type const& ConstRef;
 	};
-
-	typedef std::shared_ptr<Object> ObjectPtr;
-
+	
 	template <class _Type>
 	class SPACE_COMMON_API SharedPtrObject : virtual public std::enable_shared_from_this < _Type >
 	{
 	public:
 		virtual ~SharedPtrObject(){}
+
+		typedef typename std::shared_ptr<_Type> SharedPtr;
+	};
+
+	template <class _Type>
+	class SPACE_COMMON_API UniquePtrObject
+	{
+	public:
+		virtual ~UniquePtrObject(){}
+
+		//typedef typename std::unique_ptr<typename 
+		//	std::enable_if<!std::is_base_of<typename SharedPtrObject<_Type>, _Type>::value,_Type>::type> UniquePtr;
+	
+		typedef typename std::unique_ptr<_Type> UniquePtr;
+
+		template<class ...Args>
+		static typename UniquePtr MakeUniquePtr(Args&&... args)
+		{
+			return std::make_unique<_Type>(std::forward<Args>(args)...);
+		}
 	};
 
 	class SPACE_COMMON_API Uncopyable{
@@ -52,6 +70,40 @@ namespace Space
 		Uncopyable& operator=(const Uncopyable&) = delete;
 	};
 
+	template<class Impl>
+	class SPACE_COMMON_API PImpl: virtual public Uncopyable
+	{
+	public:
+		typedef Impl ImplType;
+		Impl* GetImpl()
+		{
+			return _impl.get();
+		}
+		const Impl* GetImpl() const
+		{
+			return _impl.get();
+		}
+
+		PImpl(const PImpl&) = delete;
+		PImpl(PImpl&&) = delete;
+		PImpl& operator=(const PImpl&) = delete;
+		PImpl& operator=(PImpl&&) = delete;
+
+		template<class ...Args>
+		PImpl(Args&&... args)
+		{
+			_impl = std::make_unique<Impl>(std::forward<Args>(args)...);
+		}
+
+		PImpl(Impl* impl)
+		{
+			_impl.reset(impl);
+		}
+
+		virtual ~PImpl(){}
+	protected:
+		std::unique_ptr<Impl> _impl = nullptr;
+	};
 
 	class SPACE_COMMON_API Interface : private Uncopyable
 	{
@@ -122,6 +174,7 @@ namespace Space
 
 		Type* p;
 	};
+
 
 	class SPACE_COMMON_API Archiveable
 	{

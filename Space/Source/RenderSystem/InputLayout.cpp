@@ -1,71 +1,72 @@
-#include "RenderSystem/RenderSystem.hpp"
+#include "RenderSystem/InputLayout.hpp"
 
 namespace Space
 {
-	
+	namespace Render {
 
-	InputLayout::InputLayout(std::initializer_list<InputElement> list)
-		:m_LayoutArray(list){
+		InputLayout::InputLayout(std::initializer_list<InputElement> list)
+			:_LayoutArray(list) {
 
-		for (auto iter = m_LayoutArray.begin();
-			iter != m_LayoutArray.end();
-			++iter)
-		{
-			switch (iter->Semantic)
+			for (auto iter = _LayoutArray.begin();
+				iter != _LayoutArray.end();
+				++iter)
 			{
-			case ElemSemantic::Position:	{	m_PositionCount++;	}	goto Valid;
-			case ElemSemantic::Normal:      {	m_NormalCount++;	}	goto Valid;
-			case ElemSemantic::Tangent:		{	m_TangentCount++;	}	goto Valid;
-			case ElemSemantic::TexCoord:	{	m_TexCoordCount++;	}	goto Valid;
-			case ElemSemantic::Unknown:
-			default:
-				goto Invalid;
-			}
+				switch (iter->Semantic)
+				{
+				case ElemSemantic::Position: {	_PositionCount++;	}	goto Valid;
+				case ElemSemantic::Normal: {	_NormalCount++;	}	goto Valid;
+				case ElemSemantic::Tangent: {	_TangentCount++;	}	goto Valid;
+				case ElemSemantic::TexCoord: {	_TexCoordCount++;	}	goto Valid;
+				case ElemSemantic::Unknown:
+				default:
+					goto Invalid;
+				}
 
-		Valid:
+			Valid:
+				try
+				{
+					auto& offset = _StridePerSlot.at(iter->InputSlot);
+					iter->AlignedByteOffset = (uint32)offset;
+					offset = (size_t)(offset + GetElementSize(iter->Type));
+				}
+				catch (std::out_of_range&)
+				{
+					_StridePerSlot[iter->InputSlot] = GetElementSize(iter->Type);
+					iter->AlignedByteOffset = 0;
+				}
+			Invalid:
+				continue;
+			}
+		}
+
+		void InputLayout::Insert(ElementArray::iterator pos, InputElement elem)
+		{
 			try
 			{
-				auto& offset = m_StridePerSlot.at(iter->InputSlot);
-				iter->AlignedByteOffset = offset;
-				offset = Alignment(offset + GetElementSize(iter->Type));
+				auto& offset = _StridePerSlot.at(elem.InputSlot);
+				elem.AlignedByteOffset = (uint32)offset;
+				offset = Alignment(offset + GetElementSize(elem.Type));
 			}
 			catch (std::out_of_range&)
 			{
-				m_StridePerSlot[iter->InputSlot] = GetElementSize(iter->Type);
-				iter->AlignedByteOffset = 0;
+				_StridePerSlot[elem.InputSlot] = GetElementSize(elem.Type);
+				elem.AlignedByteOffset = 0;
 			}
-		Invalid:
-			continue;
+			_LayoutArray.insert(pos, elem);
 		}
-	}
 
-	void InputLayout::Insert(ElementArray::iterator pos, InputElement elem)
-	{
-		try
+		size_t InputLayout::GetVertexStride(size_t slot) const
 		{
-			auto& offset = m_StridePerSlot.at(elem.InputSlot);
-			elem.AlignedByteOffset = offset;
-			offset = Alignment(offset + GetElementSize(elem.Type));
+			return _StridePerSlot.at(slot);
 		}
-		catch (std::out_of_range&)
+
+		size_t InputLayout::GetSize() const
 		{
-			m_StridePerSlot[elem.InputSlot] = GetElementSize(elem.Type);
-			elem.AlignedByteOffset = 0;
+			return _LayoutArray.size();
 		}
-		m_LayoutArray.insert(pos, elem);
-	}
 
-	size_t InputLayout::GetVertexStride(size_t slot) const
-	{
-		return m_StridePerSlot.at(slot);
-	}
-
-	size_t InputLayout::GetSize() const
-	{
-		return m_LayoutArray.size();
-	}
-
-	InputLayout::~InputLayout()
-	{
+		InputLayout::~InputLayout()
+		{
+		}
 	}
 }

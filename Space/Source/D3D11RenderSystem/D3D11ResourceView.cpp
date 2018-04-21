@@ -5,159 +5,93 @@
 
 namespace Space
 {
-	D3D11DepthStencilView::D3D11DepthStencilView(
-		D3D11DevicePtr device,
-		DeviceTexture2D* pBuffer)
-	{
-		auto pD3DBuffer = dynamic_cast<D3D11DeviceTexture2D*>(pBuffer);
-		if (pD3DBuffer == nullptr)
-			throw std::exception("Wrong D3D11DeviceTexture2D Interface.");
-
-		D3D11_TEXTURE2D_DESC texDesc;
-		pD3DBuffer->GetD3DTexture2D()->GetDesc(&texDesc);
-
-		ZeroMemory(&m_Desc, sizeof(m_Desc));
-		m_Desc.Format = texDesc.Format;
-		m_Desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-		m_Desc.Texture2D.MipSlice = 0;
-
-		ID3D11DepthStencilView* pView = nullptr;
-		HRESULT hr = device->Get()->CreateDepthStencilView(pD3DBuffer->GetD3DTexture2D(), &m_Desc, &pView);
-		if (FAILED(hr))
+	namespace Render {
+		
+		D3D11ShaderResource::D3D11ShaderResource(
+			D3D11Device* device, 
+			D3D11DeviceBuffer* pTBuffer, 
+			size_t elementCount, size_t sizeOfElement)
 		{
-			throw std::exception("ID3D11Device::CreateDepthStencilView failed.");
-		}
-		m_pView = pView;
-	}
+			D3D11_BUFFER_DESC bufDesc;
+			pTBuffer->GetRawPtr()->GetDesc(&bufDesc);
+			m_Desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+			m_Desc.Buffer.FirstElement = 0;
+			m_Desc.Buffer.NumElements = (UINT)elementCount;
+			m_Desc.Buffer.ElementWidth = (UINT)sizeOfElement;
+			m_Desc.Buffer.ElementOffset = 0;
 
-	D3D11DepthStencilView* D3D11DepthStencilView::Create(D3D11DevicePtr device, DeviceTexture2D* pBuffer)
-	{
-		try
-		{
-			if (pBuffer == nullptr)
-				throw std::exception("Null DeviceTexture2D pointer");
-
-			return new D3D11DepthStencilView(device, pBuffer);
+			ID3D11ShaderResourceView* pView;
+			HRESULT hr = device->Get()->CreateShaderResourceView(pTBuffer->GetRawPtr(), &m_Desc, &pView);
+			if (FAILED(hr))
+			{
+				throw std::exception("CreateShaderResourceView failed.");
+			}
+			m_pView = pView;
 		}
-		catch (std::exception &e)
-		{
-			Log(e.what());
-			return nullptr;
-		}
-	}
-	
-	D3D11DepthStencilView::~D3D11DepthStencilView()
-	{}
 
 		D3D11ShaderResource::D3D11ShaderResource(
-		D3D11DevicePtr device, TextureBuffer* pTBuffer)
-	{
-		assert(nullptr != dynamic_cast<D3D11DeviceBuffer*>(pTBuffer->GetBuffer()));
-
-		CComPtr<ID3D11Buffer> pBuffer(static_cast<D3D11DeviceBuffer*>(pTBuffer->GetBuffer())->GetRawBuffer());
-
-		D3D11_BUFFER_DESC bufDesc;
-		pBuffer->GetDesc(&bufDesc);
-		m_Desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
-		m_Desc.Buffer.FirstElement = 0;
-		m_Desc.Buffer.NumElements = pTBuffer->GetElementCount();
-		m_Desc.Buffer.ElementWidth = pTBuffer->GetSizeOfElement();
-		m_Desc.Buffer.ElementOffset = 0;
-
-		ID3D11ShaderResourceView* pView;
-		HRESULT hr = device->Get()->CreateShaderResourceView(pBuffer, &m_Desc, &pView);
-		if (FAILED(hr))
+			D3D11Device* device, 
+			D3D11DeviceTexture1D* pTexture)
 		{
-			throw std::exception("CreateShaderResourceView failed.");
+			D3D11_TEXTURE1D_DESC texDesc;
+			pTexture->GetD3DTexture1D()->GetDesc(&texDesc);
+			m_Desc.Format = texDesc.Format;
+			m_Desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE1D;
+			m_Desc.Texture1D.MipLevels = texDesc.MipLevels;
+			m_Desc.Texture1D.MostDetailedMip = 0;
+
+			ID3D11ShaderResourceView* pView;
+			HRESULT hr = device->Get()->CreateShaderResourceView(pTexture->GetD3DTexture1D(), &m_Desc, &pView);
+			if (FAILED(hr))
+			{
+				throw std::exception("CreateShaderResourceView failed.");
+			}
+			m_pView = pView;
 		}
-		m_pView = pView;
-	}
 
-	D3D11ShaderResource::D3D11ShaderResource(
-		D3D11DevicePtr device, DeviceTexture1D* pTexture)
-	{
-		assert(nullptr != dynamic_cast<D3D11DeviceTexture1D*>(pTexture));
-
-		CComPtr<ID3D11Texture1D> pTexture1D(static_cast<D3D11DeviceTexture1D*>(pTexture)->GetD3DTexture1D());
-
-		D3D11_TEXTURE1D_DESC texDesc;
-		pTexture1D->GetDesc(&texDesc);
-		m_Desc.Format = texDesc.Format;
-		m_Desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE1D;
-		m_Desc.Texture1D.MipLevels = texDesc.MipLevels;
-		m_Desc.Texture1D.MostDetailedMip = 0;
-
-		ID3D11ShaderResourceView* pView;
-		HRESULT hr = device->Get()->CreateShaderResourceView(pTexture1D, &m_Desc, &pView);
-		if (FAILED(hr))
+		D3D11ShaderResource::D3D11ShaderResource(
+			D3D11Device* device, 
+			D3D11DeviceTexture2D* pTexture)
 		{
-			throw std::exception("CreateShaderResourceView failed.");
+			auto pD3DTexture = pTexture->GetRawTexture2D();
+			D3D11_TEXTURE2D_DESC texDesc;
+			pD3DTexture->GetDesc(&texDesc);
+			m_Desc.Format = texDesc.Format;
+			m_Desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+			m_Desc.Texture2D.MipLevels = texDesc.MipLevels;
+			m_Desc.Texture2D.MostDetailedMip = 0;
+
+			ID3D11ShaderResourceView* pView;
+			HRESULT hr = device->Get()->CreateShaderResourceView(pD3DTexture, &m_Desc, &pView);
+			if (FAILED(hr))
+			{
+				throw std::exception("CreateShaderResourceView failed.");
+			}
+			m_pView = pView;
 		}
-		m_pView = pView;
-	}
 
-	D3D11ShaderResource::D3D11ShaderResource(D3D11DevicePtr device, DeviceTexture2D* pTexture)
-	{
-		assert(nullptr != dynamic_cast<D3D11DeviceTexture2D*>(pTexture));
-
-		CComPtr<ID3D11Texture2D> pTexture2D(static_cast<D3D11DeviceTexture2D*>(pTexture)->GetD3DTexture2D());
-
-		D3D11_TEXTURE2D_DESC texDesc;
-		pTexture2D->GetDesc(&texDesc);
-		m_Desc.Format = texDesc.Format;
-		m_Desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-		m_Desc.Texture2D.MipLevels = texDesc.MipLevels;
-		m_Desc.Texture2D.MostDetailedMip = 0;
-
-		ID3D11ShaderResourceView* pView;
-		HRESULT hr = device->Get()->CreateShaderResourceView(pTexture2D, &m_Desc, &pView);
-		if (FAILED(hr))
+		D3D11ShaderResource::D3D11ShaderResource(
+			D3D11Device* device, 
+			D3D11DeviceTexture3D* pTexture)
 		{
-			throw std::exception("CreateShaderResourceView failed.");
+			D3D11_TEXTURE3D_DESC texDesc;
+			pTexture->GetD3DTexture3D()->GetDesc(&texDesc);
+			m_Desc.Format = texDesc.Format;
+			m_Desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE3D;
+			m_Desc.Texture1D.MipLevels = texDesc.MipLevels;
+			m_Desc.Texture1D.MostDetailedMip = 0;
+
+			ID3D11ShaderResourceView* pView;
+			HRESULT hr = device->Get()->CreateShaderResourceView(pTexture->GetD3DTexture3D(), &m_Desc, &pView);
+			if (FAILED(hr))
+			{
+				throw std::exception("CreateShaderResourceView failed.");
+			}
+			m_pView = pView;
 		}
-		m_pView = pView;
+		
+		D3D11ShaderResource::~D3D11ShaderResource()
+		{}
+
 	}
-
-	D3D11ShaderResource::D3D11ShaderResource(
-		D3D11DevicePtr device, DeviceTexture3D* pTexture)
-	{
-		assert(nullptr != dynamic_cast<D3D11DeviceTexture3D*>(pTexture));
-
-		CComPtr<ID3D11Texture3D> pTexture3D(static_cast<D3D11DeviceTexture3D*>(pTexture)->GetD3DTexture3D());
-
-		D3D11_TEXTURE3D_DESC texDesc;
-		pTexture3D->GetDesc(&texDesc);
-		m_Desc.Format = texDesc.Format;
-		m_Desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE3D;
-		m_Desc.Texture1D.MipLevels = texDesc.MipLevels;
-		m_Desc.Texture1D.MostDetailedMip = 0;
-
-		ID3D11ShaderResourceView* pView;
-		HRESULT hr = device->Get()->CreateShaderResourceView(pTexture3D, &m_Desc, &pView);
-		if (FAILED(hr))
-		{
-			throw std::exception("CreateShaderResourceView failed.");
-		}
-		m_pView = pView;
-	}
-
-
-	CComPtr<ID3D11ShaderResourceView> D3D11ShaderResource::GetShaderResourceView() const
-	{
-		return (m_pView.p);
-	}
-
-	D3D11ShaderResource* D3D11ShaderResource::Create(D3D11DevicePtr device, DeviceTexture2D* pTexture)
-	{
-		TRY_CATCH_LOG(return new D3D11ShaderResource(device, pTexture), return nullptr);
-	}
-
-	D3D11ShaderResource* D3D11ShaderResource::Create(D3D11DevicePtr device, TextureBuffer* pTBuffer)
-	{
-		TRY_CATCH_LOG(return new D3D11ShaderResource(device, pTBuffer), return nullptr);
-	}
-
-	D3D11ShaderResource::~D3D11ShaderResource()
-	{}
-	
 }

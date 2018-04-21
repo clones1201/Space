@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/clone/Code/GitHub/Space
+# Install script for directory: C:/Users/clone/GitHub/Space
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -29,7 +29,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("C:/Users/clone/Code/GitHub/Space/Space/cmake_install.cmake")
+  include("C:/Users/clone/GitHub/Space/Space/cmake_install.cmake")
 
 endif()
 
@@ -41,5 +41,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/clone/Code/GitHub/Space/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/clone/GitHub/Space/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

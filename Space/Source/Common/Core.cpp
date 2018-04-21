@@ -21,7 +21,7 @@ namespace Space
 	
 	tstring Core::GetAssetsDir() const
 	{
-		return TEXT("../../Assets");
+		return TEXT("./Assets");
 	}
 
 	EventDispatcher* Core::GetEventDispatcher() const

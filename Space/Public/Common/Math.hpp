@@ -1,5 +1,4 @@
-#ifndef __SPACE_MATH_HPP__
-#define __SPACE_MATH_HPP__
+#pragma once
 
 #if (SPACE_PLATFORM == SPACE_WIN32)
 #include <DirectXMath.h>
@@ -634,5 +633,3 @@ namespace Space
 #endif
 
 }
-
-#endif

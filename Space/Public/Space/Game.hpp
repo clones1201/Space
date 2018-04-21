@@ -27,7 +27,7 @@ namespace Space
 		DEF_BOOL_PROPERTY(CastShadow, TEXT("General"), false);
 
 		DEF_OBJECT_PROPERTY(Mesh, Space::Mesh, TEXT("General"), nullptr);
-		DEF_OBJECT_PROPERTY(Material, Space::Material, TEXT("General"), nullptr);
+		DEF_OBJECT_PROPERTY(Material, Space::Render::Material, TEXT("General"), nullptr);
 
 		virtual void Invoke();
 	protected:
@@ -133,7 +133,7 @@ namespace Space
 			m_Aspect = value;
 		}
 	protected:
-		float m_Aspect = 1.7777f;
+		float m_Aspect = 1920.0f / 1080.0f;
 
 	private:
 		bool m_ConstrainAspect = true;

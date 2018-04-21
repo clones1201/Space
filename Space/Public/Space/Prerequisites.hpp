@@ -7,17 +7,12 @@ extern "C" void * __cdecl memset(void *, int, size_t);
 
 #include "Common/Common.hpp"
 #include "RenderSystem/RenderSystem.hpp"
-#include "D3D11RenderSystem/D3D11RenderSystem.hpp"
 
 #ifdef SPACE_EXPORTS
 #define SPACE_API __declspec(dllexport)
 #else
 #define SPACE_API __declspec(dllimport)
 #endif
-
-#include "rapidjson/rapidjson.h"
-#include "rapidjson/writer.h"
-#include "rapidjson/document.h"
 
 #if SPACE_PLATFORM == SPACE_WIN32
 #ifdef _DEBUG
@@ -34,6 +29,8 @@ namespace Space
 	class Core;
 	class Game;
 	class Window;
+	class Mesh;
+	class MeshPart;
 	class WindowUtility;
 	class EventListener;
 	class EventDispatcher;
