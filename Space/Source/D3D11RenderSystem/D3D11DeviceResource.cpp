@@ -1,6 +1,6 @@
 #include "D3D11RenderSystem/D3D11Shared.hpp"
 #include "D3D11RenderSystem/D3D11DeviceResource.hpp"
-#include "D3D11RenderSystem/D3D11Rendering.hpp"
+#include "D3D11RenderSystem/D3D11CommandList.hpp"
 #include "DDSTextureLoader.h"
 
 namespace Space {

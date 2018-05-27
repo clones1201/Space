@@ -7,6 +7,8 @@
 #include "RenderSystem/Rendering.hpp"
 #include "RenderSystem/Material.hpp"
 #include "RenderSystem/Renderer.hpp"
+#include "RenderSystem/PipelineStateManager.hpp"
+
 namespace Space
 {
 	using namespace Render;
@@ -47,10 +49,9 @@ namespace Space
 
 		m_pRenderWindow->Show();
 
+		PipelineStateManager::Instance().CreateOpaqueDefault();
+
 		m_pPipelineState.reset(new Render::PipelineState(device));
-		m_pPipelineState->_SetRasterizerState();	
-		m_pPipelineState->_SetBlendState();	
-		m_pPipelineState->_SetDepthStencilState();
 
 		std::ifstream shaderfile("./Assets/Material/default/Shader0.hlsl");
 		auto shaderCode = std::make_shared<std::string>((std::istreambuf_iterator<char>(shaderfile)),

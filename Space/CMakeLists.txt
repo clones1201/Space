@@ -51,7 +51,7 @@ set(D3D11RENDERSYSTEM_INC_FILES
 	"${PROJECT_BINARY_DIR}/Space/Public/D3D11RenderSystem/D3D11Shader.hpp"
 	#"${PROJECT_BINARY_DIR}/Space/Public/D3D11RenderSystem/D3D11ShaderReflection.hpp"
 	"${PROJECT_BINARY_DIR}/Space/Public/D3D11RenderSystem/D3D11Shared.hpp")
-source_group(D3D11RenderSystem\\Header FILES ${D3D11RENDERSYSTEM_INC_FILES})
+source_group(RenderSystem\\D3D11\\Header FILES ${D3D11RENDERSYSTEM_INC_FILES})
 
 set(SPACE_INC_FILES
 	"${PROJECT_BINARY_DIR}/Space/Public/Space/Game.hpp"
@@ -101,7 +101,7 @@ set(D3D11RENDERSYSTEM_SRC_FILES
 	"${PROJECT_BINARY_DIR}/Space/Source/D3D11RenderSystem/D3D11Shader.cpp"
 	"${PROJECT_BINARY_DIR}/Space/Source/D3D11RenderSystem/D3D11ShaderReflection.cpp"
 	"${PROJECT_BINARY_DIR}/Space/Source/D3D11RenderSystem/D3D11Shared.cpp")
-source_group(D3D11RenderSystem\\Source FILES ${D3D11RENDERSYSTEM_SRC_FILES})
+source_group(RenderSystem\\D3D11\\Source FILES ${D3D11RENDERSYSTEM_SRC_FILES})
 
 set(SPACE_SRC_FILES
 	"${PROJECT_BINARY_DIR}/Space/Source/Space/Mesh.cpp"

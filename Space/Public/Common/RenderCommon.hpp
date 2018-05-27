@@ -1,3 +1,6 @@
+#ifndef __RENDERCOMMON_HPP__
+#define __RENDERCOMMON_HPP__
+
 #pragma once
 
 #include "Common.hpp"
@@ -279,18 +282,32 @@ namespace Space {
 			Back = 3
 		};
 
-		struct SPACE_COMMON_API RasterizerDesc
+		struct SPACE_COMMON_API RasterizerStateDescriptor : HashableBits<RasterizerStateDescriptor>, ComparableBits<RasterizerStateDescriptor>
 		{
-			FillMode FillMode;
-			CullMode CullMode;
-			bool FrontCounterClockwise;
+			// total 105 bits, 14 bytes
+			FillMode FillMode : 2;
+			CullMode CullMode : 2;
+			bool FrontCounterClockwise : 1;
 			int32 DepthBias;
 			float DepthBiasClamp;
 			float SlopeScaledDepthBias;
-			bool DepthClipEnable;
-			bool ScissorEnable;
-			bool MultisampleEnable;
-			bool AntialiasedLineEnable;
+			bool DepthClipEnable : 1;
+			bool ScissorEnable : 1;
+			bool MultisampleEnable : 1;
+			bool AntialiasedLineEnable : 1;
+
+			RasterizerStateDescriptor():
+				FillMode(FillMode::Solid),
+				CullMode(CullMode::Back),
+				FrontCounterClockwise(true),
+				DepthBias(0),
+				DepthBiasClamp(0.0f),
+				SlopeScaledDepthBias(0.0f),
+				DepthClipEnable(false),
+				ScissorEnable(false),
+				MultisampleEnable(false),
+				AntialiasedLineEnable(false)
+			{}
 		};
 
 		enum class SPACE_COMMON_API DepthWriteMask : uint8
@@ -311,7 +328,7 @@ namespace Space {
 			Always = 8
 		};
 
-		enum class SPACE_COMMON_API StencilOp : uint8
+		enum class SPACE_COMMON_API StencilOperator : uint8
 		{
 			Keep = 1,
 			Zero = 2,
@@ -323,27 +340,44 @@ namespace Space {
 			Decr = 8
 		};
 
-		struct SPACE_COMMON_API DepthStincilOpDesc
+		struct SPACE_COMMON_API DepthStencilOpDescriptor
 		{
-			StencilOp StencilFailOp;
-			StencilOp StencilDepthFailOp;
-			StencilOp StencilPassOp;
-			ComparisonFunc StencilFunc;
+			StencilOperator StencilFailOp : 4;
+			StencilOperator StencilDepthFailOp : 4;
+			StencilOperator StencilPassOp : 4;
+			ComparisonFunc StencilFunc : 4;
+
+			DepthStencilOpDescriptor():
+				StencilFailOp(StencilOperator::Keep),
+				StencilDepthFailOp(StencilOperator::Keep),
+				StencilPassOp(StencilOperator::Keep),
+				StencilFunc(ComparisonFunc::Always)
+			{}
 		};
 
-		struct SPACE_COMMON_API DepthStencilDesc
-		{
-			bool DepthEnable;
-			DepthWriteMask DepthWriteMask;
-			ComparisonFunc DepthFunc;
-			bool StencilEnable;
+		struct SPACE_COMMON_API DepthStencilStateDescriptor : HashableBits<DepthStencilStateDescriptor>, ComparableBits<DepthStencilStateDescriptor>
+		{  
+			//total 55 bits, 7 bytes
+			bool DepthEnable : 1;
+			DepthWriteMask DepthWriteMask : 1;
+			ComparisonFunc DepthFunc : 4;
+			bool StencilEnable : 1;
 			uint8 StencilReadMask;
 			uint8 StencilWriteMask;
-			DepthStincilOpDesc FrontFace;
-			DepthStincilOpDesc BackFace;
+			DepthStencilOpDescriptor FrontFace;
+			DepthStencilOpDescriptor BackFace;
+
+			DepthStencilStateDescriptor():
+				DepthEnable(true),
+				DepthWriteMask(DepthWriteMask::All),
+				DepthFunc(ComparisonFunc::Less),
+				StencilEnable(false),
+				StencilReadMask(0xff),
+				StencilWriteMask(0xff)
+			{}
 		};
 
-		enum class SPACE_COMMON_API Blend : uint8
+		enum class SPACE_COMMON_API BlendFactor : uint8
 		{
 			Zero = 1,
 			One = 2,
@@ -373,16 +407,25 @@ namespace Space {
 			Max = 5
 		};
 
-		struct SPACE_COMMON_API RenderTargetBlendDesc
+		struct SPACE_COMMON_API RenderTargetBlendDescriptor
 		{
-			bool BlendEnable;
-			Blend SrcBlend;
-			Blend DestBlend;
-			BlendOperator BlendOp;
-			Blend SrcBlendAlpha;
-			Blend DestBlendAlpha;
-			BlendOperator BlendOpAlpha;
-			uint8 RenderTargetWriteMask;
+			// total 35 bits, 5 bytes
+			bool BlendEnable : 1;
+			BlendFactor SrcBlend : 5;
+			BlendFactor DestBlend : 5;
+			BlendOperator BlendOp : 3;
+			BlendFactor SrcBlendAlpha : 5;
+			BlendFactor DestBlendAlpha : 5;
+			BlendOperator BlendOpAlpha : 3;
+			uint8 RenderTargetWriteMask : 8;
+		};
+
+		struct SPACE_COMMON_API BlendStateDescriptor : HashableBits<BlendStateDescriptor>, ComparableBits<BlendStateDescriptor>
+		{ 
+			// total 282 bits, 36 bytes
+			bool AlphaToCoverageEnable : 1;
+			bool IndependentBlendEnable : 1;
+			RenderTargetBlendDescriptor RenderTarget[8];
 		};
 
 		struct SPACE_COMMON_API SampleDesc
@@ -391,11 +434,11 @@ namespace Space {
 			uint Quality;
 		};
 
-		struct SPACE_COMMON_API BlendDesc
-		{
-			bool AlphaToCoverageEnable;
-			bool IndependentBlendEnable;
-			RenderTargetBlendDesc RenderTarget[8];
-		};
 	}
 }
+
+DEFINE_STD_HASH_SPECIALIZATION(Space::Render::RasterizerStateDescriptor);
+DEFINE_STD_HASH_SPECIALIZATION(Space::Render::DepthStencilStateDescriptor);
+DEFINE_STD_HASH_SPECIALIZATION(Space::Render::BlendStateDescriptor);
+
+#endif

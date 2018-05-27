@@ -1,4 +1,4 @@
-#include "RenderSystem/RenderSystem.hpp"
+#include "RenderSystem/Rendering.hpp"
 
 namespace Space
 {

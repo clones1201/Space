@@ -1,20 +1,26 @@
 #pragma once
 
-#include "RenderSystem/Prerequisites.hpp"
-#include "RenderSystem/DeviceResource.hpp"
+#include "Prerequisites.hpp"
+#include "DeviceResource.hpp"
 
 
 namespace Space
 {
 	namespace Render
 	{
+		struct PipelineStateDescriptor : ComparableBits<PipelineStateDescriptor>
+		{
+			BlendStateDescriptor BlendState;
+			RasterizerStateDescriptor RasterizerState;
+			DepthStencilStateDescriptor DepthStencilState;
+		};
+
 		namespace Details
 		{
 			template<class RenderSystem>
 			class CommandListImpl : public RenderSystem::CommandList
 			{
 			public:
-				typedef typename std::remove_reference<typename RenderSystem>::type RenderSystem;
 				typedef typename std::remove_reference<typename RenderSystem::Device>::type Device;
 				typedef typename std::remove_reference<typename RenderSystem::CommandList>::type CommandList;
 
@@ -47,6 +53,9 @@ namespace Space
 				{}
 
 				~PipelineStateImpl(){}
+				
+			private:
+
 			};
 		}
 	}

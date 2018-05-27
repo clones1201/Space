@@ -175,7 +175,48 @@ namespace Space
 		Type* p;
 	};
 
+	template<class BitsType>
+	class ComparableBits
+	{
+	public:
+		bool operator<(BitsType const& other) const
+		{
+			for(size_t i = 0 ; i < sizeof(BitsType); ++i)
+			{
+				if (*(reinterpret_cast<byte const*>(this) + i) >= *(reinterpret_cast<byte const*>(&other) + i))
+					return false;
+			}
+			return true;
+		}
+		
+		bool operator==(BitsType const& other) const
+		{
+			for (size_t i = 0; i < sizeof(BitsType); ++i)
+			{
+				if (*(reinterpret_cast<byte const*>(this) + i) != *(reinterpret_cast<byte const*>(&other) + i))
+					return false;
+			}
+			return true;
+		}
+	};
 
+	template<class BitsType>
+	class HashableBits
+	{
+	public:
+		size_t Hash() const
+		{
+			byte const* _first = reinterpret_cast<byte const*>(this);
+			size_t ret = 0;
+			auto hasher = std::hash<byte>();
+			for (auto _iter = _first; _iter < _first + sizeof(BitsType); ++_iter)
+			{
+				ret ^= hasher(*_iter);
+			}
+			return ret;
+		}
+	};
+	
 	class SPACE_COMMON_API Archiveable
 	{
 	public:
@@ -196,5 +237,17 @@ namespace Space
 	result;}
 
 }
+
+#ifndef DEFINE_STD_HASH_SPECIALIZATION
+#define DEFINE_STD_HASH_SPECIALIZATION(Hashable)                            \
+namespace std {                                                             \
+template<>                                                                  \
+struct hash<Hashable> {                                                     \
+  size_t operator()(const Hashable& obj) const {						\
+    return obj.Hash();														\
+  }                                                                         \
+};                                                                          \
+}
+#endif
 
 #endif

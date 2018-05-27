@@ -15,13 +15,12 @@ namespace Space {
 				protected SharedPtrObject<BufferImpl<RenderSystem>>
 			{
 			public:
-				typedef typename std::remove_reference<typename RenderSystem>::type RenderSystem;
 				typedef typename std::remove_reference<typename RenderSystem::DeviceBuffer>::type DeviceBuffer;
 				typedef typename std::remove_reference<typename RenderSystem::CommandList>::type CommandList;
 				virtual ~BufferImpl()
 				{}
 
-				BufferImpl(Device* device,BufferType type, ResourceUsage usage, size_t lengthInBytes, byte const* initialData)
+				BufferImpl(DeviceImpl<RenderSystem>* device,BufferType type, ResourceUsage usage, size_t lengthInBytes, byte const* initialData)
 					:_Type(type), _Usage(usage), _LengthInBytes(lengthInBytes)
 				{
 					_deviceBuffer = std::make_unique<DeviceBuffer>(
@@ -101,7 +100,6 @@ namespace Space {
 			public Buffer
 		{
 		public:
-			typedef typename std::remove_reference<typename Buffer::RenderSystem>::type RenderSystem;
 			virtual ~VertexBuffer();
 
 			VertexBuffer(size_t lengthInBytes, size_t stride, byte const* initialData);
@@ -134,8 +132,6 @@ namespace Space {
 			public Buffer
 		{
 		public:
-			typedef typename std::remove_reference<typename Buffer::RenderSystem>::type RenderSystem;
-
 			virtual ~IndexBuffer();
 
 			IndexBuffer(size_t lengthInBytes, DataFormat format, byte const* initialData);
@@ -166,7 +162,6 @@ namespace Space {
 			public Buffer
 		{
 		public:
-			typedef typename std::remove_reference<typename Buffer::RenderSystem>::type RenderSystem;
 			ConstantBuffer(
 				size_t lengthInBytes, byte const* initialData);
 
