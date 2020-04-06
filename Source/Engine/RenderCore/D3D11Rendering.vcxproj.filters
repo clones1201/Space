@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Development\Space\Source\Engine\RenderCore\D3D11RenderSystem\D3D11CommandList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Development\Space\Source\Engine\RenderCore\D3D11RenderSystem\D3D11Device.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Development\Space\Source\Engine\RenderCore\D3D11RenderSystem\D3D11DeviceResource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Development\Space\Source\Engine\RenderCore\D3D11RenderSystem\D3D11PipelineState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Development\Space\Source\Engine\RenderCore\D3D11RenderSystem\D3D11RenderSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Development\Space\Source\Engine\RenderCore\D3D11RenderSystem\D3D11RenderTarget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Development\Space\Source\Engine\RenderCore\D3D11RenderSystem\D3D11ResourceView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Development\Space\Source\Engine\RenderCore\D3D11RenderSystem\D3D11Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Development\Space\Source\Engine\RenderCore\D3D11RenderSystem\D3D11ShaderReflection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Development\Space\Source\Engine\RenderCore\D3D11RenderSystem\D3D11Shared.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Development\Space\Source\Engine\RenderCore\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4486FBEA-B874-3D51-9078-0B74D4A5A7A2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

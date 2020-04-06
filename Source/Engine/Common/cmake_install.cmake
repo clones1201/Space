@@ -1,4 +1,4 @@
-# Install script for directory: C:/Development/Space
+# Install script for directory: C:/Development/Space/Source/Engine/Common
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -32,23 +32,3 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
   set(CMAKE_CROSSCOMPILING "FALSE")
 endif()
 
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for each subdirectory.
-  include("C:/Development/Space/Source/Engine/Common/cmake_install.cmake")
-  include("C:/Development/Space/Source/Engine/Platform/cmake_install.cmake")
-  include("C:/Development/Space/Source/Engine/RenderCore/cmake_install.cmake")
-  include("C:/Development/Space/Source/Engine/Renderer/cmake_install.cmake")
-  include("C:/Development/Space/Source/Engine/Space/cmake_install.cmake")
-
-endif()
-
-if(CMAKE_INSTALL_COMPONENT)
-  set(CMAKE_INSTALL_MANIFEST "install_manifest_${CMAKE_INSTALL_COMPONENT}.txt")
-else()
-  set(CMAKE_INSTALL_MANIFEST "install_manifest.txt")
-endif()
-
-string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
-       "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Development/Space/${CMAKE_INSTALL_MANIFEST}"
-     "${CMAKE_INSTALL_MANIFEST_CONTENT}")

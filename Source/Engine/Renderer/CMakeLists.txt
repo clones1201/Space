@@ -1,0 +1,10 @@
+
+set(RENDERER_ROOT_DIR ${PROJECT_SOURCE_DIR}/Source/Engine/Renderer)
+
+add_definitions(-DRENDERER_EXPORTS -DNOMINMAX)
+
+set(RENDERER_INC_FILES
+)
+
+set(RENDERER_SRC_FILES
+)
