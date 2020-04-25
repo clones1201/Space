@@ -1,6 +1,6 @@
-#include "Common/Log.h"
-#include "Space/Game.hpp"
-#include "Space/Scene.hpp"
+#include "Log.h"
+#include "Game.h"
+#include "Scene.h"
 
 namespace Space
 {

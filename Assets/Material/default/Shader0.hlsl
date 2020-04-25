@@ -68,7 +68,7 @@ struct VSOutput
 {
 	float4 Position  : SV_POSITION;
 	float4 PositionWS: POSITION1;
-	float4 Normal    : NORMAL0;
+	float4 NormalWS    : NORMAL0;
 	float4 Tangent   : TANGENT0;
 	float4 TexCoord  : TEXCOORD0;
 };
@@ -87,16 +87,16 @@ void MainVS(in VSInput input,out VSOutput output)
 	output = (VSOutput)0;
     output.Position = PositionTransform(float4(input.Position.xyz, 1.0f), parameters);
 	output.PositionWS = mul(float4(input.Position.xyz, 1.0f), parameters.MV);
-	output.Normal = mul(float4(input.Normal.xyz, 0.0f), parameters.MV);
+	output.NormalWS = mul(float4(input.Normal.xyz, 0.0f), parameters.MV);
 	output.Tangent = mul(float4(input.Tangent.xyz, 0.0f), parameters.MV);
 	output.TexCoord = input.TexCoord;   
 }
 
 void MainPS(VSOutput vsoutput,out Float4 OutColor : SV_Target)
 {	
-	float4 color1 = texture1.Sample(sampler1, vsoutput.TexCoord.xy);
-	float4 color2 = texture2.Sample(sampler2, vsoutput.TexCoord.xy);
-    color1 = color1 + vsoutput.Position;
-    color2 = color2 + vsoutput.PositionWS + g_mTexBoneWorld[0][3] + g_Buffer.Load(2);
-    OutColor = float4(vsoutput.PositionWS.xyz, 1.0);
+	//float4 color1 = texture1.Sample(sampler1, vsoutput.TexCoord.xy);
+	//float4 color2 = texture2.Sample(sampler2, vsoutput.TexCoord.xy);
+   // color1 = color1 + vsoutput.Position;
+    //color2 = color2 + vsoutput.PositionWS + g_mTexBoneWorld[0][3] + g_Buffer.Load(2);
+    OutColor = float4(vsoutput.NormalWS.xyz, 1.0);
 }

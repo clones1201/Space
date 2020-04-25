@@ -1,13 +1,14 @@
-#include "Common/Log.h"
+#include "Log.h"
 
-#include "RenderSystem/RenderSystem.hpp"
+#include "RenderSystem.h"
 
-#include "Space/Material.hpp"
-#include "Space/Mesh.hpp"
-#include "Space/Renderer.hpp"
+// #include "Material.hpp"
+#include "Mesh.h"
+#include "Renderer.h"
 
 namespace Space
 {
+	/*
 	Renderer::Renderer(RenderSystem* pRenderSys)
 	{
 		m_pPipelineState.reset(
@@ -88,5 +89,5 @@ namespace Space
 			list->DrawIndexed(0, pPart->GetNumPrimitives());
 		}
 	}
-
+	*/
 }

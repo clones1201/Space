@@ -1,9 +1,9 @@
-#include "D3D11Shared.hpp"
-#include "D3D11DeviceResource.hpp"
+#include "D3D11Shared.h"
+#include "D3D11DeviceResource.h"
 #include "D3D11PipelineState.h"
 #include "D3D11CommandList.h"
-#include "D3D11Shader.hpp" 
-#include "D3D11RenderTarget.hpp"
+#include "D3D11Shader.h" 
+#include "D3D11RenderTarget.h"
 
 namespace Space {
 namespace Render {

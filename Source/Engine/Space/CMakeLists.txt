@@ -6,7 +6,7 @@ set(SPACE_ROOT_DIR ${PROJECT_SOURCE_DIR}/Source/Engine/Space)
 add_definitions(-DSPACE_EXPORTS -DNOMINMAX -DSPACE_GAME)
 
 set(SPACE_INC_FILES
-	"${SPACE_ROOT_DIR}/Public/Space.hpp")
+	"${SPACE_ROOT_DIR}/Public/Space.h")
 
 set(SPACE_SRC_FILES
 	"${SPACE_ROOT_DIR}/Private/Space.cpp")
@@ -16,9 +16,13 @@ add_executable("Space"
 
 add_dependencies(Space 
 	Common
-	RenderCore)
+	Platform
+	RenderCore
+	Renderer)
 
 target_include_directories(Space PUBLIC ${SPACE_ROOT_DIR}/Public)
 target_link_libraries(Space
 	PUBLIC Common
-	PUBLIC RenderCore)
+	PUBLIC Platform
+	PUBLIC RenderCore
+	PUBLIC Renderer)

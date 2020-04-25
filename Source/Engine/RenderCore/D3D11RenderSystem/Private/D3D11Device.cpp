@@ -1,4 +1,4 @@
-#include "D3D11Device.hpp"
+#include "D3D11Device.h"
 #include "Log.h"
 
 namespace Space
@@ -101,7 +101,7 @@ namespace Render
 		hr = m_pDevice->QueryInterface(__uuidof(ID3D11Device), (void**)&m_pDebug);
 		if (FAILED(hr))
 		{
-			throw std::exception("Not in debug mode");
+			throw std::exception("D3D11 Device Debug Create failed.");
 		}
 #endif
 

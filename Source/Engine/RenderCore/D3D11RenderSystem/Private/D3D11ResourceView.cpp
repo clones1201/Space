@@ -1,7 +1,7 @@
-#include "D3D11Shared.hpp"
-#include "D3D11Device.hpp"
-#include "D3D11DeviceResource.hpp"
-#include "D3D11ResourceView.hpp"
+#include "D3D11Shared.h"
+#include "D3D11Device.h"
+#include "D3D11DeviceResource.h"
+#include "D3D11ResourceView.h"
 
 namespace Space
 {

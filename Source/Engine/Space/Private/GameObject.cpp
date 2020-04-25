@@ -1,4 +1,4 @@
-#include "Space/GameObject.hpp"
+#include "GameObject.h"
 
 namespace Space
 {

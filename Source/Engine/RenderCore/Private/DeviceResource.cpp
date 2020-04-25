@@ -1,4 +1,4 @@
-#include "DeviceResource.hpp"
+#include "DeviceResource.h"
 
 namespace Space
 {

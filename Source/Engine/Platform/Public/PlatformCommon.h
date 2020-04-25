@@ -4,7 +4,7 @@
 #include "Basic.hpp"
 
 #ifdef PLATFORM_EXPORTS
-#define SPACE_PLATFORM_API __declspec(dllexport)
+#define PLATFORM_API __declspec(dllexport)
 #else
-#define SPACE_PLATFORM_API __declspec(dllimport)
+#define PLATFORM_API __declspec(dllimport)
 #endif

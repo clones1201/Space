@@ -1,13 +1,13 @@
-#include "assimp/cimport.h"
-#include "assimp/scene.h"
-#include "assimp/postprocess.h"
+// #include "assimp/cimport.h"
+// #include "assimp/scene.h"
+// #include "assimp/postprocess.h"
 
-#include "Common/Log.h"
-#include "Common/Utility.hpp"
+#include "Log.h"
+#include "Utility.hpp"
 
-#include "RenderSystem/DeviceResource.hpp"
-#include "RenderSystem/RenderSystem.hpp"
-#include "Space/Mesh.hpp"
+#include "DeviceResource.h"
+#include "RenderSystem.h"
+#include "Mesh.h"
 
 #include <ppl.h>
 
@@ -50,10 +50,10 @@ namespace Space
 		
 	void Mesh::_LoadAsync()
 	{
-		m_LoadAction = std::async(std::launch::async,
-			[this] { this->_RealLoad(); });
+		// m_LoadAction = std::async(std::launch::async,
+			// [this] { this->_RealLoad(); });
 	}
-
+	/*
 	void Mesh::_RealLoad()
 	{
 		tstring path = Core::GetInstance()->GetAssetsDir() + TEXT("/") + m_FileName;
@@ -171,11 +171,11 @@ namespace Space
 
 		aiReleaseImport(scene);
 	}
-
+	*/
 	Mesh* Mesh::CreateFromFBX(tstring const& filename)
 	{
 		Mesh* ret = new Mesh(filename);
-		ret->_RealLoad();
+		//ret->_RealLoad();
 		return ret;
 	}
 

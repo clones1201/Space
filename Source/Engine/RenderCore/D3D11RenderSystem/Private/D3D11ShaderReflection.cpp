@@ -2,8 +2,8 @@
 #include "Utility.hpp"
 
 #include <d3d11shader.h>
-#include "D3D11Shader.hpp"
-#include "D3D11ShaderReflection.hpp"
+#include "D3D11Shader.h"
+#include "D3D11ShaderReflection.h"
 
 namespace Space
 {

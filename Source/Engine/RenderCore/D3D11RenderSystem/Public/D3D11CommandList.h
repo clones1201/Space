@@ -1,7 +1,7 @@
 #pragma once
 
-#include "RenderCommon.hpp"
-#include "D3D11Prerequisites.hpp"
+#include "RenderCommon.h"
+#include "D3D11Prerequisites.h"
 
 namespace Space
 {

@@ -1,4 +1,4 @@
-#include "Game.hpp"
+#include "Game.h"
 
 #include "D3D11RenderSystem.hpp"
 

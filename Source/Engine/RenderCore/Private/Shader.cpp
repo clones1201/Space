@@ -1,7 +1,7 @@
 #include <sstream>
 
-#include "RenderSystem.hpp"
-#include "Shader.hpp"
+#include "RenderSystem.h"
+#include "Shader.h"
 #include "Utility.hpp"
 
 namespace Space

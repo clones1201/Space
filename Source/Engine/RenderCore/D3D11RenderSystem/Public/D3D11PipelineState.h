@@ -1,6 +1,6 @@
 #pragma once
 
-#include "D3D11Prerequisites.hpp"
+#include "D3D11Prerequisites.h"
 
 namespace Space
 {

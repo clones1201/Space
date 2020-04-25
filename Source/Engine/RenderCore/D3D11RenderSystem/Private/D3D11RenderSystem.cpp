@@ -1,4 +1,4 @@
-#include "D3D11RenderSystem.hpp"
+#include "D3D11RenderSystem.h"
 
 namespace Space
 {

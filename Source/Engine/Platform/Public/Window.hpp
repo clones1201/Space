@@ -11,7 +11,7 @@ namespace Space
 	template <class _EventArgs>
 	using Event = std::vector < Delegate<_EventArgs> >;
 
-	class SPACE_PLATFORM_API EventListener : public Object, public SharedPtrObject<EventListener>
+	class PLATFORM_API EventListener : public Object, public SharedPtrObject<EventListener>
 	{
 	public:
 		enum class Type
@@ -45,7 +45,7 @@ namespace Space
 
 	typedef std::shared_ptr<EventListener> EventListenerPtr;
 
-	struct SPACE_PLATFORM_API MouseEventArgs
+	struct PLATFORM_API MouseEventArgs
 	{
 		int32 X, Y, Delta;
 		bool LeftButton;
@@ -53,7 +53,7 @@ namespace Space
 		bool MiddleButton;
 	};
 
-	class SPACE_PLATFORM_API MouseListener : public EventListener
+	class PLATFORM_API MouseListener : public EventListener
 	{
 	public:
 		Event<MouseEventArgs> MouseDown;
@@ -87,17 +87,17 @@ namespace Space
 
 	typedef std::shared_ptr<MouseListener> MouseListenerPtr;
 
-	enum class SPACE_PLATFORM_API KeyCode
+	enum class PLATFORM_API KeyCode
 	{
 		A,B,C,D,E,F
 	};
 
-	struct SPACE_PLATFORM_API KeyboardEventArgs
+	struct PLATFORM_API KeyboardEventArgs
 	{
 		KeyCode code;
 	};
 
-	class SPACE_PLATFORM_API KeyboardListener : public EventListener
+	class PLATFORM_API KeyboardListener : public EventListener
 	{
 	public:
 		Event<KeyboardEventArgs> KeyPressed;
@@ -118,7 +118,7 @@ namespace Space
 	
 	typedef std::shared_ptr<KeyboardListener> KeybordListenerPtr;
 
-	class SPACE_PLATFORM_API EventDispatcher : virtual public Uncopyable
+	class PLATFORM_API EventDispatcher : virtual public Uncopyable
 	{
 	public:
 		void AddEventListener(EventListener* listener);
@@ -143,7 +143,7 @@ namespace Space
 	typedef std::shared_ptr<EventDispatcher> EventDispatcherPtr;
 
 	
-	class SPACE_PLATFORM_API Window : public SharedPtrObject<Window>, public Interface
+	class PLATFORM_API Window : public SharedPtrObject<Window>, public Interface
 	{
 	public:
 		static Window* Create(const std::string& name, int32 width, int32 height, bool fullscreen);
@@ -176,7 +176,7 @@ namespace Space
 	};
 
 #if SPACE_PLATFORM == SPACE_WIN32
-	class SPACE_PLATFORM_API Win32Window : public Window
+	class PLATFORM_API Win32Window : public Window
 	{
 	public:
 		virtual void Show();

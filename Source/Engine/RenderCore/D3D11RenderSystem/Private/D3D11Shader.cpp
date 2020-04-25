@@ -1,11 +1,11 @@
 #include "Log.h"
 #include "Utility.hpp"
-#include "D3D11Shader.hpp"
-#include "D3D11Device.hpp"
+#include "D3D11Shader.h"
+#include "D3D11Device.h"
 
-#include "D3D11ShaderReflection.hpp"
+#include "D3D11ShaderReflection.h"
 
-#include "Shader.hpp"
+#include "Shader.h"
 
 namespace Space
 {
@@ -69,7 +69,7 @@ namespace Render
 	std::vector<byte> D3D11VertexShader::Compile(ShaderSource const& source)
 	{
 		return CompileShader(
-			source.StringSource->c_str(), source.StringSource->size(),
+			source.StringSource, source.SourceLength,
 			source.FileName.c_str(),
 			source.Entry.c_str(), 
 			("vs_" + source.Profile).c_str(),
@@ -80,7 +80,7 @@ namespace Render
 	std::vector<byte> D3D11PixelShader::Compile(ShaderSource const& source)
 	{
 		return CompileShader(
-			source.StringSource->c_str(), source.StringSource->size(),
+			source.StringSource, source.SourceLength,
 			source.FileName.c_str(),
 			source.Entry.c_str(),
 			("ps_" + source.Profile).c_str(), 

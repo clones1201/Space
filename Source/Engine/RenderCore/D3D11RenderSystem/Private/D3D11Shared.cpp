@@ -1,5 +1,5 @@
 #include "Log.h"
-#include "D3D11Shared.hpp"
+#include "D3D11Shared.h"
 
 namespace Space
 {

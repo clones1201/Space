@@ -1,5 +1,5 @@
-#include "Shared.hpp"
-#include "RenderCommon.hpp"
+#include "Shared.h"
+#include "RenderCommon.h"
 
 namespace Space
 {

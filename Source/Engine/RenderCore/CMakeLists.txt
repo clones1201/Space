@@ -1,14 +1,15 @@
 set(RENDERCORE_ROOT_DIR ${PROJECT_SOURCE_DIR}/Source/Engine/RenderCore)
 
 set(RENDERCORE_INC_FILES
-	"${RENDERCORE_ROOT_DIR}/Public/RenderCommon.hpp"
-	"${RENDERCORE_ROOT_DIR}/Public/DeviceResource.hpp"
+	"${RENDERCORE_ROOT_DIR}/Public/RenderCommon.h"
+	"${RENDERCORE_ROOT_DIR}/Public/DeviceResource.h"
 	#"${RENDERCORE_ROOT_DIR}/Public/Prerequisites.hpp"
-	"${RENDERCORE_ROOT_DIR}/Public/Rendering.hpp"
-	"${RENDERCORE_ROOT_DIR}/Public/RenderSystem.hpp"
-	"${RENDERCORE_ROOT_DIR}/Public/Shader.hpp"
+	"${RENDERCORE_ROOT_DIR}/Public/Rendering.h"
+	"${RENDERCORE_ROOT_DIR}/Public/RenderSystem.h"
+	"${RENDERCORE_ROOT_DIR}/Public/Shader.h"
 	#"${RENDERCORE_ROOT_DIR}/Public/ShaderReflection.hpp"
-	"${RENDERCORE_ROOT_DIR}/Public/Shared.hpp")
+	"${RENDERCORE_ROOT_DIR}/Public/Shared.h"
+	"${RENDERCORE_ROOT_DIR}/Public/PipelineStateManager.h")
 source_group("Public" FILES ${RENDERCORE_INC_FILES})
 
 set(RENDERCORE_SRC_FILES
@@ -17,20 +18,21 @@ set(RENDERCORE_SRC_FILES
 	"${RENDERCORE_ROOT_DIR}/Private/RenderSystem.cpp"
 	"${RENDERCORE_ROOT_DIR}/Private/Rendering.cpp"
 	"${RENDERCORE_ROOT_DIR}/Private/Shader.cpp"
-	"${RENDERCORE_ROOT_DIR}/Private/Shared.cpp")
+	"${RENDERCORE_ROOT_DIR}/Private/Shared.cpp"
+	"${RENDERCORE_ROOT_DIR}/Private/PipelineStateManager.cpp")
 source_group("Private" FILES ${RENDERCORE_SRC_FILES})
 
 set(D3D11RENDERSYSTEM_INC_FILES
-	"${RENDERCORE_ROOT_DIR}/D3D11RenderSystem/Public/D3D11Device.hpp"
-	"${RENDERCORE_ROOT_DIR}/D3D11RenderSystem/Public/D3D11DeviceResource.hpp"
-	"${RENDERCORE_ROOT_DIR}/D3D11RenderSystem/Public/D3D11Prerequisites.hpp"
+	"${RENDERCORE_ROOT_DIR}/D3D11RenderSystem/Public/D3D11Device.h"
+	"${RENDERCORE_ROOT_DIR}/D3D11RenderSystem/Public/D3D11DeviceResource.h"
+	"${RENDERCORE_ROOT_DIR}/D3D11RenderSystem/Public/D3D11Prerequisites.h"
 	"${RENDERCORE_ROOT_DIR}/D3D11RenderSystem/Public/D3D11PipelineState.h"
 	"${RENDERCORE_ROOT_DIR}/D3D11RenderSystem/Public/D3D11CommandList.h"
-	"${RENDERCORE_ROOT_DIR}/D3D11RenderSystem/Public/D3D11RenderSystem.hpp"
-	"${RENDERCORE_ROOT_DIR}/D3D11RenderSystem/Public/D3D11RenderTarget.hpp"
-	"${RENDERCORE_ROOT_DIR}/D3D11RenderSystem/Public/D3D11ResourceView.hpp"
-	"${RENDERCORE_ROOT_DIR}/D3D11RenderSystem/Public/D3D11Shader.hpp"
-	"${RENDERCORE_ROOT_DIR}/D3D11RenderSystem/Public/D3D11Shared.hpp")
+	"${RENDERCORE_ROOT_DIR}/D3D11RenderSystem/Public/D3D11RenderSystem.h"
+	"${RENDERCORE_ROOT_DIR}/D3D11RenderSystem/Public/D3D11RenderTarget.h"
+	"${RENDERCORE_ROOT_DIR}/D3D11RenderSystem/Public/D3D11ResourceView.h"
+	"${RENDERCORE_ROOT_DIR}/D3D11RenderSystem/Public/D3D11Shader.h"
+	"${RENDERCORE_ROOT_DIR}/D3D11RenderSystem/Public/D3D11Shared.h")
 source_group("D3D11\\Public" FILES ${D3D11RENDERSYSTEM_INC_FILES})
 
 set(D3D11RENDERSYSTEM_SRC_FILES

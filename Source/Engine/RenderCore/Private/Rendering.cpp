@@ -1,4 +1,4 @@
-#include "Rendering.hpp"
+#include "Rendering.h"
 
 namespace Space
 {

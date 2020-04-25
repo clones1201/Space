@@ -1,11 +1,11 @@
-#include "D3D11Shared.hpp"
-#include "D3D11Device.hpp"
-#include "D3D11DeviceResource.hpp"
-#include "D3D11ResourceView.hpp"
-#include "D3D11Shader.hpp"
+#include "D3D11Shared.h"
+#include "D3D11Device.h"
+#include "D3D11DeviceResource.h"
+#include "D3D11ResourceView.h"
+#include "D3D11Shader.h"
 #include "D3D11PipelineState.h"
-#include <InputLayout.hpp>
-#include "PipelineStateManager.hpp"
+#include "InputLayout.h"
+#include "PipelineStateManager.h"
 #include "Log.h"
 
 
